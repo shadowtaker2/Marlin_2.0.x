@@ -10,21 +10,14 @@
 Additional documentation can be found at the [Marlin Home Page](https://marlinfw.org/).
 Please test this firmware and let us know if it misbehaves in any way. Volunteers are standing by!
 
-# Last release of Marlin 2.0 for Delta FLSun QQ-S Pro (motherboard HISPEED).
+# Last release of Marlin 2.0 for ANetA8 (motherboard RAMPS).
 
-20201001 Updated Marlin 2.0.7 for FLSun QQ-S with A4988 and TMC220x mode _UART and _StandAlone.
+20201001 Updated Marlin 2.0.7 for AMB8 with TMC220x mode _UART and _StandAlone.
 
-20200830 Updated Marlin 2.0.6 for FLSun QQ-S with A4988 and TMC2208_StandAlone.
-
-20200827 Updated Marlin 2.0.6 for FLSun QQ-S with A4988.
-
-20200815 Updated Marlin 2.0.6 for FLSun QQ-S.
-
-Thanks to [Anders Salhman](https://github.com/AndersSahlman) & [Martin Carlsson](https://github.com/orecus) for their work and inspiration.
 
 ## I am not responsible for any Damage done do your Printer by using this. Using anything else than stock firmware requieres quite some knowlege.
 
-## This is my experimental Marlin firmware on Delta FLSun QQ-S 
+## This is my experimental Marlin firmware on AMB8 clone ANetA8/Prusa I3 
 
 ## Building Marlin 2.0
 
