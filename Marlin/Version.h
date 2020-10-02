@@ -28,7 +28,7 @@
 /**
  * Marlin release version identifier
  */
-//#define SHORT_BUILD_VERSION "2.0.7"
+#define SHORT_BUILD_VERSION "2.0.7"
 
 /**
  * Verbose version identifier which should contain a reference to the location
@@ -41,12 +41,12 @@
  * here we define this default string as the date where the latest release
  * version was tagged.
  */
-//#define STRING_DISTRIBUTION_DATE "2020-07-09"
+#define STRING_DISTRIBUTION_DATE "20201001"
 
 /**
  * Defines a generic printer name to be output to the LCD after booting Marlin.
  */
-//#define MACHINE_NAME "3D Printer"
+#define MACHINE_NAME "AMB8_BEAR_BNBSXv1"
 
 /**
  * The SOURCE_CODE_URL is the location where users will find the Marlin Source
@@ -59,7 +59,7 @@
 /**
  * Default generic printer UUID.
  */
-//#define DEFAULT_MACHINE_UUID "cede2a2f-41a2-4748-9b12-c55c62f367ff"
+#define DEFAULT_MACHINE_UUID "daeecb7e-dedc-4bc3-a805-1e754a880799"
 
 /**
  * The WEBSITE_URL is the location where users can get more information such as
@@ -71,6 +71,6 @@
  * Set the vendor info the serial USB interface, if changable
  * Currently only supported by DUE platform
  */
-//#define  USB_DEVICE_VENDOR_ID           0x0000
-//#define  USB_DEVICE_PRODUCT_ID          0x0000
+#define  USB_DEVICE_VENDOR_ID           0x2341
+#define  USB_DEVICE_PRODUCT_ID          0x0042
 //#define  USB_DEVICE_MANUFACTURE_NAME    WEBSITE_URL
