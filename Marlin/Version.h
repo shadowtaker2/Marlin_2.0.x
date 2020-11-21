@@ -46,7 +46,7 @@
 /**
  * Defines a generic printer name to be output to the LCD after booting Marlin.
  */
-#define MACHINE_NAME "AMB8_BEAR_BNBSXv1"
+#define MACHINE_NAME "AMB8_BEAR_BNBSXv2"
 
 /**
  * The SOURCE_CODE_URL is the location where users will find the Marlin Source

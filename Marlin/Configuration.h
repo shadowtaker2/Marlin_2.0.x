@@ -25,149 +25,6 @@
 
 /**
  * Configuration.h
- * Modif 2020:EVO3.3
- *      2.0.6 SERIAL_PORT 0=>3
- *      BNBSX v1 (Modif des Vref à 0.74v Max)
- *      BEAR  Modif parametres firmware BEAR/BNBSX en 16bits (X,Y,Z) et 32 (E0)
- *      OPT   Calcul avec MicroStep à 32 (TMC + STEPS_PER_UNIT ())                                   
- *      act. Modif FAN_SOFT_PWM, FWRETRACT, ARC_SUPPORT, STEALTHCHOP_E
- *      TEMP  Activation Temp. enceinte "#define TEMP_CHAMBER_PIN TEMP_1_PIN" (PIN A15 T2)
- *            Modif LCD logo _Statusscreen.h
- *      LCD_AMB8  Modif 
- *      MK3 RAMPS
- *      OPT   RUNOUT a "True" Montage Prusa_IR_Sensor + MODRUNOUT
- *      3.2   Montage pack Bear2.1 + tete BNBSX
- *      BNBSX Reglage calibration STEPS_PER_UNIT ()
- *      BNBSX INVERT_E0_DIR à False
- *      BNBSX Modif DEFAULT_AXIS_STEPS_PER_UNIT (80,80,400,473)
- *      BNBSX Modif Travel limits X -25, Y -7
- *      OPT   Modif position NOZZLE_CLEAN_FEATURE
- *      MOD   Echange poulie Axe X (16T par 20T) =>STEPS_PER_UNIT (80)
- *      3.1:
- *      OPT   Modif detection filament (PIN D4 SERVO3)
- *      *OPT   Modif capteur TouchMi (PIN 32 AUX4=Z_MIN)
- *      *RGB   Activation NEOPIXEL (PIN D11 SERVO0)
- *      *desactivation PROBING_HEATERS_OFF
- *      *DésActivation ENDSTOPS_ALWAYS_ON_DEFAULT
- *      *DésActivation ADAPTIVE_STEP_SMOOTHING
- *      OPT    Activation LCD_INFO_MENU
- *      OPT    Activation PRINTCOUNTER (Statistiques)
- *      OPT    DésActivation FILAMENT_MOTION_SENSOR
- *      OPT    MIN_PROBE_EDGE à 15
- *      EVO3.1 Activation PSU_CONTROL + Modif ALim PSX M80/81 
- *      EVO3.1 RAMPS prepa "Stepper Drivers" avec TMC2208v3
- *      EVO3.1 Installation librairie "TMC2208Stepper"+"TMCStepper".
- *      EVO3.1 Mode1(Normal):TMC2208_STANDALONE (E0)
- *      EVO3.1 Inverser le flag INVERT_X_DIR, INVERT_Y_DIR, INVERT_Z_DIR, INVERT_E0_DIR
- *      EVO3.1 Reglage Vref=(ImaxMotor)x2.5/1.9
- *      EVO3.1 Mode3(UART):TMC2208 (X/Y/Z)
- *      UART   Désactivation ENDSTOP_INTERRUPTS_FEATURE
- *      UART   Activation MINIMUM_STEPPER_PULSE
- *      UART   Activation HYBRID_THRESHOLD
- *      UART   Activation TMC_DEBUG
- *      EVO3.1 Inverser le flag INVERT_X_DIR, INVERT_Y_DIR, INVERT_Z_DIR, INVERT_E0_DIR
- *      EVO3.0 RAMPS+Chassis Alu (A4988)
- *      EVO3.0  Activation M114_DETAIL (Filament Sensor Module) (adv)
- *      EVO3.0  Activation ENDSTOPS_ALWAYS_ON_DEFAULT (adv)
- *      EVO3.0  Activation POWER_LOSS_RECOVERY (adv)
- *      EVO3.0  Activation SCROLL_LONG_FILENAMES (adv)
- *      EVO3.0  Activation Ecran LCD REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
- *      EVO3.0  Activation SPEAKER/BUZZER
- *      EVO3.0  Activation REVERSE_MENU_DIRECTION,INDIVIDUAL_AXIS_HOMING_MENU,
- *      EVO3.0  Activation SD CARD
- *      EVO3.0  Activation "Stepper Drivers" avec A4988 (X/Y/Z/E0)
- *      EVO3.0 Modif  version.h ID PRODUCT(2341) & VENDOR(0042)
- *      EVO3.0 Modif version.h MACHINE_UUID
- *      EVO3.0  Activation BOARD_RAMPS_14_EFB
- *   Modif 2019:
- *      PTF    Echange poulie Axe Y (16T par 20T) =>STEPS_PER_UNIT (80)
- *      EVO2.1 Désact. Modif FAN_SOFT_PWM
- *  20191204 Modif version.h ID PRODUCT(7523) & VENDOR(1a86) 
- *  20191110 BugFix_Novembre
- *      EVO2.1 CUSTOM_VERSION_FILE
- *  20191025
- *      BEAR Invertion MoteurX true->false montage "BNBSX Short Ears"
- *  20191020
- *      EVO2.1
- *      EVO2.1 Modif "Homing speeds"
- *      EVO2.1 * number of grid points 3 à 5
- *      EVO2.1 PROBING_HEATERS_OFF
- *      EVO2.1 PROBING_FANS_OFF
- *      EVO2.1 * Z_PROBE_OFFSET_RANGE à -5/-0.2
- *  20191015
- *      EVO2.1 activation point AUTO_BED_LEVEL
- *      EVO2.1 activation G0_FEEDRATE
- *      EVO2.1 activation FILAMENT_MOTION_SENSOR
- *      EVO2.1 activation GCODE_MOTION_MODES
- *  201910
- *      BEAR Activation GCODE_MOTION_MODES & G0_FEEDRATE (
- *      BEAR Reglage changement filament (Filament Sensor Module)
- *      Suppression du rep ANET10 avec compil sur Board Sanguino/1284P-16Mhz
- *  201909  * modifier le bruit du ventillateur FAN_SOFT_PWM
- *      EXT Changement des axes X en 45(Prusa)
- *      EXT Tête Bear avec TouchMi droite avec bed à (X_MAX_BED + 6)
- *      PTF desact. PID HOTEND à 191 => bang_max 255
- *  20190828-Modit EXTRUDER = Modif tete impression EVO2+
- *      EXT Changement "Reverse the X axis directiont false=>true"
- *      OPT Ajusrement distance Fil run-out, step X,Y,Z,E
- *  201908
- *      LDC Activation M73 LCD_SET_PROGRESS(plugins OctoPrint "M73 ETA Override"+ option PrusaSlicer)
- *      PTF Essai QUICK_HOME X&Y en même tps.
- *      E3D Tuning (PLA PETG) LIN_ADVANCE à 0 (M900 K0,x dans le GCode du filament)
- *      E3D Modif EXTRUDE_MINTEMP à 170
- *  201907-Modif hard: EVO2
- *      PTF Mise ne place TouchMi à droite avec (X_MAX_BED + 2) =>erreurs ds SanityCheck.h
- *      E3D Changement Tête E3Dv6 (mode ), capteur T°C (NTC 3950=11),
- *      E3D Montage New Bloc impression en direct drive(https://www.thingiverse.com/thing:3111763)
- *      PTF Isolation Plaque liége
- *      OPT Activation compensation ENABLE_LEVELING_FADE_HEIGHT pour gcode start M420 Z5
- *  201907-Modif Marlin:
- *      E3D Activation LINEAR ADVANCE
- *          Activation de SLIM_LCD_MENUS (gagne de la Mry pour LINEAR ADVANCE)
- *          Modif termistance tete à 11
- *          Modif PID HOTEND (cartouche de 40w, bang_max 191) (fanduct)
- *          Modif CENTER
- *          Modif vitesse extrusion et retraction
- *      PTF Modif PID BED
- *          Modif hauteur Z
- *          Modif RETRACT + Changement longueur fil
- *          Activation capteur Touch-Mi (https://www.thingiverse.com/thing:)
- *   201907   Passage en full V2.
- *          Modif vitesse HOMING_FEEDRATE à 3000.
- *          Modif JUNCTION_DEVIATION
- *          Home X et Y en même temps par QUICK_HOME
- *          Modif DEFAULT_MAX_ACCELERATION divise par 2
- * 201906   ACTIVATION LONGUEUR DETECTION FIL(Filament Sensor Module)
- * 20190422 new experimental part(non activer)
- *          reglage hauteur à 203
- *          Suppression du bugs de compilation en remplacant "pins_arduino.h" par celui de la lib sanguino(variants)
- *          Definition des "#define PREHEAT_1_LABEL "PLA/PET/ABS"
- * 20190420 correction PID BED
- *          correction vitesse DEFAULT_ACCELERATION
- *          activation #define FWRETRACT
- * 20190320 compilation en usbasp et optiboot
- * 20190303 Recablage de l'electronique integration ventillo raspi.
- *          Modif longueur purge de changement de filament.
- *          Supression du bug "error checksum EEPROM" modif fichier marlin configuration filament.
- * 20190227 Reglage nbre de pas des moteurs :http://xyzcalibration.harkor.be/
- * 20190223 Dés-Activation "PROBING_FANS_OFF" => BUG Lib LCD
- *          Augmentation vitesse de calibration "PROBE_SPEED 8000"
- *          Augmentation des point de test "GRID_MAX_POINTS_X" de 3 à 4 + desactivation "MULTIPLE_PROBING 2"
- * 20190222 Activation résolution des déplacements "ADAPTIVE_STEP_SMOOTHING"
- *      OPT Activation l'accélération S-Curve
- *          Activation de la fonction lissage courbe "JUNCTION_DEVIATION"
- * 20190210 Reajustage PID B+H changement d'alim.
- * 20190126 Modif de la zone de nettoyage "fonction CLEAN"
- *          decom "#define DEBUG_EEPROM_READWRITE" ds configuration_store.cpp" pour erreur data eeprom
- * 201901 Ajout de la fct nettoyage et supp. erreurs.
- *Modif 2018:
- * 20181020 Suppression accent dans titre + Led RGB (Conf BLINK:  pour module LedStrip ds OctoPrint)
- * 20181019 Activation UUID + Modif z à 60°=-1.45
- * 20181017 Activation Led RGB (Conf BLINK:  pour module LedStrip ds OctoPrint)
- * 20181014 Activation détection fil MODIF sur pins_ANET_10.h (Filament Sensor Module)
- * 20181013 SDSUPPORT Desactivation pour récupérer de la mémoire
- * 201810 Activation 3 Modes de parkage
- * 201804 Activation autolevel
  *
  * Basic settings such as:
  *
@@ -197,6 +54,8 @@
  * https://sites.google.com/site/repraplogphase/calibration-of-your-reprap
  * https://www.thingiverse.com/thing:298812
  */
+
+#include "AMB8_Config.h"
 
 //===========================================================================
 //============================= DELTA Printer ===============================
@@ -233,10 +92,14 @@
 #define SHOW_BOOTSCREEN
 
 // Show the bitmap in Marlin/_Bootscreen.h on startup.
-#define SHOW_CUSTOM_BOOTSCREEN  //Graphical LCD
+#ifdef TFT_CLASSIC_UI 
+  #define SHOW_CUSTOM_BOOTSCREEN  //TIPS
+#endif
 
 // Show the bitmap in Marlin/_Statusscreen.h on the status screen.
-#define CUSTOM_STATUS_SCREEN_IMAGE  //Graphical LCD
+#ifdef TFT_CLASSIC_UI 
+  #define CUSTOM_STATUS_SCREEN_IMAGE  //TIPS
+#endif
 
 // @section machine
 
@@ -248,13 +111,19 @@
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#define SERIAL_PORT 3
+#if ANY(STOCK, RAMPS)
+  #define SERIAL_PORT 0
+#endif
+#ifdef SKR
+  #define SERIAL_PORT 0
 
 /**
  * Select a secondary serial port on the board to use for communication with the host.
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-//#define SERIAL_PORT_2 -1
+
+  #define SERIAL_PORT_2 -1
+#endif 
 
 /**
  * This setting determines the communication speed of the printer.
@@ -272,11 +141,27 @@
 
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_RAMPS_14_EFB
+  #ifdef STOCK
+    #define MOTHERBOARD BOARD_ANET
+  #endif
+  #ifdef RAMPS
+    #define MOTHERBOARD BOARD_RAMPS_14_EFB
+  #endif
+  #ifdef SKR
+    #define MOTHERBOARD BOARD_BTT_SKR_V1_4
+  #endif  
 #endif
 
 // Name displayed in the LCD "Ready" message and Info menu
-#define CUSTOM_MACHINE_NAME "Extrudeur_BNBSXv1"
+#ifdef STOCK
+  #define CUSTOM_MACHINE_NAME "ANet A8"
+#endif
+#ifdef RAMPS
+  #define CUSTOM_MACHINE_NAME "Extrudeur_BNBSXv1"
+#endif
+#ifdef SKR
+  #define CUSTOM_MACHINE_NAME "Extrudeur_BNBSXv2"
+#endif
 
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like https://www.uuidgenerator.net/version4
@@ -470,9 +355,10 @@
  * Enable and connect the power supply to the PS_ON_PIN.
  * Specify whether the power supply is active HIGH or active LOW.
  */
-#define PSU_CONTROL
-#define PSU_NAME "ATX 600W"
-
+#ifdef RAMPS
+  #define PSU_CONTROL
+  #define PSU_NAME "ATX 600W"
+#endif
 #if ENABLED(PSU_CONTROL)
   #define PSU_ACTIVE_STATE LOW      // Set 'LOW' for ATX, 'HIGH' for X-Box
 
@@ -570,8 +456,12 @@
 #define TEMP_SENSOR_7 0
 #define TEMP_SENSOR_BED 5 // type sonde température lit chauffant
 #define TEMP_SENSOR_PROBE 0
-#define TEMP_SENSOR_CHAMBER 11
-#define TEMP_CHAMBER_PIN TEMP_1_PIN //
+#ifdef RAMPS
+  #define TEMP_SENSOR_CHAMBER 11
+  #define TEMP_CHAMBER_PIN TEMP_1_PIN //
+#else
+  #define TEMP_SENSOR_CHAMBER 0
+#endif
 
 // Dummy thermistor constant temperature readings, for use with 998 and 999
 #define DUMMY_THERMISTOR_998_VALUE 25
@@ -592,7 +482,7 @@
 #define TEMP_WINDOW              1  // (°C) Temperature proximity for the "temperature reached" timer
 #define TEMP_HYSTERESIS          3  // (°C) Temperature proximity considered "close enough" to the target
 
-#define TEMP_BED_RESIDENCY_TIME 10  //6  // (seconds) Time to wait for bed to "settle" in M190
+#define TEMP_BED_RESIDENCY_TIME  6  // (seconds) Time to wait for bed to "settle" in M190
 #define TEMP_BED_WINDOW          1  // (°C) Temperature proximity for the "temperature reached" timer
 #define TEMP_BED_HYSTERESIS      3  // (°C) Temperature proximity considered "close enough" to the target
 
@@ -877,15 +767,15 @@
  *          TMC5130, TMC5130_STANDALONE, TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'L6474', 'POWERSTEP01', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-#define X_DRIVER_TYPE TMC2208   //UART
-#define Y_DRIVER_TYPE TMC2208   //UART
-#define Z_DRIVER_TYPE TMC2208   //UART
+#define X_DRIVER_TYPE DRIVER_AXES
+#define Y_DRIVER_TYPE DRIVER_AXES
+#define Z_DRIVER_TYPE DRIVER_AXES
 //#define X2_DRIVER_TYPE A4988
 //#define Y2_DRIVER_TYPE A4988
 //#define Z2_DRIVER_TYPE A4988
 //#define Z3_DRIVER_TYPE A4988
 //#define Z4_DRIVER_TYPE A4988
-#define E0_DRIVER_TYPE TMC2208  //UART
+#define E0_DRIVER_TYPE DRIVER_EXT
 //#define E1_DRIVER_TYPE A4988
 //#define E2_DRIVER_TYPE A4988
 //#define E3_DRIVER_TYPE A4988
@@ -1029,7 +919,7 @@
  * When changing speed and direction, if the difference is less than the
  * value set here, it may happen instantaneously.
  */
-//#define CLASSIC_JERK
+//#define CLASSIC_JERK  //Define in AMB8_Config.h
 #if ENABLED(CLASSIC_JERK)
   #define DEFAULT_XJERK 10.0		//10 écart de vitesse mini avant accélération
   #define DEFAULT_YJERK 10.0
@@ -1235,7 +1125,11 @@
  */
  
 // Pour le support http://www.thingiverse.com/thing:2111157 201810
-#define NOZZLE_TO_PROBE_OFFSET { 25, 6, -3.60 }
+#if ANY(RAMPS, SKR)
+  #define NOZZLE_TO_PROBE_OFFSET { 25, 6, -3.60 }
+#else
+  #define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0 }
+#endif
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
@@ -1330,20 +1224,38 @@
 // @section extruder
 
 #define DISABLE_E false             // Disable the extruder when not stepping
-#define DISABLE_INACTIVE_EXTRUDER   // Keep only the active extruder enabled
-
+#ifdef RAMPS
+  #define DISABLE_INACTIVE_EXTRUDER   // Keep only the active extruder enabled
+#endif
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_X_DIR true        //TMC2208 201908 BEAR Montage tete Prusa/BEAR (true) mais support moteur X inversé (false
-#define INVERT_Y_DIR true        //TMC2208
-#define INVERT_Z_DIR false       //TMC2208
+#ifdef RAMPS
+  #define INVERT_X_DIR true        //TMC2208 201908 BEAR Montage tete Prusa/BEAR (true) mais support moteur X inversé (false
+  #define INVERT_Y_DIR true        //TMC2208
+  #define INVERT_Z_DIR false       //TMC2208
+  #ifdef INV_EXT
+  #define INVERT_E0_DIR true
+  #else
+  #define INVERT_E0_DIR false       //BNBSX
+  #endif
+#endif
 
+#if ANY(STOCK, SKR)
+  #define INVERT_X_DIR false
+  #define INVERT_Y_DIR false
+  #define INVERT_Z_DIR true
+  #ifdef INV_EXT
+  #define INVERT_E0_DIR true
+  #else
+  #define INVERT_E0_DIR false
+  #endif
+#endif
 // @section extruder
 
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-#define INVERT_E0_DIR false //BNBSX
+//#define INVERT_E0_DIR false //BNBSX
 #define INVERT_E1_DIR false
 #define INVERT_E2_DIR false
 #define INVERT_E3_DIR false
@@ -1409,7 +1321,7 @@
 #endif
 
 #if EITHER(MIN_SOFTWARE_ENDSTOPS, MAX_SOFTWARE_ENDSTOPS)
-  //#define SOFT_ENDSTOPS_MENU_ITEM  // Enable/Disable software endstops from the LCD
+  //#define SOFT_ENDSTOPS_MENU_ITEM  //Define on AMB8_Config  Enable/Disable software endstops from the LCD
 #endif
 
 /**
@@ -1419,8 +1331,8 @@
  * RAMPS-based boards use SERVO3_PIN for the first runout sensor.
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  */
-#define FILAMENT_RUNOUT_SENSOR  //20181013 Activation détection fil
-#define FIL_RUNOUT_PIN  5
+//#define FILAMENT_RUNOUT_SENSOR  //Define on AMB8_Config
+//#define FIL_RUNOUT_PIN  5
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   #define FIL_RUNOUT_ENABLED_DEFAULT true // Enable the sensor on startup. Override with M412 followed by M500.
   #define NUM_RUNOUT_SENSORS   1          // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
@@ -1485,8 +1397,8 @@
  */
 //#define AUTO_BED_LEVELING_3POINT
 //#define AUTO_BED_LEVELING_LINEAR
-#define AUTO_BED_LEVELING_BILINEAR  //TouchMi & probe
-//#define AUTO_BED_LEVELING_UBL
+//#define AUTO_BED_LEVELING_BILINEAR  //Define on AMB8_Config  //TouchMi & probe
+//#define AUTO_BED_LEVELING_UBL  //Define on AMB8_Config
 //#define MESH_BED_LEVELING
 
 /**
@@ -1592,7 +1504,7 @@
  * Add a bed leveling sub-menu for ABL or MBL.
  * Include a guided procedure if manual probing is enabled.
  */
-#define LCD_BED_LEVELING
+//#define LCD_BED_LEVELING
 
 #if ENABLED(LCD_BED_LEVELING)
   #define MESH_EDIT_Z_STEP  0.025 // (mm) Step size while manually probing Z axis.
@@ -1623,9 +1535,11 @@
 
 // Manually set the home position. Leave these undefined for automatic settings.
 // For DELTA this is the top-center of the Cartesian print volume.
-//#define MANUAL_X_HOME_POS 0
-//#define MANUAL_Y_HOME_POS 0
-//#define MANUAL_Z_HOME_POS 0
+#ifdef SKR
+  #define MANUAL_X_HOME_POS -34
+  #define MANUAL_Y_HOME_POS -4
+  #define MANUAL_Z_HOME_POS 0
+#endif
 
 // Use "Z Safe Homing" to avoid homing with a Z probe outside the bed area.
 //
@@ -1727,7 +1641,7 @@
 #define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
 #define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
 #if ENABLED(EEPROM_SETTINGS)
-  #define EEPROM_AUTO_INIT  // OPT Init EEPROM automatically on any errors.
+  //#define EEPROM_AUTO_INIT  // OPT Init EEPROM automatically on any errors.
 #endif
 
 //
@@ -1735,10 +1649,10 @@
 //
 // When enabled Marlin will send a busy status message to the host
 // every couple of seconds when it can't accept commands.
-//
-//#define HOST_KEEPALIVE_FEATURE      // Disable this if your host doesn't like keepalive messages
+//M113 S0-60
+#define HOST_KEEPALIVE_FEATURE      // Disable this if your host doesn't like keepalive messages
 #define DEFAULT_KEEPALIVE_INTERVAL 2  // Number of seconds between "busy" messages. Set with M113.
-#define BUSY_WHILE_HEATING            // Some hosts require "busy" messages even during heating
+//#define BUSY_WHILE_HEATING            // Some hosts require "busy" messages even during heating
 
 //
 // G20/G21 Inch mode support
@@ -1829,7 +1743,7 @@
  *   Caveats: The ending Z should be the same as starting Z.
  * Attention: EXPERIMENTAL. G-code arguments may change.
  */
-//#define NOZZLE_CLEAN_FEATURE		//201901
+//#define NOZZLE_CLEAN_FEATURE  //Define on AMB8_Config		//201901
 
 #if ENABLED(NOZZLE_CLEAN_FEATURE)
   // Default number of pattern repetitions
@@ -1943,7 +1857,7 @@
  *
  * :{ 'en':'English', 'an':'Aragonese', 'bg':'Bulgarian', 'ca':'Catalan', 'cz':'Czech', 'da':'Danish', 'de':'German', 'el':'Greek', 'el_gr':'Greek (Greece)', 'es':'Spanish', 'eu':'Basque-Euskera', 'fi':'Finnish', 'fr':'French', 'gl':'Galician', 'hr':'Croatian', 'hu':'Hungarian', 'it':'Italian', 'jp_kana':'Japanese', 'ko_KR':'Korean (South Korea)', 'nl':'Dutch', 'pl':'Polish', 'pt':'Portuguese', 'pt_br':'Portuguese (Brazilian)', 'ro':'Romanian', 'ru':'Russian', 'sk':'Slovak', 'tr':'Turkish', 'uk':'Ukrainian', 'vi':'Vietnamese', 'zh_CN':'Chinese (Simplified)', 'zh_TW':'Chinese (Traditional)', 'test':'TEST' }
  */
-#define LCD_LANGUAGE fr			//201810
+#define LCD_LANGUAGE en			//201810
 
 /**
  * LCD Character Set
@@ -1967,7 +1881,7 @@
  *
  * :['JAPANESE', 'WESTERN', 'CYRILLIC']
  */
-#define DISPLAY_CHARSET_HD44780 JAPANESE
+#define DISPLAY_CHARSET_HD44780 WESTERN
 
 /**
  * Info Screen Style (0:Classic, 1:Průša)
@@ -1999,7 +1913,9 @@
  *
  * Use CRC checks and retries on the SD communication.
  */
-#define SD_CHECK_AND_RETRY  //OPT
+#ifdef RAMPS
+  #define SD_CHECK_AND_RETRY  //OPT
+#endif
 
 /**
  * LCD Menu Items
@@ -2070,7 +1986,9 @@
 // If you have a speaker that can produce tones, enable it here.
 // By default Marlin assumes you have a buzzer with a fixed frequency.
 //
-#define SPEAKER
+#ifdef RAMPS
+  #define SPEAKER
+#endif
 
 //
 // The duration and frequency for the UI feedback sound.
@@ -2079,8 +1997,10 @@
 // Note: Test audio output with the G-Code:
 //  M300 S<frequency Hz> P<duration ms>
 //
-#define LCD_FEEDBACK_FREQUENCY_DURATION_MS 2
-#define LCD_FEEDBACK_FREQUENCY_HZ 5000
+#ifdef RAMPS
+  #define LCD_FEEDBACK_FREQUENCY_DURATION_MS 2
+  #define LCD_FEEDBACK_FREQUENCY_HZ 5000
+#endif
 
 //=============================================================================
 //======================== LCD / Controller Selection =========================
@@ -2140,8 +2060,9 @@
 //
 // ANET and Tronxy 20x4 Controller
 //
-//#define ZONESTAR_LCD              // Requires ADC_KEYPAD_PIN to be assigned to an analog pin.
-                                  // This LCD is known to be susceptible to electrical interference
+#ifdef STOCK
+  #define ZONESTAR_LCD              // Requires ADC_KEYPAD_PIN to be assigned to an analog pin.
+#endif                              // This LCD is known to be susceptible to electrical interference
                                   // which scrambles the display.  Pressing any button clears it up.
                                   // This is a LCD2004 display with 5 analog buttons.
 
@@ -2243,7 +2164,9 @@
 // RepRapDiscount FULL GRAPHIC Smart Controller
 // https://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller
 //
-#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER //EVO3.0 active le lcd 12864
+#if ANY(RAMPS, SKR)
+  #define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER //EVO3.0 active le lcd 12864
+#endif
 
 //
 // ReprapWorld Graphical LCD
@@ -2490,8 +2413,8 @@
  *   For LVGL_UI also copy the 'assets' folder from the build directory to the
  *   root of your SD card, together with the compiled firmware.
  */
-//#define TFT_CLASSIC_UI
-//#define TFT_COLOR_UI
+//#define TFT_CLASSIC_UI //Define on QQS_Config
+//#define TFT_COLOR_UI  //Define on QQS_Config
 //#define TFT_LVGL_UI
 
 /**
@@ -2545,12 +2468,16 @@
 //#define NUM_M106_FANS 1
 
 // Increase the FAN PWM frequency. Removes the PWM noise but increases heating in the FET/Arduino
-#define FAST_PWM_FAN
+#ifdef RAMPS
+  #define FAST_PWM_FAN
+#endif
 
 // Use software PWM to drive the fan, as for the heaters. This uses a very low frequency
 // which is not as annoying as with the hardware PWM. On the other hand, if this frequency
 // is too low, you should also increment SOFT_PWM_SCALE.
-#define FAN_SOFT_PWM  //BEAR RAMPS
+#ifdef RAMPS
+  #define FAN_SOFT_PWM  //BEAR RAMPS
+#endif
 
 // Incrementing this by 1 will double the software PWM frequency,
 // affecting heaters, and the fan if FAN_SOFT_PWM is enabled.
@@ -2614,10 +2541,10 @@
 #endif
 
 // Support for Adafruit NeoPixel LED driver
-//#define NEOPIXEL_LED  //RGB
+//#define NEOPIXEL_LED    //Define on AMB8_Config
 #if ENABLED(NEOPIXEL_LED)
   #define NEOPIXEL_TYPE   NEO_GRBW // NEO_GRBW / NEO_GRB - four/three channel driver type (defined in Adafruit_NeoPixel.h)
-  #define NEOPIXEL_PIN     4       // LED driving pin
+  #define NEOPIXEL_PIN    LED_PWM       // LED driving pin
   //#define NEOPIXEL2_TYPE NEOPIXEL_TYPE
   //#define NEOPIXEL2_PIN    5
   #define NEOPIXEL_PIXELS 30       // Number of LEDs in the strip, larger of 2 strips if 2 neopixel strips are used
