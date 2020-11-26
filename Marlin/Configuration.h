@@ -460,7 +460,8 @@
   #define TEMP_SENSOR_CHAMBER 11
   #define TEMP_CHAMBER_PIN TEMP_1_PIN //
 #else
-  #define TEMP_SENSOR_CHAMBER 0
+  #define TEMP_SENSOR_CHAMBER 11
+  //#define TEMP_CHAMBER_PIN TEMP_1_PIN //
 #endif
 
 // Dummy thermistor constant temperature readings, for use with 998 and 999
