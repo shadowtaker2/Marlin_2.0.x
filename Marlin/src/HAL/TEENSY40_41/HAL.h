@@ -22,11 +22,7 @@
 #pragma once
 
 /**
-<<<<<<< HEAD
- * Description: HAL for Teensy 4.0 and Teensy 4.1
-=======
  * HAL for Teensy 4.0 (IMXRT1062DVL6A) / 4.1 (IMXRT1062DVJ6A)
->>>>>>> 2.0.x
  */
 
 #define CPU_32_BIT
@@ -49,14 +45,9 @@
 // Defines
 // ------------------------
 
-<<<<<<< HEAD
-#ifdef __IMXRT1062__
-  #define IS_32BIT_TEENSY 1
-=======
 #define IS_32BIT_TEENSY 1
 #define IS_TEENSY_40_41 1
 #ifndef IS_TEENSY40
->>>>>>> 2.0.x
   #define IS_TEENSY41 1
 #endif
 
@@ -87,11 +78,7 @@
 typedef int8_t pin_t;
 
 #ifndef analogInputToDigitalPin
-<<<<<<< HEAD
-  #define analogInputToDigitalPin(p) ((p < 12u) ? (p) + 54u : -1)
-=======
   #define analogInputToDigitalPin(p) ((p < 12U) ? (p) + 54U : -1)
->>>>>>> 2.0.x
 #endif
 
 #define CRITICAL_SECTION_START()  uint32_t primask = __get_primask(); __disable_irq()

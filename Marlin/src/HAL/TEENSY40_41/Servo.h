@@ -21,13 +21,10 @@
  */
 #pragma once
 
-<<<<<<< HEAD
-=======
 /**
  * HAL Servo for Teensy 4.0 (IMXRT1062DVL6A) / 4.1 (IMXRT1062DVJ6A)
  */
 
->>>>>>> 2.0.x
 #include <PWMServo.h>
 
 // Inherit and expand on core Servo library
