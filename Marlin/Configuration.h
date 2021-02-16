@@ -454,7 +454,7 @@
 #define TEMP_SENSOR_5 0
 #define TEMP_SENSOR_6 0
 #define TEMP_SENSOR_7 0
-#define TEMP_SENSOR_BED 5 // type sonde température lit chauffant
+#define TEMP_SENSOR_BED 11 // type sonde température lit chauffant
 #define TEMP_SENSOR_PROBE 0
 #ifdef RAMPS
   #define TEMP_SENSOR_CHAMBER 11
@@ -563,9 +563,9 @@
 // Memo: M301 P22.09 I1.97 D61.98 (sonde5)
 // PLA : M301 P26.77 I3.17 D56.47
 // PETG: M301 P23.52 I02.76 D50.10
-    #define DEFAULT_Kp 23.52  //23.19  //20.43  //23.96  //30.33  //24.28 //27.22
-    #define DEFAULT_Ki 02.76  //01.78  //0.94  //1.89   //3.19   //2.72 //3.57
-    #define DEFAULT_Kd 50.10  //75.51  //110.88  //76.07  //72.05  //54.21 //51.84
+    #define DEFAULT_Kp 30.33  //24.28 //27.22
+    #define DEFAULT_Ki 03.19   //2.72 //3.57
+    #define DEFAULT_Kd 54.21 //51.84
   #endif
 #endif // PIDTEMP
 
@@ -624,9 +624,9 @@
   //ANet A8 Plateau alu+Liège+ZIFLEX.
   //M304 P124.74 I14.50 D715.28 /M304 P135.39 I16.53 D739.85
   // REGLER à 60°C Memo=>M304 P98.09 I18.71 D342.86
-  #define DEFAULT_bedKp 098.09  //148.21  //248.62    //228.02
-  #define DEFAULT_bedKi 018.71 //017.91  //048.28    //38.13
-  #define DEFAULT_bedKd 342.86  //817.54  //853.51    //909.04 
+  #define DEFAULT_bedKp 121.78  //148.21  //248.62    //228.02
+  #define DEFAULT_bedKi 023.98 //017.91  //048.28    //38.13
+  #define DEFAULT_bedKd 412.33  //817.54  //853.51    //909.044 
 
   // REGLER POUR PETG à 75°C
   //Plateau alu+ZIFLEX+isolation silicone
@@ -1809,7 +1809,7 @@
  *
  * View the current statistics with M78.
  */
-#define PRINTCOUNTER //OPT
+//#define PRINTCOUNTER //OPT
 
 /**
  * Password
@@ -1964,7 +1964,7 @@
 //  If CLOCKWISE normally moves DOWN this makes it go UP.
 //  If CLOCKWISE normally moves UP this makes it go DOWN.
 //
-#define REVERSE_MENU_DIRECTION    //OPT
+//#define REVERSE_MENU_DIRECTION    //OPT
 
 //
 // This option reverses the encoder direction for Select Screen.
