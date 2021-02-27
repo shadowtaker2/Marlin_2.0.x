@@ -443,7 +443,9 @@
  *   998 : Dummy Table that ALWAYS reads 25°C or the temperature defined below.
  *   999 : Dummy Table that ALWAYS reads 100°C or the temperature defined below.
  */
-#define TEMP_SENSOR_0 11 //201908 E3D NTC 3950 type sonde température tête 1 (lié à la table correspondante dans thermistortable.h)
+#ifndef TEMP_SENSOR_0
+  #define TEMP_SENSOR_0 11 //201908 E3D NTC 3950 type sonde température tête 1 (lié à la table correspondante dans thermistortable.h)
+#endif
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
@@ -451,12 +453,11 @@
 #define TEMP_SENSOR_5 0
 #define TEMP_SENSOR_6 0
 #define TEMP_SENSOR_7 0
-#define TEMP_SENSOR_BED 11 // type sonde température lit chauffant
+#ifndef TEMP_SENSOR_BED
+  #define TEMP_SENSOR_BED 1 // type sonde température lit chauffant
+#endif
 #define TEMP_SENSOR_PROBE 0
-#ifdef RAMPS
-  #define TEMP_SENSOR_CHAMBER 11
-  #define TEMP_CHAMBER_PIN TEMP_1_PIN //
-#else
+#ifndef TEMP_SENSOR_CHAMBER
   #define TEMP_SENSOR_CHAMBER 11
   //#define TEMP_CHAMBER_PIN TEMP_1_PIN //
 #endif
@@ -476,7 +477,7 @@
 //#define TEMP_SENSOR_1_AS_REDUNDANT
 #define MAX_REDUNDANT_TEMP_SENSOR_DIFF 10
 
-#define TEMP_RESIDENCY_TIME     10  // (seconds) Time to wait for hotend to "settle" in M109
+#define TEMP_RESIDENCY_TIME      6  // (seconds) Time to wait for hotend to "settle" in M109
 #define TEMP_WINDOW              1  // (°C) Temperature proximity for the "temperature reached" timer
 #define TEMP_HYSTERESIS          3  // (°C) Temperature proximity considered "close enough" to the target
 
@@ -512,7 +513,7 @@
 #define HEATER_5_MAXTEMP 275
 #define HEATER_6_MAXTEMP 275
 #define HEATER_7_MAXTEMP 275
-#define BED_MAXTEMP      100
+#define BED_MAXTEMP      120
 #define CHAMBER_MAXTEMP  60
 
 //===========================================================================
@@ -566,9 +567,9 @@
 // Memo: M301 P22.09 I1.97 D61.98 (sonde5)
 // PLA : M301 P26.77 I3.17 D56.47
 // PETG: M301 P23.52 I02.76 D50.10
-    #define DEFAULT_Kp 30.33  //24.28 //27.22
-    #define DEFAULT_Ki 03.19   //2.72 //3.57
-    #define DEFAULT_Kd 54.21 //51.84
+    #define DEFAULT_Kp 28.33  //24.28 //27.22
+    #define DEFAULT_Ki 02.19   //2.72 //3.57
+    #define DEFAULT_Kd 88.21 //51.84
   #endif
 #endif // PIDTEMP
 
@@ -627,9 +628,9 @@
   //ANet A8 Plateau alu+Liège+ZIFLEX.
   //M304 P124.74 I14.50 D715.28 /M304 P135.39 I16.53 D739.85
   // REGLER à 60°C Memo=>M304 P98.09 I18.71 D342.86
-  #define DEFAULT_bedKp 121.78  //148.21  //248.62    //228.02
-  #define DEFAULT_bedKi 023.98 //017.91  //048.28    //38.13
-  #define DEFAULT_bedKd 412.33  //817.54  //853.51    //909.044 
+  #define DEFAULT_bedKp 234.84  //148.21  //248.62    //228.02
+  #define DEFAULT_bedKi 045.5 //017.91  //048.28    //38.13
+  #define DEFAULT_bedKd 808.02  //817.54  //853.51    //909.044 
 
   // REGLER POUR PETG à 75°C
   //Plateau alu+ZIFLEX+isolation silicone
@@ -729,7 +730,7 @@
  */
 
 #define THERMAL_PROTECTION_HOTENDS // Enable thermal protection for all extruders
-#define THERMAL_PROTECTION_BED     // Enable thermal protection for the heated bed
+//#define THERMAL_PROTECTION_BED     // Enable thermal protection for the heated bed
 #define THERMAL_PROTECTION_CHAMBER // Enable thermal protection for the heated chamber
 
 //===========================================================================
@@ -2134,7 +2135,7 @@
 //
 //  Set this option if CLOCKWISE causes values to DECREASE
 //
-//#define REVERSE_ENCODER_DIRECTION
+#define REVERSE_ENCODER_DIRECTION
 
 //
 // This option reverses the encoder direction for navigating LCD menus.

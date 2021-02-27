@@ -65,6 +65,18 @@
 #define CLASSIC_JERK
 //#define NOZZLE_CLEAN_FEATURE
 #define ADAPTIVE_STEP_SMOOTHING
+#ifdef RAMPS
+  #define TEMP_SENSOR_0 1
+  #define TEMP_SENSOR_BED 11
+  #define TEMP_SENSOR_CHAMBER 11
+  #define TEMP_CHAMBER_PIN TEMP_1_PIN //
+#else
+  #define TEMP_SENSOR_0 11
+  #define TEMP_SENSOR_BED 1
+  #define TEMP_SENSOR_CHAMBER 11
+  #define TEMP_CHAMBER_PIN TEMP_1_PIN //
+#endif
+
 //============= End_Hardware ===============//
 
 //Choice add menu: (OPT)
