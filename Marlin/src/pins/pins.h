@@ -571,6 +571,8 @@
   #include "stm32f1/pins_TRIGORILLA_PRO.h"      // STM32F1                                env:trigorilla_pro
 #elif MB(FLSUN_HISPEED)
   #include "stm32f1/pins_FLSUN_HISPEED.h"       // STM32F1                                env:flsun_hispeed
+#elif MB(PANDAPI_V28)
+  #include "stm32f1/pins_PANDAPI_V28.h"         // STM32F11                                env:pandapi_stm32
 
 //
 // ARM Cortex-M4F
