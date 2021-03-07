@@ -28,7 +28,7 @@
  * #define SERIAL_PORT_2 3
  */
 
-#if NOT_TARGET(__STM32F1__)
+#if NOT_TARGET(STM32F1, STM32F1xx)
   #error "Oops! Select an STM32F1 board in 'Tools > Board.'"
 #elif HOTENDS > 1 || E_STEPPERS > 1
   #error "FLSUN hispeed supports 1 hotends / E-steppers. Comment out this line to continue."
