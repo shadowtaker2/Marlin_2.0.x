@@ -25,7 +25,7 @@
  * MKS Robin mini (STM32F130VET6) board pin assignments
  */
 
-#if NOT_TARGET(__STM32F1__)
+#ifndef __STM32F1__
   #error "Oops! Select an STM32F1 board in 'Tools > Board.'"
 #elif HOTENDS > 1 || E_STEPPERS > 1
   #error "MKS Robin mini only supports 1 hotend / E-stepper. Comment out this line to continue."
@@ -87,7 +87,7 @@
 #define MOTOR_CURRENT_PWM_E_PIN             PB0
 #define MOTOR_CURRENT_PWM_RANGE             1500  // (255 * (1000mA / 65535)) * 257 = 1000 is equal 1.6v Vref in turn equal 1Amp
 #ifndef DEFAULT_PWM_MOTOR_CURRENT
-  #define DEFAULT_PWM_MOTOR_CURRENT { 800, 800, 800 }
+  #define DEFAULT_PWM_MOTOR_CURRENT { 800, 800, 800 } 
 #endif
 //
 // Temperature Sensors
@@ -126,7 +126,6 @@
 #define SDIO_SUPPORT
 #define SDIO_CLOCK                       4500000  // 4.5 MHz
 #define SD_DETECT_PIN                       PD12
-#define ONBOARD_SPI_DEVICE                     1  // SPI1
 #define ONBOARD_SD_CS_PIN                   PC11
 
 //
@@ -139,20 +138,10 @@
  * If the screen stays white, disable 'LCD_RESET_PIN'
  * to let the bootloader init the screen.
  */
-#if ENABLED(TOUCH_SCREEN)
-  #ifndef XPT2046_X_CALIBRATION
-    #define XPT2046_X_CALIBRATION          12033
-  #endif
-  #ifndef XPT2046_Y_CALIBRATION
-    #define XPT2046_Y_CALIBRATION          -9047
-  #endif
-  #ifndef XPT2046_X_OFFSET
-    #define XPT2046_X_OFFSET                 -30
-  #endif
-  #ifndef XPT2046_Y_OFFSET
-    #define XPT2046_Y_OFFSET                 254
-  #endif
-#endif
+  #define XPT2046_X_CALIBRATION            12033
+  #define XPT2046_Y_CALIBRATION            -9047
+  #define XPT2046_X_OFFSET                   -30
+  #define XPT2046_Y_OFFSET                   254
 
 #if ENABLED(FSMC_GRAPHICAL_TFT)
 
@@ -191,7 +180,7 @@
 
   #define TFT_DRIVER                     ILI9341
   #define TFT_BUFFER_SIZE                  14400
-
+ 
   // YV for normal screen mounting
   #define ILI9341_ORIENTATION  ILI9341_MADCTL_MY | ILI9341_MADCTL_MV
   // XV for 180° rotated screen mounting
@@ -201,8 +190,8 @@
 #endif
 
 #define HAS_SPI_FLASH                          1
+#define SPI_FLASH_SIZE                 0x1000000  // 16MB
 #if HAS_SPI_FLASH
-  #define SPI_FLASH_SIZE               0x1000000  // 16MB
   #define W25QXX_CS_PIN                     PB12  // Flash chip-select
   #define W25QXX_MOSI_PIN                   PB15
   #define W25QXX_MISO_PIN                   PB14
