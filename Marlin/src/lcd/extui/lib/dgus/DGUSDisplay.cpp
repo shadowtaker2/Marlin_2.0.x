@@ -58,11 +58,13 @@ constexpr uint8_t DGUS_CMD_READVAR = 0x83;
 #if ENABLED(DEBUG_DGUSLCD)
   bool dguslcd_local_debug; // = false;
 #endif
+#define DGUS_SERIAL customizedSerial1//MYSERIAL0 
 
 #define dgusserial DGUS_SERIAL
 
 void DGUSDisplay::InitDisplay() {
-  dgusserial.begin(DGUS_BAUDRATE);
+   dgusserial.begin(DGUS_BAUDRATE);
+  
 
   if (true
     #if ENABLED(POWER_LOSS_RECOVERY)
@@ -152,30 +154,35 @@ void DGUSDisplay::ProcessRx() {
 
   uint8_t receivedbyte;
   while (dgusserial.available()) {
+  	
     switch (rx_datagram_state) {
 
       case DGUS_IDLE: // Waiting for the first header byte
         receivedbyte = dgusserial.read();
         //DEBUG_ECHOPAIR("< ",x);
+ //       printf(" <%x",receivedbyte);
         if (DGUS_HEADER1 == receivedbyte) rx_datagram_state = DGUS_HEADER1_SEEN;
         break;
 
       case DGUS_HEADER1_SEEN: // Waiting for the second header byte
         receivedbyte = dgusserial.read();
         //DEBUG_ECHOPAIR(" ",x);
+ //       printf(" >%x",receivedbyte);
         rx_datagram_state = (DGUS_HEADER2 == receivedbyte) ? DGUS_HEADER2_SEEN : DGUS_IDLE;
         break;
 
       case DGUS_HEADER2_SEEN: // Waiting for the length byte
         rx_datagram_len = dgusserial.read();
-        DEBUG_ECHOPAIR(" (", rx_datagram_len, ") ");
+   //     printf(" (0x%x) \n",rx_datagram_len);
 
         // Telegram min len is 3 (command and one word of payload)
         rx_datagram_state = WITHIN(rx_datagram_len, 3, DGUS_RX_BUFFER_SIZE) ? DGUS_WAIT_TELEGRAM : DGUS_IDLE;
         break;
 
       case DGUS_WAIT_TELEGRAM: // wait for complete datagram to arrive.
-        if (dgusserial.available() < rx_datagram_len) return;
+   //     printf("available:%d\n",dgusserial.available());
+         if (dgusserial.available() < rx_datagram_len) return;
+		
 
         Initialized = true; // We've talked to it, so we defined it as initialized.
         uint8_t command = dgusserial.read();
@@ -185,11 +192,14 @@ void DGUSDisplay::ProcessRx() {
         uint8_t readlen = rx_datagram_len - 1;  // command is part of len.
         unsigned char tmp[rx_datagram_len - 1];
         unsigned char *ptmp = tmp;
+		//printf("ProcessRx__command=0x%x__",command);
+		
         while (readlen--) {
           receivedbyte = dgusserial.read();
-          DEBUG_ECHOPAIR(" ", receivedbyte);
+         // printf(" 0z%x", receivedbyte);
           *ptmp++ = receivedbyte;
         }
+		//printf("\n");
         DEBUG_ECHOPGM(" # ");
         // mostly we'll get this: 5A A5 03 82 4F 4B -- ACK on 0x82, so discard it.
         if (command == DGUS_CMD_WRITEVAR && 'O' == tmp[0] && 'K' == tmp[1]) {
@@ -228,6 +238,7 @@ void DGUSDisplay::ProcessRx() {
     }
   }
 }
+#define DGUS_SERIAL_GET_TX_BUFFER_FREE DGUS_SERIAL.get_tx_buffer_free
 
 size_t DGUSDisplay::GetFreeTxBuffer() { return DGUS_SERIAL_GET_TX_BUFFER_FREE(); }
 

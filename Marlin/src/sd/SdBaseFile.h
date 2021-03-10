@@ -308,7 +308,7 @@ class SdBaseFile {
   /**
    * Set the file's current position to zero.
    */
-  void rewind() { seekSet(0); }
+  void rewind() {  /*fseek(fd_sdcard,0,SEEK_SET);*//*seekSet(0); */}//  PANDAPI
   bool rename(SdBaseFile* dirFile, const char* newPath);
   bool rmdir();
   bool rmRfStar();

@@ -24,6 +24,8 @@
 #include "../inc/MarlinConfigPre.h"
 #include "../core/types.h"
 #include "../core/millis_t.h"
+int linux_random(int x,int y);
+char * dtostrf(double number, signed char width, unsigned char prec, char *s);
 
 // Delay that ensures heaters and watchdog are kept alive
 void safe_delay(millis_t ms);
@@ -70,8 +72,9 @@ public:
   ~restorer() { restore(); }
   inline void restore() { ref_ = val_; }
 };
+//PANDAPI
+#define REMEMBER(N,X,V...)   restorer<__typeof__(X)> restorer_##N(X, ##V)
 
-#define REMEMBER(N,X,V...) restorer<typeof(X)> restorer_##N(X, ##V)
 #define RESTORE(N) restorer_##N.restore()
 
 // Converts from an uint8_t in the range of 0-255 to an uint8_t

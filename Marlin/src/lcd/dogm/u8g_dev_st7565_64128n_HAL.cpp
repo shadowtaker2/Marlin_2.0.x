@@ -55,7 +55,7 @@
 
 #include "../../inc/MarlinConfig.h"
 
-#if HAS_GRAPHICAL_LCD
+#if 0//HAS_GRAPHICAL_LCD //  PANDAPI
 
 #include <U8glib.h>
 #include "HAL_LCD_com_defines.h"

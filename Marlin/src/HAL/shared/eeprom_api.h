@@ -46,6 +46,8 @@ public:
   // Read one or more bytes of data and update the CRC
   // Return 'true' on read error
   static bool read_data(int &pos, uint8_t* value, size_t size, uint16_t *crc, const bool writing=true);
+  static void load_to_cache(); //  PANDAPI
+  static void	write_from_cache();//  PANDAPI
 
   // Write one or more bytes of data
   // Return 'true' on write error

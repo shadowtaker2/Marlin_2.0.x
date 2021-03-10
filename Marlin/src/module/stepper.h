@@ -45,9 +45,13 @@
 
 #include "planner.h"
 #include "stepper/indirection.h"
-#ifdef __AVR__
+
   #include "speed_lookuptable.h"
-#endif
+  //  PANDAPI
+  extern char status_printer;//0: idle; 1:home;
+
+#define MultiU24X32toH16(longIn1, longIn2)  (longIn1 * longIn2 >> 24)
+#define MultiU16X8toH16(  charIn1,   intIn2) (charIn1 * intIn2 >> 16)
 
 // Disable multiple steps per ISR
 //#define DISABLE_MULTI_STEPPING
@@ -564,13 +568,14 @@ class Stepper {
         step_rate -= min_step_rate; // Correct for minimal speed
         if (step_rate >= (8 * 256)) { // higher step rate
           const uint8_t tmp_step_rate = (step_rate & 0x00FF);
-          const uint16_t table_address = (uint16_t)&speed_lookuptable_fast[(uint8_t)(step_rate >> 8)][0],
-                         gain = (uint16_t)pgm_read_word(table_address + 2);
+		  //  PANDAPI
+          const uint32_t table_address = (uint32_t)&speed_lookuptable_fast[(uint8_t)(step_rate >> 8)][0];
+          const uint32_t  gain = (uint32_t)pgm_read_word(table_address + 2);
           timer = MultiU16X8toH16(tmp_step_rate, gain);
           timer = (uint16_t)pgm_read_word(table_address) - timer;
         }
         else { // lower step rates
-          uint16_t table_address = (uint16_t)&speed_lookuptable_slow[0][0];
+          uint32_t table_address = (uint32_t)&speed_lookuptable_slow[0][0];
           table_address += ((step_rate) >> 1) & 0xFFFC;
           timer = (uint16_t)pgm_read_word(table_address)
                 - (((uint16_t)pgm_read_word(table_address + 2) * (uint8_t)(step_rate & 0x0007)) >> 3);

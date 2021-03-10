@@ -639,18 +639,13 @@
   #include "samd/pins_RAMPS_144.h"              // SAMD51                                 env:SAMD51_grandcentral_m4
 
 //
-// Custom board (with custom PIO env)
-//
-#elif MB(CUSTOM)
-  #include "pins_custom.h"                      //                                        env:custom
-
-//
 // Linux Native Debug board
 //
 
 #elif MB(LINUX_RAMPS)
   #include "linux/pins_RAMPS_LINUX.h"           // Linux                                  env:linux_native
-
+#elif MB(PANDA_PI)
+  #include "pins_PANDA_PI.h"  
 #else
 
   //

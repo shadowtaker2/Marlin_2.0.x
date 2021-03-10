@@ -45,26 +45,9 @@
 #ifndef FILAMENT_RUNOUT_THRESHOLD
   #define FILAMENT_RUNOUT_THRESHOLD 5
 #endif
+extern int runout_pin[2]; ////  PANDAPI
 
 void event_filament_runout();
-
-template<class RESPONSE_T, class SENSOR_T>
-class TFilamentMonitor;
-class FilamentSensorEncoder;
-class FilamentSensorSwitch;
-class RunoutResponseDelayed;
-class RunoutResponseDebounced;
-
-/********************************* TEMPLATE SPECIALIZATION *********************************/
-
-typedef TFilamentMonitor<
-          TERN(HAS_FILAMENT_RUNOUT_DISTANCE, RunoutResponseDelayed, RunoutResponseDebounced),
-          TERN(FILAMENT_MOTION_SENSOR, FilamentSensorEncoder, FilamentSensorSwitch)
-        > FilamentMonitor;
-
-extern FilamentMonitor runout;
-
-/*******************************************************************************************/
 
 class FilamentMonitorBase {
   public:
@@ -139,13 +122,7 @@ class TFilamentMonitor : public FilamentMonitorBase {
 
 class FilamentSensorBase {
   protected:
-    /**
-     * Called by FilamentSensorSwitch::run when filament is detected.
-     * Called by FilamentSensorEncoder::block_completed when motion is detected.
-     */
-    static inline void filament_present(const uint8_t extruder) {
-      runout.filament_present(extruder); // ...which calls response.filament_present(extruder)
-    }
+    static void filament_present(const uint8_t extruder);
 
   public:
     static inline void setup() {
@@ -165,7 +142,8 @@ class FilamentSensorBase {
 
     // Return a bitmask of runout pin states
     static inline uint8_t poll_runout_pins() {
-      #define _OR_RUNOUT(N) | (READ(FIL_RUNOUT##N##_PIN) ? _BV((N) - 1) : 0)
+      //#define _OR_RUNOUT(N) | (READ(FIL_RUNOUT##N##_PIN) ? _BV((N) - 1) : 0)
+	  #define _OR_RUNOUT(N) | (runout_pin[N] ? _BV((N) - 1) : 0) //PANDA
       return (0 REPEAT_S(1, INCREMENT(NUM_RUNOUT_SENSORS), _OR_RUNOUT));
       #undef _OR_RUNOUT
     }
@@ -335,3 +313,12 @@ class FilamentSensorBase {
   };
 
 #endif // !HAS_FILAMENT_RUNOUT_DISTANCE
+
+/********************************* TEMPLATE SPECIALIZATION *********************************/
+
+typedef TFilamentMonitor<
+          TERN(HAS_FILAMENT_RUNOUT_DISTANCE, RunoutResponseDelayed, RunoutResponseDebounced),
+          TERN(FILAMENT_MOTION_SENSOR, FilamentSensorEncoder, FilamentSensorSwitch)
+        > FilamentMonitor;
+
+extern FilamentMonitor runout;

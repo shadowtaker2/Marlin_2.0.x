@@ -19,7 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-#if defined(__arm__) || defined(__thumb__)
+
+#if 0//defined(__arm__) || defined(__thumb__) //  PANDAPI
 
 #include "backtrace.h"
 #include "unwinder.h"

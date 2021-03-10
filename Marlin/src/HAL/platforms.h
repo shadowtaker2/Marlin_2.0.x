@@ -20,11 +20,10 @@
  *
  */
 #pragma once
-
-#define XSTR(V...) #V
+#define __PLAT_PANDAPI__ //  PANDAPI
 
 #ifdef __AVR__
-  #define HAL_PATH(PATH, NAME) XSTR(PATH/AVR/NAME)
+  #define HAL_PLATFORM HAL_AVR
 #elif defined(ARDUINO_ARCH_SAM)
   #define HAL_PATH(PATH, NAME) XSTR(PATH/DUE/NAME)
 #elif defined(__MK20DX256__)
@@ -45,6 +44,12 @@
   #define HAL_PATH(PATH, NAME) XSTR(PATH/LINUX/NAME)
 #elif defined(__SAMD51__)
   #define HAL_PATH(PATH, NAME) XSTR(PATH/SAMD51/NAME)
+#elif defined(__PLAT_PANDAPI__) //  PANDAPI
+  #define HAL_PATH(PATH, NAME) XSTR(PATH/HAL_PANDAPI/NAME)
 #else
   #error "Unsupported Platform!"
 #endif
+
+#define XSTR_(M) #M
+#define XSTR(M) XSTR_(M)
+#define HAL_PATH(PATH, NAME) XSTR(PATH/HAL_PANDAPI/NAME)

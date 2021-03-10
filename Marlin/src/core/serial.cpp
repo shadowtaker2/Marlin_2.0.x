@@ -22,7 +22,9 @@
 
 #include "serial.h"
 #include "../inc/MarlinConfig.h"
-
+#if PANDAPI
+#include "driver_api.h"
+#endif
 uint8_t marlin_debug_flags = MARLIN_DEBUG_NONE;
 
 static PGMSTR(errormagic, "Error:");
@@ -31,10 +33,20 @@ static PGMSTR(echomagic, "echo:");
 #if HAS_MULTI_SERIAL
   int8_t serial_port_index = 0;
 #endif
-
+ 
 void serialprintPGM(PGM_P str) {
+#if PANDAPI
+
+//return;
+ // Serial_send(0,str);
+  int i;
+  for(i=0;i<strlen(str);i++)
+  	 SERIAL_CHAR(str[i]);
+#else
   while (const char c = pgm_read_byte(str++)) SERIAL_CHAR(c);
-}
+
+ #endif 
+} 
 void serial_echo_start()  { serialprintPGM(echomagic); }
 void serial_error_start() { serialprintPGM(errormagic); }
 
@@ -68,7 +80,7 @@ void print_bin(uint16_t val) {
 extern const char SP_X_STR[], SP_Y_STR[], SP_Z_STR[];
 
 void print_xyz(const float &x, const float &y, const float &z, PGM_P const prefix/*=nullptr*/, PGM_P const suffix/*=nullptr*/) {
-  if (prefix) serialprintPGM(prefix);
+  serialprintPGM(prefix);
   SERIAL_ECHOPAIR_P(SP_X_STR, x, SP_Y_STR, y, SP_Z_STR, z);
   if (suffix) serialprintPGM(suffix); else SERIAL_EOL();
 }

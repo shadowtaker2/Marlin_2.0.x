@@ -83,6 +83,17 @@
 #endif
 
 #define G29_RETURN(b) return TERN_(G29_RETRY_AND_RECOVER, b)
+////////PANDAPI
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+// -101~ 100
+int linux_random_101()
+{
+	srand( (unsigned)time( NULL ) );  
+	return rand()%(201)-101;
+
+}
 
 /**
  * G29: Detailed Z probe, probes the bed at 3 or more points.
@@ -183,7 +194,7 @@ G29_TYPE GcodeSuite::G29() {
               faux = ENABLED(DEBUG_LEVELING_FEATURE) && DISABLED(PROBE_MANUALLY) ? parser.boolval('C') : no_action;
 
   // Don't allow auto-leveling without homing first
-  if (homing_needed_error()) G29_RETURN(false);
+  if (axis_unhomed_error()) G29_RETURN(false);
 
   if (!no_action && planner.leveling_active && parser.boolval('O')) { // Auto-level only if needed
     if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("> Auto-level not needed, skip");
@@ -644,7 +655,8 @@ G29_TYPE GcodeSuite::G29() {
           if (verbose_level) SERIAL_ECHOLNPAIR("Probing mesh point ", int(pt_index), "/", abl_points, ".");
           TERN_(HAS_DISPLAY, ui.status_printf_P(0, PSTR(S_FMT " %i/%i"), GET_TEXT(MSG_PROBING_MESH), int(pt_index), int(abl_points)));
 
-          measured_z = faux ? 0.001f * random(-100, 101) : probe.probe_at_point(probePos, raise_after, verbose_level);
+       //PANDAPI   measured_z = faux ? 0.001f * random(-100, 101) : probe.probe_at_point(probePos, raise_after, verbose_level);
+          measured_z = faux ? 0.001f * linux_random_101() : probe.probe_at_point(probePos, raise_after, verbose_level);
 
           if (isnan(measured_z)) {
             set_bed_leveling_enabled(abl_should_enable);

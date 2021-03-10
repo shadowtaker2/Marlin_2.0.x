@@ -20,6 +20,221 @@
  *
  */
 #pragma once
+#include <stdlib.h> 
+#include <stdio.h>
+
+#include <math.h>
+#include <string.h> 
+
+
+#include "wiringPi.h"
+
+extern int OCR1A,DDRE ,PINE,PINE5,SREG,cli,DDRB,DDRH,PINB4,PINB5,PINH6,ADCSRA,ADEN,ADSC,ADIF,MCUSR;	 
+extern int PORTE,PORTD,DDRF,PINF7,PINL1,PINC3,DDRC,PORTJ,DIDR0,OCR0B,PINB,PORTA,PINA,PINA2,PINA6,PORTL,OCIE0B,TIMSK0,OCIE1A,TCNT1,PINL3,PINA4,PORTF,PINF,PINF6,PINF0;
+extern int DDRJ,PINJ1,DDRD,PIND3,PIND,PIND7,PINF2,PINK,PORTK,PINK0,REFS0,ADMUX,ADCSRB,PINH5,PORTH,PINH,DDRA,PINC7,PINJ;
+
+//#define min_y(a,b) (((a)<(b))?(a):(b))
+//#define max_y(a,b) (((a)>(b))?(a):(b))
+
+#define HIGH   1
+#define LOW    0
+
+typedef unsigned char byte;
+ #define constrain(  a,  b,  c)   (a>b?a:b)<c?(a>b?a:b):c//{if(a>b&&a<c) return a; else if(a<=b) return b; else return c;}
+
+
+
+//byte digitalRead(byte pin);
+// char analogWrite(int pin_number, unsigned char pin_status);
+
+//char digitalWrite(int pin_number, unsigned char pin_status);
+//char pinMode(int pin_number, unsigned char pin_status);
+
+
+
+#define sq(b)  (b*b)
+#define F_CPU   20000000
+
+#ifndef __PGMSPACE_H_
+// This define should prevent reading the system pgmspace.h if included elsewhere
+// This is not normally needed.
+#define __PGMSPACE_H_ 1
+#endif
+
+#ifndef PROGMEM
+#define PROGMEM
+#endif
+#ifndef PGM_P
+#define PGM_P  const char *
+#endif
+#ifndef PSTR
+#define PSTR(str) (str)
+#endif
+#ifndef F
+#define F(str) (str)
+#endif
+#ifndef _SFR_BYTE
+#define _SFR_BYTE(n) (n)
+#endif
+#ifndef memchr_P
+#define memchr_P(str, c, len) memchr((str), (c), (len))
+#endif
+#ifndef memcmp_P
+#define memcmp_P(a, b, n) memcmp((a), (b), (n))
+#endif
+#ifndef memcpy_P
+#define memcpy_P(dest, src, num) memcpy((dest), (src), (num))
+#endif
+#ifndef memmem_P
+#define memmem_P(a, alen, b, blen) memmem((a), (alen), (b), (blen))
+#endif
+#ifndef memrchr_P
+#define memrchr_P(str, val, len) memrchr((str), (val), (len))
+#endif
+#ifndef strcat_P
+#define strcat_P(dest, src) strcat((dest), (src))
+#endif
+#ifndef strchr_P
+#define strchr_P(str, c) strchr((str), (c))
+#endif
+#ifndef strchrnul_P
+#define strchrnul_P(str, c) strchrnul((str), (c))
+#endif
+#ifndef strcmp_P
+#define strcmp_P(a, b) strcmp((a), (b))
+#endif
+#ifndef strcpy_P
+#define strcpy_P(dest, src) strcpy((dest), (src))
+#endif
+#ifndef strcasecmp_P
+#define strcasecmp_P(a, b) strcasecmp((a), (b))
+#endif
+#ifndef strcasestr_P
+#define strcasestr_P(a, b) strcasestr((a), (b))
+#endif
+#ifndef strlcat_P
+#define strlcat_P(dest, src, len) strlcat((dest), (src), (len))
+#endif
+#ifndef strlcpy_P
+#define strlcpy_P(dest, src, len) strlcpy((dest), (src), (len))
+#endif
+#ifndef strlen_P
+#define strlen_P(s) strlen((const char *)(s))
+#endif
+#ifndef strnlen_P
+#define strnlen_P(str, len) strnlen((str), (len))
+#endif
+#ifndef strncmp_P
+#define strncmp_P(a, b, n) strncmp((a), (b), (n))
+#endif
+#ifndef strncasecmp_P
+#define strncasecmp_P(a, b, n) strncasecmp((a), (b), (n))
+#endif
+#ifndef strncat_P
+#define strncat_P(a, b, n) strncat((a), (b), (n))
+#endif
+#ifndef strncpy_P
+#define strncpy_P(a, b, n) strncmp((a), (b), (n))
+#endif
+#ifndef strpbrk_P
+#define strpbrk_P(str, chrs) strpbrk((str), (chrs))
+#endif
+#ifndef strrchr_P
+#define strrchr_P(str, c) strrchr((str), (c))
+#endif
+#ifndef strsep_P
+#define strsep_P(strp, delim) strsep((strp), (delim))
+#endif
+#ifndef strspn_P
+#define strspn_P(str, chrs) strspn((str), (chrs))
+#endif
+#ifndef strstr_P
+#define strstr_P(a, b) strstr((a), (b))
+#endif
+#ifndef sprintf_P
+#define sprintf_P(s, ...) sprintf((s), __VA_ARGS__)
+#endif
+#ifndef vfprintf_P
+#define vfprintf_P(s, ...) vfprintf((s), __VA_ARGS__)
+#endif
+#ifndef printf_P
+#define printf_P(...) printf(__VA_ARGS__)
+#endif
+////////////PANDAPI
+#define snprintf_P  snprintf  
+#define vsprintf_P  vsprintf 
+#define vsnprintf_P  vsnprintf 
+#define fprintf_P   fprintf 
+///////////
+#ifndef snprintf_P
+#define snprintf_P(s, n, ...) ((s), (n), __VA_ARGS__)
+#endif
+#ifndef vsprintf_P
+#define vsprintf_P(s, ...) ((s),__VA_ARGS__)
+#endif
+#ifndef vsnprintf_P
+#define vsnprintf_P(s, n, ...) ((s), (n),__VA_ARGS__)
+#endif
+#ifndef fprintf_P
+#define fprintf_P(s, ...) ((s), __VA_ARGS__)
+#endif
+
+#ifndef pgm_read_byte
+#define pgm_read_byte(addr) (*(const unsigned char *)(addr))
+#endif
+#ifndef pgm_read_word
+#define pgm_read_word(addr) (*(const unsigned short *)(addr))
+#endif
+#ifndef pgm_read_dword
+#define pgm_read_dword(addr) (*(const unsigned long *)(addr))
+#endif
+#ifndef pgm_read_float
+#define pgm_read_float(addr) (*(const float *)(addr))
+#endif
+
+#ifndef pgm_read_byte_near
+#define pgm_read_byte_near(addr) pgm_read_byte(addr)
+#endif
+#ifndef pgm_read_word_near
+#define pgm_read_word_near(addr) pgm_read_word(addr)
+#endif
+#ifndef pgm_read_dword_near
+#define pgm_read_dword_near(addr) pgm_read_dword(addr)
+#endif
+#ifndef pgm_read_float_near
+#define pgm_read_float_near(addr) pgm_read_float(addr)
+#endif
+#ifndef pgm_read_byte_far
+#define pgm_read_byte_far(addr) pgm_read_byte(addr)
+#endif
+#ifndef pgm_read_word_far
+#define pgm_read_word_far(addr) pgm_read_word(addr)
+#endif
+#ifndef pgm_read_dword_far
+#define pgm_read_dword_far(addr) pgm_read_dword(addr)
+#endif
+#ifndef pgm_read_float_far
+#define pgm_read_float_far(addr) pgm_read_float(addr)
+#endif
+
+#ifndef pgm_read_pointer
+#define pgm_read_pointer
+#endif
+
+
+#define     __IO    volatile 
+#define u8 unsigned char//unsigned short
+#define u16 unsigned short//unsigned short
+#define u32 unsigned int //unsigned int
+typedef unsigned char uint8_t;
+typedef signed char int8_t;
+typedef unsigned short uint16_t;
+typedef signed short int16_t;
+
+typedef unsigned int uint32_t;
+typedef signed int int32_t;
+
+
 
 #if !defined(__has_include)
   #define __has_include(...) 1
@@ -75,6 +290,13 @@
 
 // Nanoseconds per cycle
 #define NANOSECONDS_PER_CYCLE (1000000000.0 / F_CPU)
+
+// Macros to make sprintf_P read from PROGMEM (AVR extension)
+#ifdef __AVR__
+  #define S_FMT "%S"
+#else
+  #define S_FMT "%s"
+#endif
 
 // Macros to make a string from a macro
 #define STRINGIFY_(M) #M
@@ -342,22 +564,15 @@
 #endif
 
 // Macros for adding
-#define INC_0   1
-#define INC_1   2
-#define INC_2   3
-#define INC_3   4
-#define INC_4   5
-#define INC_5   6
-#define INC_6   7
-#define INC_7   8
-#define INC_8   9
-#define INC_9  10
-#define INC_10 11
-#define INC_11 12
-#define INC_12 13
-#define INC_13 14
-#define INC_14 15
-#define INC_15 16
+#define INC_0 1
+#define INC_1 2
+#define INC_2 3
+#define INC_3 4
+#define INC_4 5
+#define INC_5 6
+#define INC_6 7
+#define INC_7 8
+#define INC_8 9
 #define INCREMENT_(n) INC_##n
 #define INCREMENT(n) INCREMENT_(n)
 
@@ -374,22 +589,16 @@
 #define ADD10(N) ADD5(ADD5(N))
 
 // Macros for subtracting
-#define DEC_0   0
-#define DEC_1   0
-#define DEC_2   1
-#define DEC_3   2
-#define DEC_4   3
-#define DEC_5   4
-#define DEC_6   5
-#define DEC_7   6
-#define DEC_8   7
-#define DEC_9   8
-#define DEC_10  9
-#define DEC_11 10
-#define DEC_12 11
-#define DEC_13 12
-#define DEC_14 13
-#define DEC_15 14
+#define DEC_0 0
+#define DEC_1 0
+#define DEC_2 1
+#define DEC_3 2
+#define DEC_4 3
+#define DEC_5 4
+#define DEC_6 5
+#define DEC_7 6
+#define DEC_8 7
+#define DEC_9 8
 #define DECREMENT_(n) DEC_##n
 #define DECREMENT(n) DECREMENT_(n)
 

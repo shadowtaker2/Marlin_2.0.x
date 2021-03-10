@@ -34,7 +34,7 @@
 
 #if ENABLED(TMC_DEBUG)
   #include "../module/planner.h"
-  #include "../libs/hex_print.h"
+  #include "../libs/hex_print_routines.h"
   #if ENABLED(MONITOR_DRIVER_STATUS)
     static uint16_t report_tmc_status_interval; // = 0
   #endif
@@ -1092,6 +1092,7 @@
 
 #if USE_SENSORLESS
 
+/*//  PANDAPI
   bool tmc_enable_stallguard(TMC2130Stepper &st) {
     const bool stealthchop_was_enabled = st.en_pwm_mode();
 
@@ -1106,7 +1107,7 @@
     st.en_pwm_mode(restore_stealth);
     st.diag1_stall(false);
   }
-
+*/
   bool tmc_enable_stallguard(TMC2209Stepper &st) {
     const bool stealthchop_was_enabled = !st.en_spreadCycle();
 
@@ -1118,13 +1119,13 @@
     st.en_spreadCycle(!restore_stealth);
     st.TCOOLTHRS(0);
   }
-
+/*//  PANDAPI
   bool tmc_enable_stallguard(TMC2660Stepper) {
     // TODO
     return false;
   }
   void tmc_disable_stallguard(TMC2660Stepper, const bool) {};
-
+*/
 #endif // USE_SENSORLESS
 
 #if HAS_TMC_SPI

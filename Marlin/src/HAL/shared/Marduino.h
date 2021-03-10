@@ -33,8 +33,8 @@
 #undef CBI            // Redefined by arduino/const_functions.h
 #undef UNUSED         // Redefined by stm32f4xx_hal_def.h
 
-#include <Arduino.h>  // NOTE: If included earlier then this line is a NOOP
-
+////  PANDAPI #include <Arduino.h>  // NOTE: If included earlier then this line is a NOOP
+#include <string.h>
 #undef DISABLED
 #define DISABLED(V...) DO(DIS,&&,V)
 

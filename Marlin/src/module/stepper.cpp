@@ -1264,7 +1264,7 @@ void Stepper::set_directions() {
     }
 
     FORCE_INLINE int32_t Stepper::_eval_bezier_curve(const uint32_t curr_step) {
-      #if defined(__arm__) || defined(__thumb__)
+      #if defined(__ARM__) || defined(__thumb__)
 
         // For ARM Cortex M3/M4 CPUs, we have the optimized assembler version, that takes 43 cycles to execute
         uint32_t flo = 0;
@@ -1337,15 +1337,17 @@ void Stepper::set_directions() {
  * Directly pulses the stepper motors at high frequency.
  */
 
-HAL_STEP_TIMER_ISR() {
-  HAL_timer_isr_prologue(STEP_TIMER_NUM);
+
+void HAL_STEP_TIMER_ISR() {
+//  HAL_timer_isr_prologue(STEP_TIMER_NUM);//  PANDAPI
 
   Stepper::isr();
 
-  HAL_timer_isr_epilogue(STEP_TIMER_NUM);
+ // HAL_timer_isr_epilogue(STEP_TIMER_NUM);//  PANDAPI
 }
 
 #ifdef CPU_32_BIT
+  #include "math_32bit.h"
   #define STEP_MULTIPLY(A,B) MultiU32X24toH32(A, B)
 #else
   #define STEP_MULTIPLY(A,B) MultiU24X32toH16(A, B)
@@ -1364,8 +1366,10 @@ void Stepper::isr() {
   // Program timer compare for the maximum period, so it does NOT
   // flag an interrupt while this ISR is running - So changes from small
   // periods to big periods are respected and the timer does not reset to 0
+#if PANDAPI
+#else
   HAL_timer_set_compare(STEP_TIMER_NUM, hal_timer_t(HAL_TIMER_TYPE_MAX));
-
+#endif
   // Count of ticks for the next ISR
   hal_timer_t next_isr_ticks = 0;
 
@@ -1578,11 +1582,12 @@ void Stepper::pulse_phase_isr() {
 
         #if STEPPER_PAGE_FORMAT == SP_4x4D_128
 
-          #define PAGE_SEGMENT_UPDATE(AXIS, VALUE) do{   \
-                 if ((VALUE) <  7) SBI(dm, _AXIS(AXIS)); \
-            else if ((VALUE) >  7) CBI(dm, _AXIS(AXIS)); \
-            page_step_state.sd[_AXIS(AXIS)] = VALUE;     \
-            page_step_state.bd[_AXIS(AXIS)] += VALUE;    \
+          #define PAGE_SEGMENT_UPDATE(AXIS, VALUE, MID) do{ \
+                 if ((VALUE) == MID) {}                     \
+            else if ((VALUE) <  MID) SBI(dm, _AXIS(AXIS));  \
+            else                     CBI(dm, _AXIS(AXIS));  \
+            page_step_state.sd[_AXIS(AXIS)] = VALUE;        \
+            page_step_state.bd[_AXIS(AXIS)] += VALUE;       \
           }while(0)
 
           #define PAGE_PULSE_PREP(AXIS) do{ \
@@ -1591,7 +1596,7 @@ void Stepper::pulse_phase_isr() {
           }while(0)
 
           switch (page_step_state.segment_steps) {
-            case DirectStepping::Config::SEGMENT_STEPS:
+            case 8:
               page_step_state.segment_idx += 2;
               page_step_state.segment_steps = 0;
               // fallthru
@@ -1600,10 +1605,10 @@ void Stepper::pulse_phase_isr() {
                            high = page_step_state.page[page_step_state.segment_idx + 1];
               uint8_t dm = last_direction_bits;
 
-              PAGE_SEGMENT_UPDATE(X, low >> 4);
-              PAGE_SEGMENT_UPDATE(Y, low & 0xF);
-              PAGE_SEGMENT_UPDATE(Z, high >> 4);
-              PAGE_SEGMENT_UPDATE(E, high & 0xF);
+              PAGE_SEGMENT_UPDATE(X, low >> 4, 7);
+              PAGE_SEGMENT_UPDATE(Y, low & 0xF, 7);
+              PAGE_SEGMENT_UPDATE(Z, high >> 4, 7);
+              PAGE_SEGMENT_UPDATE(E, high & 0xF, 7);
 
               if (dm != last_direction_bits) {
                 last_direction_bits = dm;
@@ -1614,9 +1619,9 @@ void Stepper::pulse_phase_isr() {
             default: break;
           }
 
-          PAGE_PULSE_PREP(X);
-          PAGE_PULSE_PREP(Y);
-          PAGE_PULSE_PREP(Z);
+          PAGE_PULSE_PREP(X),
+          PAGE_PULSE_PREP(Y),
+          PAGE_PULSE_PREP(Z),
           PAGE_PULSE_PREP(E);
 
           page_step_state.segment_steps++;
@@ -1633,7 +1638,7 @@ void Stepper::pulse_phase_isr() {
           }while(0)
 
           switch (page_step_state.segment_steps) {
-            case DirectStepping::Config::SEGMENT_STEPS:
+            case 4:
               page_step_state.segment_idx++;
               page_step_state.segment_steps = 0;
               // fallthru
@@ -1663,6 +1668,7 @@ void Stepper::pulse_phase_isr() {
           }while(0)
 
           uint8_t steps = page_step_state.page[page_step_state.segment_idx >> 1];
+
           if (page_step_state.segment_idx & 0x1) steps >>= 4;
 
           PAGE_PULSE_PREP(X, 3);
@@ -1781,6 +1787,12 @@ uint32_t Stepper::block_phase_isr() {
 
   // If no queued movements, just wait 1ms for the next block
   uint32_t interval = (STEPPER_TIMER_RATE) / 1000UL;
+  //  PANDAPI
+  if(status_printer==1)
+  {
+  	endstops.update();
+	//delay(1);
+  }
 
   // If there is a current block
   if (current_block) {
@@ -2577,7 +2589,7 @@ void Stepper::init() {
   #if DISABLED(I2S_STEPPER_STREAM)
     HAL_timer_start(STEP_TIMER_NUM, 122); // Init Stepper ISR to 122 Hz for quick starting
     wake_up();
-    sei();
+    //sei();//  PANDAPI
   #endif
 
   // Init direction bits for first moves
@@ -2827,7 +2839,7 @@ void Stepper::report_positions() {
   void Stepper::do_babystep(const AxisEnum axis, const bool direction) {
 
     #if DISABLED(INTEGRATED_BABYSTEPPING)
-      cli();
+//   cli();//  PANDAPI
     #endif
 
     switch (axis) {
@@ -2912,7 +2924,7 @@ void Stepper::report_positions() {
     }
 
     #if DISABLED(INTEGRATED_BABYSTEPPING)
-      sei();
+      //sei();//  PANDAPI
     #endif
   }
 

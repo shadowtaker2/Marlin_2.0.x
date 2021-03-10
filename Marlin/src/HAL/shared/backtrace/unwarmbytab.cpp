@@ -4,14 +4,14 @@
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://www.mozilla.org/en-US/MPL/2.0/
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  *
  * This library was modified, some bugs fixed, stack address validated
  * and adapted to be used in Marlin 3D printer firmware as backtracer
  * for exceptions for debugging purposes in 2018 by Eduardo José Tagle.
  */
 
-#if defined(__arm__) || defined(__thumb__)
+#if  0//defined(__arm__) || defined(__thumb__)//  PANDAPI
 
 #include "unwarmbytab.h"
 

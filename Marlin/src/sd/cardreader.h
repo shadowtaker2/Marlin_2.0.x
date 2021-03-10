@@ -20,6 +20,12 @@
  *
  */
 #pragma once
+//  PANDAPI
+#include <sys/types.h>
+#include <dirent.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <sys/stat.h>
 
 #include "../inc/MarlinConfig.h"
 
@@ -42,6 +48,7 @@
 #define MAXPATHNAMELENGTH  (1 + (MAXDIRNAMELENGTH + 1) * (MAX_DIR_DEPTH) + 1 + FILENAME_LENGTH) // "/" + N * ("ADIRNAME/") + "filename.ext"
 
 #include "SdFile.h"
+unsigned long	get_file_size(const char *path);//  PANDAPI
 
 typedef struct {
   bool saving:1,
@@ -59,6 +66,7 @@ typedef struct {
 
 class CardReader {
 public:
+  static uint8_t sdprinting_done_state;
   static card_flags_t flag;                         // Flags (above)
   static char filename[FILENAME_LENGTH],            // DOS 8.3 filename of the selected item
               longFilename[LONG_FILENAME_LENGTH];   // Long name of the selected item
@@ -153,14 +161,21 @@ public:
     static void openJobRecoveryFile(const bool read);
     static void removeJobRecoveryFile();
   #endif
-
-  static inline bool isFileOpen() { return isMounted() && file.isOpen(); }
+//  PANDAPI
+  static inline bool isFileOpen() { return isMounted() && fd_sd_card;/*file.isOpen();*/ }
   static inline uint32_t getIndex() { return sdpos; }
   static inline uint32_t getFileSize() { return filesize; }
   static inline bool eof() { return sdpos >= filesize; }
   static inline void setIndex(const uint32_t index) { sdpos = index; file.seekSet(index); }
   static inline char* getWorkDirName() { workDir.getDosName(filename); return filename; }
-  static inline int16_t get() { sdpos = file.curPosition(); return (int16_t)file.read(); }
+  static inline int16_t get() { //  PANDAPI
+  //	sdpos = file.curPosition(); return (int16_t)file.read(); 
+  char sd_char;
+  unsigned int gd=fread(&sd_char,sizeof(char),1, fd_sd_card);
+ // bool card_eof = gd<=0?1:0;//card.eof();
+    sdpos+=gd;
+	return sd_char;
+  }
   static inline int16_t read(void* buf, uint16_t nbyte) { return file.isOpen() ? file.read(buf, nbyte) : -1; }
   static inline int16_t write(void* buf, uint16_t nbyte) { return file.isOpen() ? file.write(buf, nbyte) : -1; }
 
@@ -244,6 +259,7 @@ private:
   static SdFile file;
 
   static uint32_t filesize, sdpos;
+  static FILE *fd_sd_card;//  PANDAPI
 
   //
   // Procedure calls to other files
@@ -274,6 +290,8 @@ private:
   static void selectByIndex(SdFile dir, const uint8_t index);
   static void selectByName(SdFile dir, const char * const match);
   static void printListing(SdFile parent, const char * const prepend=nullptr);
+  //  PANDAPI
+  static int  Linux_readDir(dir_t* p,int printout,int index, const char * const mach_name);
 
   #if ENABLED(SDCARD_SORT_ALPHA)
     static void flush_presort();

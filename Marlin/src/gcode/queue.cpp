@@ -40,7 +40,7 @@ GCodeQueue queue;
 #endif
 
 #if ENABLED(BINARY_FILE_TRANSFER)
-  #include "../feature/binary_stream.h"
+  #include "../feature/binary_protocol.h"
 #endif
 
 #if ENABLED(POWER_LOSS_RECOVERY)
@@ -312,15 +312,31 @@ void GCodeQueue::flush_and_request_resend() {
 }
 
 inline bool serial_data_available() {
-  return MYSERIAL0.available() || TERN0(HAS_MULTI_SERIAL, MYSERIAL1.available());
+#if !HAS_DGUS_LCD  	
+	return MYSERIAL0.available() || TERN0(HAS_MULTI_SERIAL, MYSERIAL1.available());
+#else
+	return TERN0(HAS_MULTI_SERIAL, MYSERIAL1.available());
+
+#endif	
+	
 }
 
 inline int read_serial(const uint8_t index) {
   switch (index) {
-    case 0: return MYSERIAL0.read();
-    #if HAS_MULTI_SERIAL
-      case 1: return MYSERIAL1.read();
-    #endif
+#if !HAS_DGUS_LCD  	
+    case 0:
+		if(MYSERIAL0.available())//PANDAPI
+			return MYSERIAL0.read();
+		else
+			return -1;
+#endif	
+#if HAS_MULTI_SERIAL
+      case 1: 
+	  	if(MYSERIAL1.available())//PANDAPI
+			return MYSERIAL1.read();
+		else
+			return -1;
+ #endif
     default: return -1;
   }
 }
@@ -446,9 +462,9 @@ void GCodeQueue::get_serial_commands() {
   /**
    * Loop while serial characters are incoming and the queue is not full
    */
+    
   while (length < BUFSIZE && serial_data_available()) {
     LOOP_L_N(i, NUM_SERIAL) {
-
       const int c = read_serial(i);
       if (c < 0) continue;
 
@@ -628,10 +644,11 @@ void GCodeQueue::advance() {
           #if ENABLED(SERIAL_STATS_DROPPED_RX)
             SERIAL_ECHOLNPAIR("Dropped bytes: ", MYSERIAL0.dropped());
           #endif
+
           #if ENABLED(SERIAL_STATS_MAX_RX_QUEUED)
             SERIAL_ECHOLNPAIR("Max RX Queue Size: ", MYSERIAL0.rxMaxEnqueued());
           #endif
-        #endif
+        #endif //  !defined(__AVR__) || !defined(USBCON)
 
         ok_to_send();
       }

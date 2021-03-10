@@ -23,12 +23,13 @@
 #include "../inc/MarlinConfig.h"
 
 #if ENABLED(SDSUPPORT)
+#include <ctype.h>//  PANDAPI
 
 #include "cardreader.h"
 
 #include "../MarlinCore.h"
 #include "../lcd/ultralcd.h"
-
+ 
 #if ENABLED(DWIN_CREALITY_LCD)
   #include "../lcd/dwin/dwin.h"
 #endif
@@ -36,7 +37,7 @@
 #include "../module/planner.h"        // for synchronize
 #include "../module/printcounter.h"
 #include "../gcode/queue.h"
-#include "../module/settings.h"
+#include "../module/configuration_store.h"
 #include "../module/stepper/indirection.h"
 
 #if ENABLED(EMERGENCY_PARSER)
@@ -51,9 +52,17 @@
   #include "../feature/pause.h"
 #endif
 
+//PANDAPI
+#include <fcntl.h>
+#include <stdio.h>
+char root_path[64];//  "/media/usb/"
+extern char parse_string(char *src,char *start,char *end,char *out,int *e_pos);
+
+
 // public:
 
 card_flags_t CardReader::flag;
+uint8_t CardReader::sdprinting_done_state;
 char CardReader::filename[FILENAME_LENGTH], CardReader::longFilename[LONG_FILENAME_LENGTH];
 int8_t CardReader::autostart_index;
 
@@ -117,7 +126,8 @@ uint32_t CardReader::filespos[SD_PROCEDURE_DEPTH];
 char CardReader::proc_filenames[SD_PROCEDURE_DEPTH][MAXPATHNAMELENGTH];
 
 uint32_t CardReader::filesize, CardReader::sdpos;
-
+FILE * CardReader::fd_sd_card; //  PANDAPI
+  
 CardReader::CardReader() {
   #if ENABLED(SDCARD_SORT_ALPHA)
     sort_count = 0;
@@ -137,10 +147,6 @@ CardReader::CardReader() {
   // Disable autostart until card is initialized
   autostart_index = -1;
 
-  #if ENABLED(SDSUPPORT) && PIN_EXISTS(SD_DETECT)
-    SET_INPUT_PULLUP(SD_DETECT_PIN);
-  #endif
-  
   #if PIN_EXISTS(SDPOWER)
     OUT_WRITE(SDPOWER_PIN, HIGH); // Power the SD reader
   #endif
@@ -181,11 +187,12 @@ bool CardReader::is_dir_or_gcode(const dir_t &p) {
   );
 }
 
-//
+////  PANDAPI
 // Get the number of (compliant) items in the folder
 //
 int CardReader::countItems(SdFile dir) {
   dir_t p;
+  return Linux_readDir(&p,0,-1,NULL);////  PANDAPI
   int c = 0;
   while (dir.readDir(&p, longFilename) > 0)
     c += is_dir_or_gcode(p);
@@ -202,6 +209,11 @@ int CardReader::countItems(SdFile dir) {
 //
 void CardReader::selectByIndex(SdFile dir, const uint8_t index) {
   dir_t p;
+  ////PANDAPI
+  printf("selectByIndex==\n");
+  Linux_readDir(&p,0,index,NULL);
+  return;
+
   for (uint8_t cnt = 0; dir.readDir(&p, longFilename) > 0;) {
     if (is_dir_or_gcode(p)) {
       if (cnt == index) {
@@ -225,11 +237,122 @@ void CardReader::selectByName(SdFile dir, const char * const match) {
     }
   }
 }
-
+//  PANDAPI
+uint16_t nrFile_index;
+unsigned long get_file_size(const char *path)
+{
+	unsigned long filesize = -1;	
+	struct stat statbuff;
+	if(stat(path, &statbuff) < 0){
+		return filesize;
+	}else{
+		filesize = statbuff.st_size;
+	}
+	return filesize;
+}
+//  PANDAPI
 //
 // Recursive method to list all files within a folder
 //
+char tmp_dir[1024];
+int CardReader::Linux_readDir(dir_t* p,int printout,int index, const char * const mach_name)
+{
+
+	int cnt = 0;
+	DIR    *dir;
+	struct	 dirent    *ptr;
+//	printf("Linux_readDir00\n");
+//	if( *longFilename==NULL)		
+//		dir = opendir(longFilename);//root_path
+//	else
+		dir = opendir(root_path);//root_path
+//	printf("Linux_readDir01\n");
+	while((ptr = readdir(dir)) != NULL)
+	{
+
+		if(strcmp(ptr->d_name,".")==0 || strcmp(ptr->d_name,"..")==0) ///current dir OR parrent dir 
+			continue; 
+		else if(ptr->d_type == 8) ///file 
+		{
+			 int ii=0;
+			 for(ii=strlen(ptr->d_name);ii>0;ii--)
+			 {
+				if(ptr->d_name[ii]=='.')
+					break;
+			 }
+			 if(ii<=1)
+			 	continue;
+			 if(ii>1)
+			 {
+				if(ptr->d_name[ii+1]!='G'&&ptr->d_name[ii+1]!='g')
+					continue;
+			 }			 
+			 strcpy((char *)(p->name),ptr->d_name);
+			 p->name[strlen(ptr->d_name)]=0; 		
+			 strcpy(filename,ptr->d_name); 
+			 strcpy(longFilename,ptr->d_name); //longFilename
+			 if(cnt==index)
+			 {
+			 	printf("filename:%s\n",filename);
+				return cnt;
+			 }			 
+			 else if(mach_name!=NULL&&strcasecmp(mach_name, filename) == 0)
+			 	return cnt;
+			 cnt++; 
+			 
+	  // printf("Linux_readDircnt=%d\n",cnt);
+	
+			// createFilename(filename, p);
+		/*	 int j=0;
+			 for(int i=0;i<strlen(ptr->d_name);i++,j++)
+			 {			
+				 if(ptr->d_name[i]==' ')
+					p.name[j++]='\\';
+				 p.name[j]=ptr->d_name[i];
+			 }
+			// strcpy((char *)(p.name),ptr->d_name);
+			 p.name[j]=0;		 
+			// createFilename(filename, p);
+			  //strcpy(filename,ptr->d_name); 
+			  strcpy(filename,(char *)p.name); 
+	*/				  
+		 
+		 if (printout)
+		 {
+			//SERIAL_ECHO(prepend);
+		  SERIAL_ECHO(filename);
+		  SERIAL_CHAR(' ');
+		  sprintf(tmp_dir,"%s/%s",root_path,filename);					 
+		  SERIAL_ECHOLN(get_file_size(tmp_dir));	
+		 }
+			  
+		} 
+		else if(ptr->d_type == 10) ///link file 
+		{
+		//	printf("d_name:%s/%s\n",basePath,ptr->d_name); 
+		//	result.push_back(std::string(ptr->d_name));
+		} 
+		else if(ptr->d_type == 4) ///dir 
+		{ 
+		//	memset(base,'\0',sizeof(base)); 
+		//	strcpy(base,basePath); strcat(base,"/"); 
+		//	strcat(base,ptr->d_name); 
+		//	result.push_back(std::string(ptr->d_name)); 
+		//	readFileList(base); 
+		}
+	}
+	closedir(dir);
+	return cnt;
+
+
+}
+//  PANDAPI
 void CardReader::printListing(SdFile parent, const char * const prepend/*=nullptr*/) {
+#if 1
+	dir_t p;
+	Linux_readDir(&p, 1,-1,NULL);
+	return;
+#else
   dir_t p;
   while (parent.readDir(&p, longFilename) > 0) {
     if (DIR_IS_SUBDIR(&p)) {
@@ -270,14 +393,16 @@ void CardReader::printListing(SdFile parent, const char * const prepend/*=nullpt
       SERIAL_ECHOLN(p.fileSize);
     }
   }
+#endif  //  PANDAPI
 }
 
 //
 // List all files on the SD card
 //
 void CardReader::ls() {
-  root.rewind();
-  printListing(root);
+  //root.rewind();
+ // fseek(fd_sd_card,0,SEEK_SET);
+   printListing(root);
 }
 
 #if ENABLED(LONG_FILENAME_HOST_SUPPORT)
@@ -363,8 +488,45 @@ void CardReader::printFilename() {
   SERIAL_EOL();
 }
 
+
+
+//  PANDAPI
+int read_u_path()
+{
+	 
+	system("df | grep \"/dev/sd\" > /home/pi/U_path");
+	delay(500);
+	FILE * fp; 
+	if((fp=fopen("/home/pi/U_path","r"))!=NULL)  //  PANDAPI
+	{
+ 
+	    char buf[500];
+		int k=0;
+	    memset(buf, 0, sizeof(buf));
+		unsigned int n = fread(buf,sizeof(char),sizeof(buf),fp);
+		
+		fclose(fp);		
+		if(strlen(buf)>20)
+		{
+			//printf("%s\n", buf+strlen(buf)-15);
+			parse_string(buf+strlen(buf)-20,"% ","\n",root_path,&k);
+			root_path[strlen(root_path)+1]=0;
+			root_path[strlen(root_path)]='/';
+		    printf("root_path:%s\n", root_path);
+		}
+		else
+			sprintf(root_path,"/media/");
+	}
+	else
+		sprintf(root_path,"/media/");
+}
+
+
+
+
 void CardReader::mount() {
   flag.mounted = false;
+  /*//  PANDAPI
   if (root.isOpen()) root.close();
 
   if (!sd2card.init(SPI_SPEED, SDSS)
@@ -377,16 +539,14 @@ void CardReader::mount() {
   else if (!root.openRoot(&volume))
     SERIAL_ERROR_MSG(STR_SD_OPENROOT_FAIL);
   else {
+*/
+  read_u_path();
+  {
     flag.mounted = true;
     SERIAL_ECHO_MSG(STR_SD_CARD_OK);
   }
+  cdroot();
 
-  if (flag.mounted)
-    cdroot();
-  else {
-    spiInit(SPI_SPEED); // Return to base SPI speed
-    ui.set_status_P(GET_TEXT(MSG_SD_INIT_FAIL), -1);
-  }
   ui.refresh();
 }
 
@@ -465,7 +625,12 @@ void CardReader::endFilePrint(TERN_(SD_RESORT, const bool re_sort/*=false*/)) {
   TERN_(ADVANCED_PAUSE_FEATURE, did_pause_print = 0);
   TERN_(DWIN_CREALITY_LCD, HMI_flag.print_finish = flag.sdprinting);
   flag.sdprinting = flag.abort_sd_printing = false;
-  if (isFileOpen()) file.close();
+  ////PANDAPI
+  if (isFileOpen()) 
+  {
+	//file.close();
+	fclose(fd_sd_card);fd_sd_card=NULL;
+  }
   TERN_(SD_RESORT, if (re_sort) presort());
 }
 
@@ -521,6 +686,7 @@ void announceOpen(const uint8_t doing, const char * const path) {
 //   - 2 : Resuming from a sub-procedure
 //
 void CardReader::openFileRead(char * const path, const uint8_t subcall_type/*=0*/) {
+  char pa_data[1280]; //  PANDAPI
   if (!isMounted()) return;
 
   switch (subcall_type) {
@@ -562,8 +728,12 @@ void CardReader::openFileRead(char * const path, const uint8_t subcall_type/*=0*
   const char * const fname = diveToFile(true, curDir, path);
   if (!fname) return;
 
-  if (file.open(curDir, fname, O_READ)) {
-    filesize = file.fileSize();
+  	sprintf(pa_data,"%s/%s",root_path,fname);//  PANDAPI
+  //  if (file.open(curDir, fname, O_READ))
+	if((fd_sd_card=fopen(pa_data,"r"))!=NULL)  //  PANDAPI
+	{
+	  SERIAL_ECHOLNPGM(pa_data);
+      filesize = get_file_size(pa_data);//file.fileSize();
     sdpos = 0;
 
     PORT_REDIRECT(SERIAL_BOTH);
@@ -619,22 +789,26 @@ void CardReader::removeFile(const char * const name) {
   if (!isMounted()) return;
 
   //endFilePrint();
+ // PANDAPI
+ // SdFile *curDir;
+ // const char * const fname = diveToFile(false, curDir, name);
+//  if (!fname) return;
+  
+  char pa_data[128];
+  sprintf(pa_data,"%s/%s",root_path,name);
+  printf(pa_data);printf(" file delete\n");
 
-  SdFile *curDir;
-  const char * const fname = diveToFile(false, curDir, name);
-  if (!fname) return;
-
-  #if ENABLED(SDCARD_READONLY)
-    SERIAL_ECHOLNPAIR("Deletion failed (read-only), File: ", fname, ".");
-  #else
-    if (file.remove(curDir, fname)) {
-      SERIAL_ECHOLNPAIR("File deleted:", fname);
-      sdpos = 0;
-      TERN_(SDCARD_SORT_ALPHA, presort());
-    }
-    else
-      SERIAL_ECHOLNPAIR("Deletion failed, File: ", fname, ".");
-  #endif
+ // if (file.remove(curDir, fname)) 
+ if( remove(pa_data) == 0 )
+  {
+    SERIAL_ECHOLNPAIR("File deleted:", pa_data);
+    sdpos = 0;
+    #if ENABLED(SDCARD_SORT_ALPHA)
+      presort();
+    #endif
+  }
+  else
+    SERIAL_ECHOLNPAIR("Deletion failed,  : ", pa_data, ".");
 }
 
 void CardReader::report_status() {
@@ -686,6 +860,8 @@ void CardReader::checkautostart() {
     sprintf_P(autoname, PSTR("auto%c.g"), autostart_index + '0');
     dir_t p;
     root.rewind();
+	printf("checkautostart==\n");//  
+	/*//  PANDAPI
     while (root.readDir(&p, nullptr) > 0) {
       for (int8_t i = (int8_t)strlen((char*)p.name); i--;) p.name[i] = tolower(p.name[i]);
       if (p.name[9] != '~' && strncmp((char*)p.name, autoname, 5) == 0) {
@@ -693,7 +869,7 @@ void CardReader::checkautostart() {
         autostart_index++;
         return;
       }
-    }
+    }*/
   }
   autostart_index = -1;
 }
@@ -704,6 +880,10 @@ void CardReader::beginautostart() {
 }
 
 void CardReader::closefile(const bool store_location) {
+  fclose(fd_sd_card);//  PANDAPI
+  fd_sd_card=NULL;
+  return;
+  
   file.sync();
   file.close();
   flag.saving = flag.logging = false;
@@ -782,7 +962,7 @@ const char* CardReader::diveToFile(const bool update_cwd, SdFile*& curDir, const
   startDir = curDir;
   while (item_name_adr) {
     // Find next subdirectory delimiter
-    char * const name_end = strchr(item_name_adr, '/');
+    char * const name_end = "";// //  PANDAPI  strchr(item_name_adr, '/');
 
     // Last atom in the path? Item found.
     if (name_end <= item_name_adr) break;
@@ -1101,7 +1281,13 @@ uint16_t CardReader::get_num_Files() {
 //
 void CardReader::fileHasFinished() {
   planner.synchronize();
-  file.close();
+ // file.close();
+////PANDAPI
+  if (isFileOpen()) 
+  {
+	//file.close();
+	fclose(fd_sd_card);fd_sd_card=NULL;
+  }
   if (file_subcall_ctr > 0) { // Resume calling file after closing procedure
     file_subcall_ctr--;
     openFileRead(proc_filenames[file_subcall_ctr], 2); // 2 = Returning from sub-procedure
@@ -1112,6 +1298,7 @@ void CardReader::fileHasFinished() {
     endFilePrint(TERN_(SD_RESORT, true));
 
     marlin_state = MF_SD_COMPLETE;
+    sdprinting_done_state = 1;
   }
 }
 
@@ -1135,18 +1322,60 @@ void CardReader::fileHasFinished() {
 #if ENABLED(POWER_LOSS_RECOVERY)
 
   bool CardReader::jobRecoverFileExists() {
-    const bool exists = recovery.file.open(&root, recovery.filename, O_READ);
-    if (exists) recovery.file.close();
+    //const bool exists = recovery.file.open(&root, recovery.filename, O_READ);
+    //if (exists) recovery.file.close();
+    //  PANDAPI
+    bool exists = 0;
+	char pa_data[128];
+	sprintf(pa_data,"%s/%s",root_path,recovery.filename);
+	if (access(pa_data, F_OK) == 0)
+	{
+		printf("%s exists.\n",pa_data);
+		exists=1;
+	}
+	else
+	{
+		printf("%s not exists.\n",pa_data);
+		exists=0;
+	}
+	
     return exists;
   }
 
   void CardReader::openJobRecoveryFile(const bool read) {
-    if (!isMounted()) return;
+   /* if (!isMounted()) return;
     if (recovery.file.isOpen()) return;
     if (!recovery.file.open(&root, recovery.filename, read ? O_READ : O_CREAT | O_WRITE | O_TRUNC | O_SYNC))
       SERIAL_ECHOLNPAIR(STR_SD_OPEN_FILE_FAIL, recovery.filename, ".");
     else if (!read)
       echo_write_to_file(recovery.filename);
+      */
+   //  PANDAPI   
+   if (recovery.fp) 
+   {
+      //return;
+	  fclose(recovery.fp);
+	 
+   }
+   
+   char pa_data[128];
+   sprintf(pa_data,"%s/%s",root_path,recovery.filename);
+   printf(pa_data);printf(" opening...read:%d\n",read);
+   if (!read)
+   {
+	 echo_write_to_file(recovery.filename);   
+	 recovery.fp = fopen(pa_data, "wb");
+   }
+   else
+   	recovery.fp = fopen(pa_data, "rb");
+   
+   if (!recovery.fp)
+   {	   
+       printf("open failed:%s\n",pa_data);
+	   SERIAL_ECHOLNPAIR(STR_SD_OPEN_FILE_FAIL, recovery.filename, ".");
+   }
+    	
+
   }
 
   // Removing the job recovery file currently requires closing

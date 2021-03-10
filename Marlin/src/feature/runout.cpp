@@ -30,6 +30,8 @@
 
 #include "runout.h"
 
+int runout_pin[2]={1,1};//  PANDAPI
+
 FilamentMonitor runout;
 
 bool FilamentMonitorBase::enabled = true,
@@ -43,6 +45,14 @@ bool FilamentMonitorBase::enabled = true,
   //#define DEBUG_TOOLCHANGE_MIGRATION_FEATURE
   #include "../module/tool_change.h"
 #endif
+
+/**
+ * Called by FilamentSensorSwitch::run when filament is detected.
+ * Called by FilamentSensorEncoder::block_completed when motion is detected.
+ */
+void FilamentSensorBase::filament_present(const uint8_t extruder) {
+  runout.filament_present(extruder); // calls response.filament_present(extruder)
+}
 
 #if HAS_FILAMENT_RUNOUT_DISTANCE
   float RunoutResponseDelayed::runout_distance_mm = FILAMENT_RUNOUT_DISTANCE_MM;

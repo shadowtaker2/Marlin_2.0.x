@@ -86,7 +86,7 @@
 
 #else  // !__arm__
 
-  #include <avr/io.h>
+ ////  PANDAPI #include <avr/io.h>
   #include <util/atomic.h>
 
   /**

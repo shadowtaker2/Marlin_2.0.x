@@ -29,6 +29,8 @@
 
 #include "temperature.h"
 #include "endstops.h"
+#include "../pins_PANDA_PI.h"
+
 
 #include "../MarlinCore.h"
 #include "planner.h"
@@ -124,7 +126,7 @@
 #endif
 
 Temperature thermalManager;
-
+int i2c_fd=-1 ;//  PANDAPI
 const char str_t_thermal_runaway[] PROGMEM = STR_T_THERMAL_RUNAWAY,
            str_t_heating_failed[] PROGMEM = STR_T_HEATING_FAILED;
 
@@ -195,7 +197,7 @@ const char str_t_thermal_runaway[] PROGMEM = STR_T_THERMAL_RUNAWAY,
   #endif
 
   #if ENABLED(ADAPTIVE_FAN_SLOWING)
-    uint8_t Temperature::fan_speed_scaler[FAN_COUNT] = ARRAY_N(FAN_COUNT, 128, 128, 128, 128, 128, 128, 128, 128);
+    uint8_t Temperature::fan_speed_scaler[FAN_COUNT] = ARRAY_N(FAN_COUNT, 128, 128, 128, 128, 128, 128);
   #endif
 
   /**
@@ -210,17 +212,31 @@ const char str_t_thermal_runaway[] PROGMEM = STR_T_THERMAL_RUNAWAY,
         if (target < EXTRUDERS) singlenozzle_fan_speed[target] = speed;
         return;
       }
+      target = 0; // Always use fan index 0 with SINGLENOZZLE
     #endif
 
-    TERN_(SINGLENOZZLE, target = 0); // Always use fan index 0 with SINGLENOZZLE
-
-    if (target >= FAN_COUNT) return;
+    if (target >= (FAN_COUNT+2)) return;// PANDAPI
 
     fan_speed[target] = speed;
-
-    TERN_(REPORT_FAN_CHANGE, report_fan_speed(target));
+	///////////////////////////  PANDAPI
+	char tmp_data[32],cmd_buf[64];
+	int cn=0;
+	sprintf(tmp_data,"F%d,%d;",target,speed);
+	printf(tmp_data);printf("\n");
+	for(int i=0;i<strlen(tmp_data);i++)
+		wiringPiI2CWriteReg8(i2c_fd, 8, tmp_data[i]);
+	//wiringPiI2CWriteReg8(i2c_fd, 8, ';');
+	unsigned int kk=millis();
+	while((cmd_buf[cn++]=wiringPiI2CReadReg8(i2c_fd,8))!='\0')
+	{
+	  delay(0);
+	  if((millis()-kk)>2000)
+		break;
+	  if(cn>=64) break;
+	}
+	printf(cmd_buf);
+	printf("\n");
   }
-
   #if ENABLED(REPORT_FAN_CHANGE)
     /**
      * Report print fan speed for a target extruder
@@ -362,7 +378,7 @@ volatile bool Temperature::raw_temps_ready = false;
 #endif
 
 #if ENABLED(PID_EXTRUSION_SCALING)
-  int16_t Temperature::lpq_len; // Initialized in settings.cpp
+  int16_t Temperature::lpq_len; // Initialized in configuration_store
 #endif
 
 #if HAS_PID_HEATING
@@ -436,7 +452,6 @@ volatile bool Temperature::raw_temps_ready = false;
     SERIAL_ECHOLNPGM(STR_PID_AUTOTUNE_START);
 
     disable_all_heaters();
-    TERN_(AUTO_POWER_CONTROL, powerManager.power_on());
 
     SHV(bias = d = (MAX_BED_POWER) >> 1, bias = d = (PID_MAX) >> 1);
 
@@ -770,7 +785,9 @@ inline void loud_kill(PGM_P const lcd_msg, const heater_ind_t heater) {
 }
 
 void Temperature::_temp_error(const heater_ind_t heater, PGM_P const serial_msg, PGM_P const lcd_msg) {
-
+#if ENABLED(MAX31856_PANDAPI)
+	return;
+#endif
   static uint8_t killed = 0;
 
   if (IsRunning() && TERN1(BOGUS_TEMPERATURE_GRACE_PERIOD, killed == 2)) {
@@ -812,11 +829,17 @@ void Temperature::_temp_error(const heater_ind_t heater, PGM_P const serial_msg,
 }
 
 void Temperature::max_temp_error(const heater_ind_t heater) {
+#if ENABLED(MAX31856_PANDAPI)
+	return;
+#endif
   TERN_(DWIN_CREALITY_LCD, Popup_Window_Temperature(1));
   _temp_error(heater, PSTR(STR_T_MAXTEMP), GET_TEXT(MSG_ERR_MAXTEMP));
 }
 
 void Temperature::min_temp_error(const heater_ind_t heater) {
+#if ENABLED(MAX31856_PANDAPI)
+	return;
+#endif
   TERN_(DWIN_CREALITY_LCD, Popup_Window_Temperature(0));
   _temp_error(heater, PSTR(STR_T_MINTEMP), GET_TEXT(MSG_ERR_MINTEMP));
 }
@@ -999,6 +1022,187 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
 
 #endif // PIDTEMPBED
 
+
+#if ENABLED(MAX31856_PANDAPI)
+
+//https://github.com/steve71/MAX31865/blob/master/max31865.py#L185
+
+
+#define SPI_CLK_PIN  MAX31856_CLK_PIN
+#define SPI_MISO_PIN MAX31856_MISO_PIN
+#define SPI_MOSI_PIN MAX31856_MOSI_PIN
+#define SPI_CS_PIN   MAX31856_CS_PIN
+
+
+
+void sendByte(unsigned char send_d)
+{
+	int i=0;
+	for(i=0;i<8;i++)
+	{
+		WRITE(SPI_CLK_PIN,1);
+		//delay(1); 
+		if (send_d & 0x80)
+			WRITE(SPI_MOSI_PIN,1);
+		else
+			WRITE(SPI_MOSI_PIN,0);
+		send_d <<=1;
+		WRITE(SPI_CLK_PIN,0);
+		//delay(1); 
+	}
+
+}
+unsigned char spi_recvByte(void)
+{
+	unsigned char rec_data=0;
+	int i=0;
+	for(i=0;i<8;i++)
+	{
+		WRITE(SPI_CLK_PIN,1);
+		delay(0); 
+		rec_data<<=1;
+		if(READ(SPI_MISO_PIN))
+			rec_data|= 0x1;
+		WRITE(SPI_CLK_PIN,0);
+		delay(0); 
+	}
+	return rec_data;
+}
+
+void writeRegister(int regNum, unsigned char dataByte)
+{
+	unsigned char addressByte = 0x80 | regNum;
+	WRITE(SPI_CS_PIN,0);
+	delay(1); 
+	// 0x8x to specify 'write register value'
+	
+	// first byte is address byte
+	sendByte(addressByte);
+	//# the rest are data bytes
+	sendByte(dataByte);
+	WRITE(SPI_CS_PIN,1);
+	delay(1); 
+
+}		
+
+char readRegisters(int regNumStart, int numRegisters,unsigned char *data_t) 
+{
+	int i=0;
+	WRITE(SPI_CS_PIN,0);
+	delay(1); 
+	// 0x to specify 'read register value'
+	sendByte(regNumStart);
+	for(i=0;i<numRegisters;i++)
+	{
+		data_t[i]=spi_recvByte();
+		
+	}
+	WRITE(SPI_CS_PIN,1);
+	delay(1); 
+}		
+void init_PT100_max31865(void)
+{
+
+	SET_OUTPUT(SPI_CLK_PIN);
+	SET_OUTPUT(SPI_MOSI_PIN);
+	SET_INPUT(SPI_MISO_PIN);
+	SET_OUTPUT(SPI_CS_PIN);
+    if(MAX31856_WIRES==3)
+		writeRegister(0, 0xB2);
+	else
+		writeRegister(0, 0xC2);
+	 
+	//# conversion time is less than 100ms
+	//time.sleep(.1) #give it 100ms for conversion
+	 delay(100); 
+
+}
+
+float calcPT100Temp(int RTD_ADC_Code)
+{
+		float R_REF = 430.0;// # Reference Resistor
+		float Res0 = 100.0;// # Resistance at 0 degC for 400ohm R_Ref
+		float a = 0.00390830;
+		float b = -0.000000577500;
+		//# c = -4.18301e-12 # for -200 <= T <= 0 (degC)
+		float c = -0.00000000000418301;
+		float Res_RTD;
+		float temp_C;
+		float temp_C_line;
+		//# c = 0 # for 0 <= T <= 850 (degC)
+	//	printf ("RTD ADC Code: %d\n", RTD_ADC_Code);
+		Res_RTD = (RTD_ADC_Code * R_REF) / 32768.0;// # PT100 Resistance
+	// 	printf ("PT100 Resistance: %f ohms\n" ,Res_RTD);
+	/*	#
+		# Callendar-Van Dusen equation
+		# Res_RTD = Res0 * (1 + a*T + b*T**2 + c*(T-100)*T**3)
+		# Res_RTD = Res0 + a*Res0*T + b*Res0*T**2 # c = 0
+		# (c*Res0)T**4 - (c*Res0)*100*T**3  
+		# + (b*Res0)*T**2 + (a*Res0)*T + (Res0 - Res_RTD) = 0
+		#
+		# quadratic formula:
+		# for 0 <= T <= 850 (degC)*/
+		temp_C = -(a*Res0) + sqrt(a*a*Res0*Res0 - 4*(b*Res0)*(Res0 - Res_RTD));
+		temp_C = temp_C / (2*(b*Res0));
+		temp_C_line = (RTD_ADC_Code/32.0) - 256.0;
+	//	# removing numpy.roots will greatly speed things up
+	//	#temp_C_numpy = numpy.roots([c*Res0, -c*Res0*100, b*Res0, a*Res0, (Res0 - Res_RTD)])
+	//	#temp_C_numpy = abs(temp_C_numpy[-1])
+	//	printf("Straight Line Approx. Temp: %f degC\n",temp_C_line);
+	//	printf("deg %fC\n" ,temp_C);
+	//	#print "Solving Full Callendar-Van Dusen using numpy: %f" %  temp_C_numpy
+		if (temp_C < 0)// #use straight line approximation if less than 0
+			//# Can also use python lib numpy to solve cubic
+			//# Should never get here in this application
+			temp_C = (RTD_ADC_Code/32) - 256;
+		return temp_C;
+}
+
+float readTemp(void)
+{
+		unsigned char out[64];
+		int rtd_ADC_Code;
+		float temp_C;
+		 
+		//one shot
+		// read all registers
+		 readRegisters(0,8,out);
+
+		//conf_reg = out[0];
+	//	printf("config register byte: %x\n" , out[0]);
+
+		//[rtd_msb, rtd_lsb] = [out[1], out[2]]
+		rtd_ADC_Code = (( out[1] << 8 ) | out[2] ) >> 1;
+			
+		temp_C =  calcPT100Temp(rtd_ADC_Code);
+/*
+		[hft_msb, hft_lsb] = [out[3], out[4]]
+		hft = (( hft_msb << 8 ) | hft_lsb ) >> 1
+		print "high fault threshold: %d" % hft
+
+		[lft_msb, lft_lsb] = [out[5], out[6]]
+		lft = (( lft_msb << 8 ) | lft_lsb ) >> 1
+		print "low fault threshold: %d" % lft
+
+		status = out[7]
+
+
+		if ((status & 0x80) == 1):
+			raise FaultError("High threshold limit (Cable fault/open)")
+		if ((status & 0x40) == 1):
+			raise FaultError("Low threshold limit (Cable fault/short)")
+		if ((status & 0x04) == 1):
+			raise FaultError("Overvoltage or Undervoltage Error") 	
+			*/
+		if(temp_C>1000.0)
+			temp_C=0.0;
+		else if(temp_C<-200.0)
+			temp_C=0.0;
+	return temp_C;
+}
+#endif
+
+
 /**
  * Manage heating activities for extruder hot-ends and a heated bed
  *  - Acquire updated temperature readings
@@ -1009,6 +1213,65 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
  *  - Update the heated bed PID output value
  */
 void Temperature::manage_heater() {
+///////////////  PANDAPI
+  static unsigned int time_s_old=0,time_1ms=0;
+  unsigned int time_s=millis();
+  if((time_s-time_s_old)>2000)
+  {
+	 // isr();
+	  //tick();
+	  get_from_mcu();
+	  time_s_old=time_s;
+	  /////////check target temperature.
+		static int16_t target_temperature_old[3],target_temperature_bed_old=0,fanSpeeds_old[FAN_COUNT+2];
+		if(target_temperature_old[0]!=temp_hotend[0].target)
+		{
+		   
+			target_temperature_old[0]=degTargetHotend(0);
+			setTargetHotend(temp_hotend[0].target,0);
+		}
+#if HOTENDS == 2  
+		if(target_temperature_old[1]!=temp_hotend[1].target)
+		{
+			target_temperature_old[1]=degTargetHotend(1);
+			setTargetHotend(temp_hotend[1].target,1);
+		}
+#endif  
+#if HAS_HEATED_BED  
+		if(target_temperature_bed_old!=temp_bed.target)
+		{
+			target_temperature_bed_old=temp_bed.target;
+			setTargetBed(temp_bed.target);
+		}
+#endif  
+		//setTargetFan
+		if(fanSpeeds_old[0]!=fan_speed[0])
+		{
+			fanSpeeds_old[0]=fan_speed[0];
+			set_fan_speed(0,fan_speed[0]);
+		}
+		// set board Fan
+		//if(digitalRead(X_ENABLE_PIN)==0)
+		if(fanSpeeds_old[2]!=digitalRead(X_ENABLE_PIN))
+		{
+		  //  printf("fan:%d,%d\n",fanSpeeds_old[2],digitalRead(X_ENABLE_PIN));
+			fanSpeeds_old[2]=digitalRead(X_ENABLE_PIN);
+			set_fan_speed(2,(!fanSpeeds_old[2])*255);
+			
+		}
+	  
+  }
+  if((time_s-time_1ms)>=1)
+  {
+	  time_1ms=time_s;
+#if ENABLED(MAX31856_PANDAPI)
+	  temp_hotend[0].celsius=readTemp();
+	  tick();
+#endif
+	  
+  }
+  
+  
 
   #if EARLY_WATCHDOG
     // If thermal manager is still not running, make sure to at least reset the watchdog!
@@ -1018,9 +1281,9 @@ void Temperature::manage_heater() {
   if (TERN0(EMERGENCY_PARSER, emergency_parser.killed_by_M112))
     kill(M112_KILL_STR, nullptr, true);
 
-  if (!raw_temps_ready) return;
-
-  updateTemperaturesFromRawValues(); // also resets the watchdog
+// PANDAPI
+  //if (!raw_temps_ready) return;
+  //updateTemperaturesFromRawValues(); // also resets the watchdog
 
   #if DISABLED(IGNORE_THERMOCOUPLE_ERRORS)
     #if ENABLED(HEATER_0_USES_MAX6675)
@@ -1592,12 +1855,31 @@ void Temperature::updateTemperaturesFromRawValues() {
 #else
   #define INIT_CHAMBER_AUTO_FAN_PIN(P) SET_OUTPUT(P)
 #endif
-
+//PANDAPI
+#if ENABLED(MAX31856_PANDAPI)
+void init_PT100_max31865(void);
+#endif
 /**
  * Initialize the temperature manager
  * The manager is implemented by periodic calls to manage_heater()
  */
 void Temperature::init() {
+////////////PANDAPI
+	i2c_fd=-1;
+	i2c_fd = wiringPiI2CSetup(0x3c);
+	//////////reboot the MCU
+	wiringPiI2CWriteReg8(i2c_fd, 8, 'r');
+	wiringPiI2CWriteReg8(i2c_fd, 8, ';');
+	int ii=20;
+	while(ii--)
+	{
+		usleep(50);
+		wiringPiI2CReadReg8(i2c_fd,8);
+	}
+#if ENABLED(MAX31856_PANDAPI)
+	init_PT100_max31865();
+#endif
+/////////////////// 
 
   TERN_(MAX6675_IS_MAX31865, max31865.begin(MAX31865_2WIRE)); // MAX31865_2WIRE, MAX31865_3WIRE, MAX31865_4WIRE
 
@@ -2269,6 +2551,53 @@ void Temperature::update_raw_temperatures() {
   raw_temps_ready = true;
 }
 
+
+///PANDAPI
+char parse_string(char *src,char *start,char *end,char *out,int *e_pos)
+{
+	int i=0;
+	int s_index=-1;
+	int e_index=-1;
+	out[0]=0;
+	*e_pos=0;
+	for(i=0;i<strlen(src);i++)
+	{
+		if(strncmp(src+i,start,strlen(start))==0)
+		{
+			s_index=i+strlen(start);
+			break;
+		}
+	}
+	if(s_index<0)
+		return 1;
+	///////////////////
+	if(strlen(end)==0)
+	{
+		strcpy(out,src+s_index);
+		*e_pos=strlen(src);
+		return 0;
+
+	}
+	for(i=s_index;i<strlen(src);i++)
+	{
+		if(strncmp(src+i,end,strlen(end))==0)
+		{
+			e_index=i;
+			break;
+		}
+	}	
+	if(e_index<0)
+	{
+		strcpy(out,src+s_index);
+		*e_pos=strlen(src);
+		return 0;
+	}
+	memcpy(out,src+s_index,e_index-s_index);
+	out[e_index-s_index]=0;
+	*e_pos=e_index;
+	return 2;
+}
+
 void Temperature::readings_ready() {
 
   // Update the raw values if they've been read. Else we could be updating them during reading.
@@ -2366,7 +2695,11 @@ void Temperature::readings_ready() {
  *  - For ENDSTOP_INTERRUPTS_FEATURE check endstops if flagged
  *  - Call planner.tick to count down its "ignore" time
  */
-HAL_TEMP_TIMER_ISR() {
+void HAL_TEMP_TIMER_ISR() {//PANDAPI
+
+
+
+
   HAL_timer_isr_prologue(TEMP_TIMER_NUM);
 
   Temperature::tick();
@@ -2398,6 +2731,210 @@ public:
     }
   #endif
 };
+//  PANDAPI
+int old_mcu_pins=-6;
+
+int parse_checksum(char* command)
+{
+	char *apos = strrchr(command, '*');
+	if (apos) {
+	  uint8_t checksum = 0, count = uint8_t(apos-1 - command);
+	  while (count) checksum ^= command[--count];
+	  if (strtol(apos + 1, NULL, 10) != checksum) {
+		//gcode_line_error(PSTR(MSG_ERR_CHECKSUM_MISMATCH));
+		printf("checksum mismatch=%d=%d\n",checksum,strtol(apos + 1, NULL, 10));
+		return 1;
+	  }
+	}
+	
+	return 0;
+}
+
+int Temperature::read_with_check()
+{
+
+	char cn=0,cmd_buf[128], out[128];
+	int k=0,ret=0;
+	float temp_data[3];
+	memset(cmd_buf,0,sizeof(cmd_buf));
+	memset(out,0,sizeof(out));
+
+	wiringPiI2CWriteReg8(i2c_fd, 8, 'g');
+	wiringPiI2CWriteReg8(i2c_fd, 8, ';');
+	unsigned int kk=millis();
+	while((cmd_buf[cn++]=wiringPiI2CReadReg8(i2c_fd,8))!='\0')
+	{
+		usleep(1);
+		if((millis()-kk)>200)
+		{
+		cn=0;
+		break;
+		}
+		if(cn>=64)
+		{
+		cn=0;
+		break;
+		}
+	}
+	//sprintf(cmd_buf,"h1T:28.3B:20.3T1:29.3 *14"); 
+	if(parse_checksum(cmd_buf))
+		return 1;
+	/////////////
+	parse_string(cmd_buf,"T:","B",out,&k);	
+	float f= atof(out);
+	temp_data[1]=f;
+	parse_string(cmd_buf,"B:","",out,&k);	
+	f= atof(out);
+	temp_data[0]=f;
+	parse_string(cmd_buf,"T1:","",out,&k);	
+	f= atof(out);
+	temp_data[2]=f;
+	////////////////////
+	
+	if(fabs(temp_hotend[0].celsius-temp_data[HOTEND_0_CODE])<20)
+		temp_hotend[0].celsius=temp_data[HOTEND_0_CODE];
+	else
+	{
+		printf("\n f0=%f\n",fabs(temp_hotend[0].celsius-temp_data[HOTEND_0_CODE]));
+		ret=1;
+	}
+#if HAS_HEATED_BED 
+	if(fabs(temp_bed.celsius-temp_data[HOTBED_CODE])<20)
+		temp_bed.celsius=temp_data[HOTBED_CODE];
+	else
+	{
+		printf("\n f1=%f\n",fabs(temp_bed.celsius-temp_data[HOTBED_CODE]));
+		ret=1;
+	};
+#endif	
+	if(fabs(temp_hotend[1].celsius-temp_data[HOTEND_1_CODE])<20)
+		temp_hotend[1].celsius=temp_data[HOTEND_1_CODE];
+	else 
+	{
+		printf("\n f2=%f\n",fabs(temp_hotend[1].celsius-temp_data[HOTEND_1_CODE]));
+		ret=1;
+	}
+
+	parse_string(cmd_buf,"h","T",out,&k);	
+	k= atoi(out);
+	if(k>3||k<0)
+		ret=1;
+	else if(old_mcu_pins!=k)
+	{
+		ret=1;
+
+	}
+
+
+	return ret;
+}
+
+
+
+void Temperature::get_from_mcu()
+{
+#if PANDAPI
+	  /////////////////   
+	  char cn=0,cmd_buf[128], out[128];
+	  int k=0;
+	  float temp_data[3];
+	  memset(cmd_buf,0,sizeof(cmd_buf));
+	  memset(out,0,sizeof(out));
+	  
+	
+	  int ret=read_with_check();
+	  if(ret==1)
+		  ret=read_with_check();
+	  if(ret==1)
+		  ret=read_with_check();
+	
+	  //////////////////////////////////   
+	  if(ret==1)
+	  {
+		  printf("%s  |   \n",cmd_buf);
+		  memset(cmd_buf,0,sizeof(cmd_buf));
+		  wiringPiI2CWriteReg8(i2c_fd, 8, 'g');
+		  wiringPiI2CWriteReg8(i2c_fd, 8, ';');
+		  unsigned int kk=millis();
+		  cn=0;
+		  while((cmd_buf[cn++]=wiringPiI2CReadReg8(i2c_fd,8))!='\0')
+		  {
+			  usleep(1);
+			  if((millis()-kk)>200)
+			  {
+				  cn=0;
+				  break;
+			  }
+			  if(cn>=64)
+			  {
+				  cn=0;
+				  break;
+			  }
+		  }
+		  printf("%s  +   \n",cmd_buf);
+			if(parse_checksum(cmd_buf))
+				return ;
+			/////////////
+			parse_string(cmd_buf,"T:","B",out,&k);	
+			float f= atof(out);
+			temp_data[1]=f;
+			parse_string(cmd_buf,"B:","",out,&k);	
+			f= atof(out);
+			temp_data[0]=f;
+			parse_string(cmd_buf,"T1:","",out,&k);	
+			f= atof(out);
+			temp_data[2]=f;
+			////////////////////
+	
+			
+		 // parse_string(cmd_buf,"T:","B",out,&k);	
+		//	float f= atof(out); 
+			temp_hotend[0].celsius=temp_data[HOTEND_0_CODE];   
+#if ENABLED(MAX31856_PANDAPI)
+		
+		temp_hotend[0].celsius=readTemp();
+#endif
+#if HAS_HEATED_BED 
+		//	parse_string(cmd_buf,"B:","",out,&k);	
+		 // f= atof(out);
+		  temp_bed.celsius=temp_data[HOTBED_CODE];
+#endif
+		//	parse_string(cmd_buf,"T1:","",out,&k);	
+		//	f= atof(out);
+		  temp_hotend[1].celsius=temp_data[HOTEND_1_CODE];
+	
+	
+		  parse_string(cmd_buf,"h","T",out,&k);   
+		  k= atoi(out);
+			if((old_mcu_pins!=k)&&(k>=0&&k<=3))
+		  {
+				
+				old_mcu_pins=k;
+			  printf("run out sensor:%d\n",k);
+			  SERIAL_ECHOPGM("run out sensor:");
+			  SERIAL_ECHO(k);
+			  
+#if ENABLED(FILAMENT_RUNOUT_SENSOR)			
+			  if((temp_hotend[0].celsius>130||temp_hotend[1].celsius>130)&&(IS_SD_PRINTING() || print_job_timer.isRunning()))
+			  {
+				   runout_pin[0]=((k>>1)&0x01);// C(DEBUG_SCL PA14)
+				   runout_pin[1]=(k&0x01);// D(DEBUG_SDA PA13 )
+				  printf("runout_pin[0,1]:%d,%d\n", runout_pin[0], runout_pin[1]);
+			  }
+#endif
+		  }
+	  }
+	
+	
+	
+	
+	
+	  return;
+#endif
+
+}
+
+
 
 /**
  * Handle various ~1KHz tasks associated with temperature
@@ -2695,10 +3232,11 @@ void Temperature::tick() {
    *
    * This gives each ADC 0.9765ms to charge up.
    */
-  #define ACCUMULATE_ADC(obj) do{ \
+   //  PANDAPI
+  #define ACCUMULATE_ADC(obj) NOOP/*do{ \
     if (!HAL_ADC_READY()) next_sensor_state = adc_sensor_state; \
     else obj.sample(HAL_READ_ADC()); \
-  }while(0)
+  }while(0)*/
 
   ADCSensorState next_sensor_state = adc_sensor_state < SensorsReady ? (ADCSensorState)(int(adc_sensor_state) + 1) : StartSampling;
 

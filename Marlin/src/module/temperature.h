@@ -20,14 +20,24 @@
  *
  */
 #pragma once
-
+//  PANDAPI
 /**
  * temperature.h - temperature controller
  */
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#include <unistd.h>
 
 #include "thermistor/thermistors.h"
+#if HAS_FILAMENT_SENSOR
+  #include "feature/runout.h"
+#endif
 
 #include "../inc/MarlinConfig.h"
+#include "wiringPi.h"
+#include "wiringPiI2C.h"
+extern int i2c_fd ; 
 
 #if ENABLED(AUTO_POWER_CONTROL)
   #include "../feature/power.h"
@@ -152,16 +162,16 @@ enum ADCSensorState : char {
 #define MIN_ADC_ISR_LOOPS 10
 
 #define ACTUAL_ADC_SAMPLES _MAX(int(MIN_ADC_ISR_LOOPS), int(SensorsReady))
-
+//  PANDAPI
 #if HAS_PID_HEATING
   #define PID_K2 (1-float(PID_K1))
-  #define PID_dT ((OVERSAMPLENR * float(ACTUAL_ADC_SAMPLES)) / TEMP_TIMER_FREQUENCY)
+  #define PID_dT 1// mark ((OVERSAMPLENR * float(ACTUAL_ADC_SAMPLES)) / TEMP_TIMER_FREQUENCY)
 
   // Apply the scale factors to the PID values
-  #define scalePID_i(i)   ( float(i) * PID_dT )
-  #define unscalePID_i(i) ( float(i) / PID_dT )
-  #define scalePID_d(d)   ( float(d) / PID_dT )
-  #define unscalePID_d(d) ( float(d) * PID_dT )
+  #define scalePID_i(i)  i// ( float(i) * PID_dT )
+  #define unscalePID_i(i) i // ( float(i) / PID_dT )
+  #define scalePID_d(d)  d// ( float(d) / PID_dT )
+  #define unscalePID_d(d) d//( float(d) * PID_dT )
 #endif
 
 #if BOTH(HAS_LCD_MENU, G26_MESH_VALIDATION)
@@ -311,7 +321,7 @@ class Temperature {
   public:
 
     #if HAS_HOTEND
-      #define HOTEND_TEMPS (HOTENDS + ENABLED(TEMP_SENSOR_1_AS_REDUNDANT))
+      #define HOTEND_TEMPS (HOTENDS + ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)+1)//PANDAPI
       static hotend_info_t temp_hotend[HOTEND_TEMPS];
       static const uint16_t heater_maxtemp[HOTENDS];
     #endif
@@ -518,7 +528,9 @@ class Temperature {
      * Called from the Temperature ISR
      */
     static void readings_ready();
-    static void tick();
+    static void get_from_mcu();
+	static void tick();
+    static int read_with_check();//  PANDAPI
 
     /**
      * Call periodically to manage heaters
@@ -569,6 +581,9 @@ class Temperature {
     #if HAS_HOTEND
 
       static void setTargetHotend(const int16_t celsius, const uint8_t E_NAME) {
+#if ENABLED(MAX31856_PANDAPI)	  
+      return;
+#endif	  
         const uint8_t ee = HOTEND_INDEX;
         #ifdef MILLISECONDS_PREHEAT_TIME
           if (celsius == 0)
@@ -579,6 +594,29 @@ class Temperature {
         TERN_(AUTO_POWER_CONTROL, if (celsius) powerManager.power_on());
         temp_hotend[ee].target = _MIN(celsius, temp_range[ee].maxtemp - HOTEND_OVERSHOOT);
         start_watching_hotend(ee);
+	  //////////////////  PANDAPI
+	  char tmp_data[32],cmd_buf[64];
+	  char heat_string[3][2]={"b","t","T"}; //  PANDAPI
+	  int cn=0;
+	  if(ee==0)
+	  	sprintf(tmp_data,"%s%d;",heat_string[HOTEND_0_CODE],celsius);
+	  else
+	  	sprintf(tmp_data,"%s%d;",heat_string[HOTEND_1_CODE],celsius);
+	  printf(tmp_data);printf("\n");
+	  for(int i=0;i<strlen(tmp_data);i++)
+	  	wiringPiI2CWriteReg8(i2c_fd, 8, tmp_data[i]);
+	  //wiringPiI2CWriteReg8(i2c_fd, 8, ';');
+	  unsigned int kk=millis();
+	   while((cmd_buf[cn++]=wiringPiI2CReadReg8(i2c_fd,8))!='\0')
+	   {
+	 	  delay(0);
+		  if((millis()-kk)>2000)
+			break;
+		  if(cn>=64) break;
+	   }
+	   printf(cmd_buf);
+	   printf("\n");
+	 ///////////////////
       }
 
       FORCE_INLINE static bool isHeatingHotend(const uint8_t E_NAME) {
@@ -633,6 +671,25 @@ class Temperature {
           #endif
         ;
         start_watching_bed();
+		 //////////////////  PANDAPI
+		 char tmp_data[32],cmd_buf[64];
+		 char heat_string[3][2]={"b","t","T"}; //  PANDAPI
+		 int cn=0;
+		 sprintf(tmp_data,"%s%d;",heat_string[HOTBED_CODE],celsius);
+		 printf(tmp_data);printf("\n");
+		 for(int i=0;i<strlen(tmp_data);i++)
+		   wiringPiI2CWriteReg8(i2c_fd, 8, tmp_data[i]);
+		  unsigned int kk=millis();
+		  while((cmd_buf[cn++]=wiringPiI2CReadReg8(i2c_fd,8))!='\0')
+		  {
+			 delay(0);
+			 if((millis()-kk)>2000)
+				break;
+			 if(cn>=64) break;
+		  }
+		  printf(cmd_buf);
+		  printf("\n");
+		///////////////////
       }
 
       static bool wait_for_bed(const bool no_wait_for_cooling=true
@@ -731,6 +788,58 @@ class Temperature {
       #if ENABLED(PIDTEMP)
         FORCE_INLINE static void updatePID() {
           TERN_(PID_EXTRUSION_SCALING, last_e_position = 0);
+		   //////////////////  PANDAPI
+		  char tmp_data[32],cmd_buf[64];
+		  int cn=0;
+		 char e=0;
+		 //////////P
+		 sprintf(tmp_data,"K%.5f;",PID_PARAM(Kp, e));
+		 printf(tmp_data);printf("\n");
+		 for(int i=0;i<strlen(tmp_data);i++)
+		   wiringPiI2CWriteReg8(i2c_fd, 8, tmp_data[i]);
+		  unsigned int kk=millis();
+		  while((cmd_buf[cn++]=wiringPiI2CReadReg8(i2c_fd,8))!='\0')
+		  {
+			 delay(0);
+			 if((millis()-kk)>2000)
+				break;
+			 if(cn>=64) break;
+		  }
+		  printf(cmd_buf);
+		  printf("\n");
+		///////////////////
+		 //////////I
+		 sprintf(tmp_data,"I%.5f;",PID_PARAM(Ki, e)/1000.0);
+		 printf(tmp_data);printf("\n");
+		 for(int i=0;i<strlen(tmp_data);i++)
+		   wiringPiI2CWriteReg8(i2c_fd, 8, tmp_data[i]);
+		  kk=millis();
+		  while((cmd_buf[cn++]=wiringPiI2CReadReg8(i2c_fd,8))!='\0')
+		  {
+			 delay(0);
+			 if((millis()-kk)>2000)
+				break;
+			 if(cn>=64) break;
+		  }
+		  printf(cmd_buf);
+		  printf("\n");
+		///////////////////	D
+		
+		 sprintf(tmp_data,"D%.5f;",PID_PARAM(Kd, e));
+		 printf(tmp_data);printf("\n");
+		 for(int i=0;i<strlen(tmp_data);i++)
+		   wiringPiI2CWriteReg8(i2c_fd, 8, tmp_data[i]);
+		  kk=millis();
+		  while((cmd_buf[cn++]=wiringPiI2CReadReg8(i2c_fd,8))!='\0')
+		  {
+			 delay(0);
+			 if((millis()-kk)>2000)
+				break;
+			 if(cn>=64) break;
+		  }
+		  printf(cmd_buf);
+		  printf("\n");
+		///////////////////		
         }
       #endif
 

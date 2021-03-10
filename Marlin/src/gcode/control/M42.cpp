@@ -52,7 +52,8 @@ void GcodeSuite::M42() {
     switch (parser.value_byte()) {
       case 0: pinMode(pin, INPUT); break;
       case 1: pinMode(pin, OUTPUT); break;
-      case 2: pinMode(pin, INPUT_PULLUP); break;
+    //  case 2: pinMode(pin, INPUT_PULLUP); break;
+      case 2: pinMode(pin, INPUT); break;	  //PANDAPI
       #ifdef INPUT_PULLDOWN
         case 3: pinMode(pin, INPUT_PULLDOWN); break;
       #endif

@@ -65,7 +65,7 @@ extern uint8_t marlin_debug_flags;
 #else
   #define _PORT_REDIRECT(n,p)   NOOP
   #define _PORT_RESTORE(n)      NOOP
-  #define SERIAL_OUT(WHAT, V...) (void)MYSERIAL0.WHAT(V)
+  #define SERIAL_OUT(WHAT, V...)  (void)MYSERIAL0.WHAT(V)
   #define SERIAL_ASSERT(P)      NOOP
 #endif
 
@@ -267,8 +267,9 @@ extern uint8_t marlin_debug_flags;
 #define SERIAL_ECHOLNPGM_P(P)       (serialprintPGM(P "\n"))
 
 #define SERIAL_ECHOPGM(S)           (serialprintPGM(PSTR(S)))
-#define SERIAL_ECHOLNPGM(S)         (serialprintPGM(PSTR(S "\n")))
-
+#if PANDAPI
+#define SERIAL_ECHOLNPGM(S)          do{ SERIAL_ECHOPGM(S); SERIAL_CHAR('\n'); }while(0)// (SERIAL_ECHO_P(PSTR(S "\n")))
+#endif
 #define SERIAL_ECHOPAIR_F_P(P,V...) do{ serialprintPGM(P); SERIAL_ECHO_F(V); }while(0)
 #define SERIAL_ECHOLNPAIR_F_P(V...) do{ SERIAL_ECHOPAIR_F_P(V); SERIAL_EOL(); }while(0)
 

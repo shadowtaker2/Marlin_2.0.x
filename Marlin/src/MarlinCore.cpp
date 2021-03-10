@@ -30,10 +30,6 @@
 
 #include "MarlinCore.h"
 
-#if ENABLED(MARLIN_DEV_MODE)
-  #warning "WARNING! Disable MARLIN_DEV_MODE for the final build!"
-#endif
-
 #include "HAL/shared/Delay.h"
 #include "HAL/shared/esp_wifi.h"
 
@@ -43,26 +39,36 @@
 #include <math.h>
 
 #include "core/utility.h"
+#include "lcd/ultralcd.h"
 #include "module/motion.h"
 #include "module/planner.h"
-#include "module/endstops.h"
-#include "module/temperature.h"
-#include "module/settings.h"
-#include "module/printcounter.h" // PrintCounter or Stopwatch
-
 #include "module/stepper.h"
+#include "module/endstops.h"
+#include "module/probe.h"
+#include "module/temperature.h"
+#include "sd/cardreader.h"
+#include "module/configuration_store.h"
+#include "module/printcounter.h" // PrintCounter or Stopwatch
+#include "feature/closedloop.h"
+
 #include "module/stepper/indirection.h"
+
+#include <math.h>
+//  PANDAPI
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <termios.h>		//Used for UART
+#include <string.h>
+#include "libs/nozzle.h"
 
 #include "gcode/gcode.h"
 #include "gcode/parser.h"
 #include "gcode/queue.h"
-
-#include "sd/cardreader.h"
-
-#include "lcd/ultralcd.h"
-#if HAS_TOUCH_XPT2046
-  #include "lcd/touch/touch_buttons.h"
-#endif
 
 #if HAS_TFT_LVGL_UI
   #include "lcd/extui/lib/mks_ui/tft_lvgl_configuration.h"
@@ -85,16 +91,16 @@
   #include "feature/direct_stepping.h"
 #endif
 
+#if ENABLED(TOUCH_BUTTONS)
+  #include "feature/touch/xpt2046.h"
+#endif
+
 #if ENABLED(HOST_ACTION_COMMANDS)
   #include "feature/host_actions.h"
 #endif
 
 #if USE_BEEPER
   #include "libs/buzzer.h"
-#endif
-
-#if ENABLED(EXTERNAL_CLOSED_LOOP_CONTROLLER)
-  #include "feature/closedloop.h"
 #endif
 
 #if HAS_I2C_DIGIPOT
@@ -181,10 +187,6 @@
   #include "feature/runout.h"
 #endif
 
-#if HAS_Z_SERVO_PROBE
-  #include "module/probe.h"
-#endif
-
 #if ENABLED(HOTEND_IDLE_TIMEOUT)
   #include "feature/hotend_idle.h"
 #endif
@@ -193,7 +195,7 @@
   #include "feature/leds/tempstat.h"
 #endif
 
-#if ENABLED(CASE_LIGHT_ENABLE)
+#if HAS_CASE_LIGHT
   #include "feature/caselight.h"
 #endif
 
@@ -216,10 +218,10 @@
 #if HAS_L64XX
   #include "libs/L64XX/L64XX_Marlin.h"
 #endif
-
-#if ENABLED(PASSWORD_FEATURE)
-  #include "feature/password/password.h"
-#endif
+//  PANDAPI
+int OCR1A,DDRE ,PINE,PINE5,SREG,cli,DDRB,DDRH,PINB4,PINB5,PINH6,ADCSRA,ADEN,ADSC,ADIF,MCUSR;
+int PORTE,PORTD,DDRF,PINF7,PINL1,PINC3,DDRC,PORTJ,DIDR0,OCR0B,PINB,PORTA,PINA,PINA2,PINA6,PORTL,OCIE0B,TIMSK0,OCIE1A,TCNT1,PINL3,PINA4,PORTF,PINF,PINF6,PINF0;
+int DDRJ,PINJ1,DDRD,PIND3,PIND,PIND7,PINF2,PINK,PORTK,PINK0,REFS0,ADMUX,ADCSRB,PINH5,PORTH,PINH,DDRA,PINC7,PINJ;
 
 PGMSTR(NUL_STR, "");
 PGMSTR(M112_KILL_STR, "M112 Shutdown");
@@ -319,12 +321,12 @@ void setup_powerhold() {
 #pragma GCC diagnostic ignored "-Wnarrowing"
 
 bool pin_is_protected(const pin_t pin) {
-  static const pin_t sensitive_pins[] PROGMEM = SENSITIVE_PINS;
-  LOOP_L_N(i, COUNT(sensitive_pins)) {
+/* //  PANDAPI static const pin_t sensitive_pins[] PROGMEM = SENSITIVE_PINS;
+  for (uint8_t i = 0; i < COUNT(sensitive_pins); i++) {
     pin_t sensitive_pin;
     memcpy_P(&sensitive_pin, &sensitive_pins[i], sizeof(pin_t));
     if (pin == sensitive_pin) return true;
-  }
+  }*/
   return false;
 }
 
@@ -457,18 +459,14 @@ void startOrResumeJob() {
     #endif
     wait_for_heatup = false;
     TERN_(POWER_LOSS_RECOVERY, recovery.purge());
-    #ifdef EVENT_GCODE_SD_ABORT
-      queue.inject_P(PSTR(EVENT_GCODE_SD_ABORT));
+    #ifdef EVENT_GCODE_SD_STOP
+      queue.inject_P(PSTR(EVENT_GCODE_SD_STOP));
     #endif
-
-    TERN_(PASSWORD_AFTER_SD_PRINT_ABORT, password.lock_machine());
   }
 
   inline void finishSDPrinting() {
-    if (queue.enqueue_one_P(PSTR("M1001"))) {
+    if (queue.enqueue_one_P(PSTR("M1001")))
       marlin_state = MF_RUNNING;
-      TERN_(PASSWORD_AFTER_SD_PRINT_END, password.lock_machine());
-    }
   }
 
 #endif // SDSUPPORT
@@ -688,7 +686,7 @@ inline void manage_inactivity(const bool ignore_stepper_queue=false) {
  *  - Read Buttons and Update the LCD
  *  - Run i2c Position Encoders
  *  - Auto-report Temperatures / SD Status
- *  - Update the Průša MMU2
+ *  - Update the Prusa MMU2
  *  - Handle Joystick jogging
  */
 void idle(TERN_(ADVANCED_PAUSE_FEATURE, bool no_stepper_sleep/*=false*/)) {
@@ -764,7 +762,7 @@ void idle(TERN_(ADVANCED_PAUSE_FEATURE, bool no_stepper_sleep/*=false*/)) {
     }
   #endif
 
-  // Update the Průša MMU2
+  // Update the Prusa MMU2
   TERN_(PRUSA_MMU2, mmu2.mmu_loop());
 
   // Handle Joystick jogging
@@ -808,7 +806,7 @@ void minkill(const bool steppers_off/*=false*/) {
   // Wait a short time (allows messages to get out before shutting down.
   for (int i = 1000; i--;) DELAY_US(600);
 
-  cli(); // Stop interrupts
+ // cli(); // Stop interrupts//  PANDAPI
 
   // Wait to ensure all interrupts stopped
   for (int i = 1000; i--;) DELAY_US(250);
@@ -824,6 +822,7 @@ void minkill(const bool steppers_off/*=false*/) {
   TERN_(PSU_CONTROL, PSU_OFF());
 
   TERN_(HAS_SUICIDE, suicide());
+  exit(0); // //  PANDAPI
 
   #if HAS_KILL
 
@@ -863,6 +862,36 @@ void stop() {
   }
 }
 
+
+//  PANDAPI
+int read_version()
+{
+	system("gpio -v | grep \"Type:\" > /home/pi/version");
+	delay(1000);
+    int fd = open("/home/pi/version", O_RDONLY);
+    if(fd == -1) {
+            printf("error is  \n"  );
+            return 3;
+    }
+    char buf[100];
+    memset(buf, 0, sizeof(buf));
+    while(read(fd, buf, sizeof(buf) - 1) > 0) {
+           // printf("%s\n", buf);             
+    }
+    printf("%s\n", buf);
+	if(strncmp(buf,"  Type: Pi 4B,",strlen("  Type: Pi 4B,"))==0)
+		return -4;
+	else if(strncmp(buf,"  Type: Pi 3+,",strlen("  Type: Pi 3+,"))==0)
+		return 3;
+	else if(strncmp(buf,"  Type: Pi 3B+,",strlen("  Type: Pi 3B+,"))==0)
+		return 3;
+	else
+		return -3;
+    close(fd);
+	 
+}
+
+
 /**
  * Marlin entry-point: Set up before the program loop
  *  - Set up the kill pin, filament runout, power hold
@@ -883,6 +912,7 @@ void stop() {
  *    • Max7219
  */
 void setup() {
+	wiringPiSetup () ;// //  PANDAPI
 
   #if ENABLED(MARLIN_DEV_MODE)
     auto log_current_ms = [&](PGM_P const msg) {
@@ -907,13 +937,13 @@ void setup() {
       #error "DISABLE_(DEBUG|JTAG) is not supported for the selected MCU/Board."
     #endif
   #endif
-
+   
   #if NUM_SERIAL > 0
     MYSERIAL0.begin(BAUDRATE);
     uint32_t serial_connect_timeout = millis() + 1000UL;
     while (!MYSERIAL0 && PENDING(millis(), serial_connect_timeout)) { /*nada*/ }
     #if HAS_MULTI_SERIAL
-      MYSERIAL1.begin(BAUDRATE);
+      MYSERIAL1.begin(BAUDRATE_TNT);
       serial_connect_timeout = millis() + 1000UL;
       while (!MYSERIAL1 && PENDING(millis(), serial_connect_timeout)) { /*nada*/ }
     #endif
@@ -926,7 +956,7 @@ void setup() {
     SETUP_RUN(L64xxManager.init());  // Set up SPI, init drivers
   #endif
 
-  #if ENABLED(DUET_SMART_EFFECTOR) && PIN_EXISTS(SMART_EFFECTOR_MOD)
+  #if ENABLED(SMART_EFFECTOR) && PIN_EXISTS(SMART_EFFECTOR_MOD)
     OUT_WRITE(SMART_EFFECTOR_MOD_PIN, LOW);   // Put Smart Effector into NORMAL mode
   #endif
 
@@ -962,7 +992,7 @@ void setup() {
     BOARD_INIT();
   #endif
 
-  SETUP_RUN(esp_wifi_init());
+// PANDAPI  SETUP_RUN(esp_wifi_init());
 
   // Check startup - does nothing if bootloader sets MCUSR to 0
   const byte mcu = HAL_get_reset_source();
@@ -995,10 +1025,6 @@ void setup() {
     SETUP_RUN(leds.setup());
   #endif
 
-  #if ENABLED(NEOPIXEL2_SEPARATE)
-    SETUP_RUN(leds2.setup());
-  #endif
-
   #if ENABLED(USE_CONTROLLER_FAN)     // Set up fan controller to initialize also the default configurations.
     SETUP_RUN(controllerFan.setup());
   #endif
@@ -1027,7 +1053,7 @@ void setup() {
   SETUP_RUN(settings.first_load());   // Load data from EEPROM if available (or use defaults)
                                       // This also updates variables in the planner, elsewhere
 
-  #if HAS_TOUCH_XPT2046
+  #if ENABLED(TOUCH_BUTTONS)
     SETUP_RUN(touch.init());
   #endif
 
@@ -1042,6 +1068,17 @@ void setup() {
   SETUP_RUN(endstops.init());         // Init endstops and pullups
 
   SETUP_RUN(stepper.init());          // Init stepper. This enables interrupts!
+  //  PANDAPI
+  int pi_n=read_version();//GetIniKeyInt("VER","PI","/home/pi/Config_panda.ini");
+  if(pi_n==-4)//pi4b
+  	step_motor_init(stepper.isr,42); //mark
+  else if(pi_n==3)//pi3+
+  	step_motor_init(stepper.isr,12); //mark
+  else //if(pi_n==-3)//pi3b
+  	step_motor_init(stepper.isr,12); //mark
+  printf("pi_num===%d\n",pi_n);
+   SERIAL_ECHOPGM("Pi version:");
+   SERIAL_ECHO(pi_n);
 
   #if HAS_SERVOS
     SETUP_RUN(servo_init());
@@ -1098,11 +1135,11 @@ void setup() {
     OUT_WRITE(STAT_LED_BLUE_PIN, LOW); // OFF
   #endif
 
-  #if ENABLED(CASE_LIGHT_ENABLE)
+  #if HAS_CASE_LIGHT
     #if DISABLED(CASE_LIGHT_USE_NEOPIXEL)
       if (PWM_PIN(CASE_LIGHT_PIN)) SET_PWM(CASE_LIGHT_PIN); else SET_OUTPUT(CASE_LIGHT_PIN);
     #endif
-    SETUP_RUN(caselight.update_brightness());
+    SETUP_RUN(update_case_light());
   #endif
 
   #if ENABLED(MK2_MULTIPLEXER)
@@ -1166,7 +1203,7 @@ void setup() {
   #endif
 
   #if ENABLED(USE_WATCHDOG)
-    SETUP_RUN(watchdog_init());       // Reinit watchdog after HAL_get_reset_source call
+   //PANDAPI SETUP_RUN(watchdog_init());       // Reinit watchdog after HAL_get_reset_source call
   #endif
 
   #if ENABLED(EXTERNAL_CLOSED_LOOP_CONTROLLER)
@@ -1215,14 +1252,8 @@ void setup() {
   #endif
 
   #if HAS_TFT_LVGL_UI
-    #if ENABLED(SDSUPPORT)
-      if (!card.isMounted()) SETUP_RUN(card.mount()); // Mount SD to load graphics and fonts
-    #endif
+    if (!card.isMounted()) SETUP_RUN(card.mount()); // Mount SD to load graphics and fonts
     SETUP_RUN(tft_lvgl_init());
-  #endif
-
-  #if ENABLED(PASSWORD_ON_STARTUP)
-    SETUP_RUN(password.lock_machine());      // Will not proceed until correct password provided
   #endif
 
   marlin_state = MF_RUNNING;
@@ -1243,14 +1274,23 @@ void setup() {
  *    card, host, or by direct injection. The queue will continue to fill
  *    as long as idle() or manage_inactivity() are being called.
  */
-void loop() {
-  do {
+int main() {
+	setup();
+	queue.enqueue_now_P("M21");
+	queue.enqueue_now_P("M20");
+//	wiringPiI2CWriteReg8(i2c_fd, 8, 'r');
+//	wiringPiI2CWriteReg8(i2c_fd, 8, ';');
+	queue.enqueue_now_P("M301");
+
+  for (;;) {
+
     idle();
 
     #if ENABLED(SDSUPPORT)
       card.checkautostart();
       if (card.flag.abort_sd_printing) abortSDPrinting();
       if (marlin_state == MF_SD_COMPLETE) finishSDPrinting();
+	  if (card.sdprinting_done_state) finishSDPrinting();
     #endif
 
     queue.advance();
@@ -1259,5 +1299,6 @@ void loop() {
 
     TERN_(HAS_TFT_LVGL_UI, printer_state_polling());
 
-  } while (ENABLED(__AVR__)); // Loop forever on slower (AVR) boards
+  } //while (ENABLED(__AVR__)); // Loop forever on slower (AVR) boards
+   return 1;//  PANDAPI
 }

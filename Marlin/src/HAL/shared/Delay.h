@@ -110,7 +110,8 @@
   #define nop() __asm__ __volatile__("nop;\n\t":::)
 
   FORCE_INLINE static void __delay_4cycles(uint8_t cy) {
-    __asm__ __volatile__(
+	   
+/*    __asm__ __volatile__(
       L("1")
       A("dec %[cnt]")
       A("nop")
@@ -118,7 +119,7 @@
       : [cnt] "+r"(cy)  // output: +r means input+output
       :                 // input:
       : "cc"            // clobbers:
-    );
+    );*/
   }
 
   // Delay in cycles
@@ -150,12 +151,27 @@
 
 #else
 
-  #error "Unsupported MCU architecture"
+  //#error "Unsupported MCU architecture"
 
 #endif
 
+
+#include <unistd.h>
+#include <time.h>
+
+void inline delay_ns0 (unsigned int howLong)
+{
+  struct timespec sleeper, dummy ;
+
+  sleeper.tv_sec  = (time_t)(howLong / 1000000) ;
+  sleeper.tv_nsec = (long)(howLong % 1000000) ;
+
+  nanosleep (&sleeper, &dummy) ;
+}
+
+
 // Delay in nanoseconds
-#define DELAY_NS(x) DELAY_CYCLES( (x) * (F_CPU / 1000000UL) / 1000UL )
+#define DELAY_NS(x)   delay_ns0(x)//  //DELAY_CYCLES( (x) * (F_CPU*30000 ) / 1UL )//  PANDAPI
 
 // Delay in microseconds
-#define DELAY_US(x) DELAY_CYCLES( (x) * (F_CPU / 1000000UL) )
+#define DELAY_US(x) usleep(x) //DELAY_CYCLES( (x) * (F_CPU*30000 / 1000000UL) )//  PANDAPI

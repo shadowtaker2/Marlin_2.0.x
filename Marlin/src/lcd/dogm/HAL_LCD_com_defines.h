@@ -55,10 +55,10 @@
     uint8_t u8g_com_stm32duino_hw_spi_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);
     #define U8G_COM_HAL_HW_SPI_FN     u8g_com_stm32duino_hw_spi_fn
 
-  #elif defined(__AVR__)
+  #elif defined(PANDAPI) //  PANDAPI
 
-    uint8_t u8g_com_HAL_AVR_sw_sp_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);
-    #define U8G_COM_HAL_SW_SPI_FN     u8g_com_HAL_AVR_sw_sp_fn
+   // uint8_t u8g_com_HAL_AVR_sw_sp_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);
+   // #define U8G_COM_HAL_SW_SPI_FN     u8g_com_HAL_AVR_sw_sp_fn
 
   #endif
 
@@ -81,6 +81,11 @@
   #endif
 
   #define U8G_COM_SSD_I2C_HAL         u8g_com_arduino_ssd_i2c_fn
+
+  #if PIN_EXISTS(FSMC_CS)
+    uint8_t u8g_com_stm32duino_fsmc_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);
+    #define U8G_COM_HAL_FSMC_FN       u8g_com_stm32duino_fsmc_fn
+  #endif
 
 #elif defined(TARGET_LPC1768)
 
@@ -112,9 +117,6 @@
 #ifndef U8G_COM_SSD_I2C_HAL
   #define U8G_COM_SSD_I2C_HAL       u8g_com_null_fn
 #endif
-#if EITHER(FSMC_GRAPHICAL_TFT, SPI_GRAPHICAL_TFT)
-  uint8_t u8g_com_hal_tft_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr);
-  #define U8G_COM_HAL_TFT_FN       u8g_com_hal_tft_fn
-#else
-  #define U8G_COM_HAL_TFT_FN       u8g_com_null_fn
+#ifndef U8G_COM_HAL_FSMC_FN
+  #define U8G_COM_HAL_FSMC_FN       u8g_com_null_fn
 #endif
