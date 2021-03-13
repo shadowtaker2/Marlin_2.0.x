@@ -96,14 +96,14 @@
 #define SHOW_BOOTSCREEN
 
 // Show the bitmap in Marlin/_Bootscreen.h on startup.
-#ifdef TFT_CLASSIC_UI 
+#ifdef HAS_WIRED_LCD
   #define SHOW_CUSTOM_BOOTSCREEN  //TIPS
 #endif
 
 // Show the bitmap in Marlin/_Statusscreen.h on the status screen.
-#ifdef TFT_CLASSIC_UI 
+//#if HAS_MARLINUI_U8GLIB 
   #define CUSTOM_STATUS_SCREEN_IMAGE  //TIPS
-#endif
+//#endif
 
 // @section machine
 
@@ -458,7 +458,7 @@
 #endif
 #define TEMP_SENSOR_PROBE 0
 #ifndef TEMP_SENSOR_CHAMBER
-  #define TEMP_SENSOR_CHAMBER 11
+  #define TEMP_SENSOR_CHAMBER 0
   //#define TEMP_CHAMBER_PIN TEMP_1_PIN //
 #endif
 
