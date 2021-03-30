@@ -25,9 +25,8 @@
  * Geeetech GT2560 RevB + GT2560 3.0/3.1 + GT2560 4.0/4.1 pin assignments
  */
 
-#if NOT_TARGET(__AVR_ATmega1280__, __AVR_ATmega2560__)
-  #error "Oops! Select 'Arduino/Genuino Mega or Mega 2560' in 'Tools > Board.'"
-#endif
+#define ALLOW_MEGA1280
+#include "env_validate.h"
 
 #ifndef BOARD_INFO_NAME
   #define BOARD_INFO_NAME "GT2560 RevB/3.x/4.x"
@@ -158,13 +157,16 @@
 
 #if ENABLED(YHCB2004)
   #ifndef YHCB2004_CLK
-    #define YHCB2004_CLK                      5
+    #define YHCB2004_CLK                       5
+    #define DIO52                   YHCB2004_CLK
   #endif
   #ifndef YHCB2004_MOSI
     #define YHCB2004_MOSI                     21
+    #define DIO50                  YHCB2004_MOSI
   #endif
   #ifndef YHCB2004_MISO
     #define YHCB2004_MISO                     36
+    #define DIO51                  YHCB2004_MISO
   #endif
 #elif HAS_WIRED_LCD
   #ifndef LCD_PINS_RS

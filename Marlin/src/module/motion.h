@@ -59,13 +59,15 @@ extern xyz_pos_t cartes;
 #if HAS_ABL_NOT_UBL
   extern feedRate_t xy_probe_feedrate_mm_s;
   #define XY_PROBE_FEEDRATE_MM_S xy_probe_feedrate_mm_s
-#elif defined(XY_PROBE_SPEED)
-  #define XY_PROBE_FEEDRATE_MM_S MMM_TO_MMS(XY_PROBE_SPEED)
+#elif defined(XY_PROBE_FEEDRATE)
+  #define XY_PROBE_FEEDRATE_MM_S MMM_TO_MMS(XY_PROBE_FEEDRATE)
 #else
   #define XY_PROBE_FEEDRATE_MM_S PLANNER_XY_FEEDRATE()
 #endif
 
-constexpr feedRate_t z_probe_fast_mm_s = MMM_TO_MMS(Z_PROBE_SPEED_FAST);
+#if HAS_BED_PROBE
+  constexpr feedRate_t z_probe_fast_mm_s = MMM_TO_MMS(Z_PROBE_FEEDRATE_FAST);
+#endif
 
 /**
  * Feed rates are often configured with mm/m
@@ -393,8 +395,21 @@ FORCE_INLINE bool all_axes_trusted()                        { return xyz_bits ==
   // Return true if the given point is within the printable area
   inline bool position_is_reachable(const float &rx, const float &ry, const float inset=0) {
     #if ENABLED(DELTA)
+
       return HYPOT2(rx, ry) <= sq(DELTA_PRINTABLE_RADIUS - inset + fslop);
+
+    #elif ENABLED(AXEL_TPARA)
+
+      const float R2 = HYPOT2(rx - TPARA_OFFSET_X, ry - TPARA_OFFSET_Y);
+      return (
+        R2 <= sq(L1 + L2) - inset
+        #if MIDDLE_DEAD_ZONE_R > 0
+          && R2 >= sq(float(MIDDLE_DEAD_ZONE_R))
+        #endif
+      );
+
     #elif IS_SCARA
+
       const float R2 = HYPOT2(rx - SCARA_OFFSET_X, ry - SCARA_OFFSET_Y);
       return (
         R2 <= sq(L1 + L2) - inset
@@ -402,6 +417,7 @@ FORCE_INLINE bool all_axes_trusted()                        { return xyz_bits ==
           && R2 >= sq(float(MIDDLE_DEAD_ZONE_R))
         #endif
       );
+
     #endif
   }
 
@@ -447,13 +463,13 @@ FORCE_INLINE bool all_axes_trusted()                        { return xyz_bits ==
   };
 
   extern DualXMode dual_x_carriage_mode;
-  extern float inactive_extruder_x,               // Used in mode 0 & 1
-               duplicate_extruder_x_offset;       // Used in mode 2 & 3
-  extern xyz_pos_t raised_parked_position;        // Used in mode 1
-  extern bool active_extruder_parked;             // Used in mode 1, 2 & 3
-  extern millis_t delayed_move_time;              // Used in mode 1
-  extern int16_t duplicate_extruder_temp_offset;  // Used in mode 2 & 3
-  extern bool idex_mirrored_mode;                 // Used in mode 3
+  extern float inactive_extruder_x,                 // Used in mode 0 & 1
+               duplicate_extruder_x_offset;         // Used in mode 2 & 3
+  extern xyz_pos_t raised_parked_position;          // Used in mode 1
+  extern bool active_extruder_parked;               // Used in mode 1, 2 & 3
+  extern millis_t delayed_move_time;                // Used in mode 1
+  extern celsius_t duplicate_extruder_temp_offset;  // Used in mode 2 & 3
+  extern bool idex_mirrored_mode;                   // Used in mode 3
 
   FORCE_INLINE bool idex_is_duplicating() { return dual_x_carriage_mode >= DXC_DUPLICATION_MODE; }
 
