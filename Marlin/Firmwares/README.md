@@ -241,7 +241,7 @@
 
        "Motion/MoveAxis" deactived the endstops.
        "Motion/MovesAxis/Move ZThen lower the nozzle slowly to adjust to a sheet of paper.
-       View the value on the display and enter the value in the Configuration/ProbeZOffset" (Value between -17.00 and -13.00)
+       View the value on the display and enter the value in the Configuration/ProbeZOffset" (Value between -20.00 and -13.00) 
        finally store the parameters "Configuration/StoreSettings".
   
   By terminal: 
