@@ -277,6 +277,10 @@
   - Enter Motion/UnifiedBedLeveling/UBL_Tools/Build Mesh/BuildColdMesh to run a leveling.
   - you have a preheating of the bed to 60°C and the beginning of the leveling.
 
+  Note:
+   The leveling of the mesh bed is based on the square and we have a circle so we will always be missing inaccessible points. That's why we fill these points with values identical to the closest values of these points.
+  ![MeshOnDelta](../../docs/images/MeshOnDelta.png)
+
 ###  **Perform a bed calibration ([**ABL**](https://marlinfw.org/docs/features/auto_bed_leveling.html))**
   
   By terminal:
