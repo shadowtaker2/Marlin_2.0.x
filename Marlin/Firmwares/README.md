@@ -280,7 +280,7 @@
   **Note:**
      The leveling of the mesh bed is based on the SQUARE and we have a CIRCLE so we will always be missing inaccessible points. That's why we fill these points with values identical to the closest values of these points.
   
-                        ![MeshOnDelta](../../docs/images/MeshOnDelta.png)
+      ![MeshOnDelta](../../docs/images/MeshOnDelta.png)
 
 ###  **Perform a bed calibration ([**ABL**](https://marlinfw.org/docs/features/auto_bed_leveling.html))**
   
