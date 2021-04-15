@@ -735,6 +735,7 @@
  * Homing (G28) does an indefinite move towards the endstops to establish
  * the position of the toolhead relative to the workspace.
  */
+//#define SENSORLESS_BACKOFF_MM  { 2, 2, 2 }     //2209 (mm) Backoff from endstops before sensorless homing
 #define HOMING_BUMP_MM      { 5, 5, 5 }       // (mm) Backoff from endstops after first bump
                                               // For delta all values must be the same
 #ifdef Q5
@@ -870,7 +871,7 @@
 
   // On a 300mm bed a 5% grade would give a misalignment of ~1.5cm
   #define G34_MAX_GRADE              5    // (%) Maximum incline that G34 will handle
-  #define Z_STEPPER_ALIGN_ITERATIONS 5    // Number of iterations to apply during alignment
+  #define Z_STEPPER_ALIGN_ITERATIONS 3    // Number of iterations to apply during alignment
   #define Z_STEPPER_ALIGN_ACC        0.02 // Stop iterating early if the accuracy is better than this
   #define RESTORE_LEVELING_AFTER_G34      // Restore leveling after G34 is done?
   // After G34, re-home Z (G28 Z) or just calculate it from the last probe heights?
@@ -3351,16 +3352,11 @@
  */
 //#define POWER_MONITOR_CURRENT   // Monitor the system current
 //#define POWER_MONITOR_VOLTAGE   // Monitor the system voltage
-
-#if ENABLED(POWER_MONITOR_CURRENT)
-  #define POWER_MONITOR_VOLTS_PER_AMP    0.05000  // Input voltage to the MCU analog pin per amp  - DO NOT apply more than ADC_VREF!
-  #define POWER_MONITOR_CURRENT_OFFSET   0        // Offset (in amps) applied to the calculated current
+#if EITHER(POWER_MONITOR_CURRENT, POWER_MONITOR_VOLTAGE)
+  #define POWER_MONITOR_VOLTS_PER_AMP   0.05000   // Input voltage to the MCU analog pin per amp  - DO NOT apply more than ADC_VREF!
+  #define POWER_MONITOR_CURRENT_OFFSET -1         // Offset value for current sensors with linear function output
+  #define POWER_MONITOR_VOLTS_PER_VOLT  0.11786   // Input voltage to the MCU analog pin per volt - DO NOT apply more than ADC_VREF!
   #define POWER_MONITOR_FIXED_VOLTAGE   13.6      // Voltage for a current sensor with no voltage sensor (for power display)
-#endif
-
-#if ENABLED(POWER_MONITOR_VOLTAGE)
-  #define POWER_MONITOR_VOLTS_PER_VOLT  0.077933  // Input voltage to the MCU analog pin per volt - DO NOT apply more than ADC_VREF!
-  #define POWER_MONITOR_VOLTAGE_OFFSET  0         // Offset (in volts) applied to the calculated voltage
 #endif
 
 /**
