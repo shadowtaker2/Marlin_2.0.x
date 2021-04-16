@@ -37,7 +37,7 @@
 
 #if !UBL_SEGMENTED
 
-  void unified_bed_leveling::line_to_destination_cartesian(const feedRate_t &scaled_fr_mm_s, const uint8_t extruder) {
+  void unified_bed_leveling::line_to_destination_cartesian(const_feedRate_t scaled_fr_mm_s, const uint8_t extruder) {
     /**
      * Much of the nozzle movement will be within the same cell. So we will do as little computation
      * as possible to determine if this is the case. If this move is within the same cell, we will
@@ -56,43 +56,36 @@
     // A move within the same cell needs no splitting
     if (istart == iend) {
 
-      // For a move off the bed, use a constant Z raise
-      if (!WITHIN(iend.x, 0, GRID_MAX_POINTS_X - 1) || !WITHIN(iend.y, 0, GRID_MAX_POINTS_Y - 1)) {
-
-        // Note: There is no Z Correction in this case. We are off the grid and don't know what
-        // a reasonable correction would be.  If the user has specified a UBL_Z_RAISE_WHEN_OFF_MESH
-        // value, that will be used instead of a calculated (Bi-Linear interpolation) correction.
-
-        #ifdef UBL_Z_RAISE_WHEN_OFF_MESH
-          end.z += UBL_Z_RAISE_WHEN_OFF_MESH;
-        #endif
-        planner.buffer_segment(end, scaled_fr_mm_s, extruder);
-        current_position = destination;
-        return;
-      }
-
       FINAL_MOVE:
 
-      // The distance is always MESH_X_DIST so multiply by the constant reciprocal.
-      const float xratio = (end.x - mesh_index_to_xpos(iend.x)) * RECIPROCAL(MESH_X_DIST);
+      // When UBL_Z_RAISE_WHEN_OFF_MESH is disabled Z correction is extrapolated from the edge of the mesh
+      #ifdef UBL_Z_RAISE_WHEN_OFF_MESH
+        // For a move off the UBL mesh, use a constant Z raise
+        if (!cell_index_x_valid(end.x) || !cell_index_y_valid(end.y)) {
 
-      float z1, z2;
-      if (iend.x >= GRID_MAX_POINTS_X - 1)
-        z1 = z2 = 0.0;
-      else {
-        z1 = z_values[iend.x    ][iend.y    ] + xratio *
-            (z_values[iend.x + 1][iend.y    ] - z_values[iend.x][iend.y    ]),
-        z2 = z_values[iend.x    ][iend.y + 1] + xratio *
-            (z_values[iend.x + 1][iend.y + 1] - z_values[iend.x][iend.y + 1]);
-      }
+          // Note: There is no Z Correction in this case. We are off the mesh and don't know what
+          // a reasonable correction would be, UBL_Z_RAISE_WHEN_OFF_MESH will be used instead of
+          // a calculated (Bi-Linear interpolation) correction.
+
+          end.z += UBL_Z_RAISE_WHEN_OFF_MESH;
+          planner.buffer_segment(end, scaled_fr_mm_s, extruder);
+          current_position = destination;
+          return;
+        }
+      #endif
+
+      // The distance is always MESH_X_DIST so multiply by the constant reciprocal.
+      const float xratio = (end.x - mesh_index_to_xpos(iend.x)) * RECIPROCAL(MESH_X_DIST),
+                  yratio = (end.y - mesh_index_to_ypos(iend.y)) * RECIPROCAL(MESH_Y_DIST),
+                  z1 = z_values[iend.x][iend.y    ] + xratio * (z_values[iend.x + 1][iend.y    ] - z_values[iend.x][iend.y    ]),
+                  z2 = z_values[iend.x][iend.y + 1] + xratio * (z_values[iend.x + 1][iend.y + 1] - z_values[iend.x][iend.y + 1]);
 
       // X cell-fraction done. Interpolate the two Z offsets with the Y fraction for the final Z offset.
-      const float yratio = (end.y - mesh_index_to_ypos(iend.y)) * RECIPROCAL(MESH_Y_DIST),
-                  z0 = iend.y < GRID_MAX_POINTS_Y - 1 ? (z1 + (z2 - z1) * yratio) * planner.fade_scaling_factor_for_z(end.z) : 0.0;
+      const float z0 = (z1 + (z2 - z1) * yratio) * planner.fade_scaling_factor_for_z(end.z);
 
       // Undefined parts of the Mesh in z_values[][] are NAN.
       // Replace NAN corrections with 0.0 to prevent NAN propagation.
-      if (!isnan(z0)) end.z += z0;
+      if (!ISNAN(z0)) end.z += z0;
       planner.buffer_segment(end, scaled_fr_mm_s, extruder);
       current_position = destination;
       return;
@@ -157,7 +150,7 @@
 
         // Undefined parts of the Mesh in z_values[][] are NAN.
         // Replace NAN corrections with 0.0 to prevent NAN propagation.
-        if (isnan(z0)) z0 = 0.0;
+        if (ISNAN(z0)) z0 = 0.0;
 
         const float ry = mesh_index_to_ypos(icell.y);
 
@@ -205,7 +198,7 @@
 
         // Undefined parts of the Mesh in z_values[][] are NAN.
         // Replace NAN corrections with 0.0 to prevent NAN propagation.
-        if (isnan(z0)) z0 = 0.0;
+        if (ISNAN(z0)) z0 = 0.0;
 
         /**
          * Without this check, it's possible to generate a zero length move, as in the case where
@@ -260,7 +253,7 @@
 
         // Undefined parts of the Mesh in z_values[][] are NAN.
         // Replace NAN corrections with 0.0 to prevent NAN propagation.
-        if (isnan(z0)) z0 = 0.0;
+        if (ISNAN(z0)) z0 = 0.0;
 
         if (!inf_normalized_flag) {
           on_axis_distance = use_x_dist ? rx - start.x : next_mesh_line_y - start.y;
@@ -283,7 +276,7 @@
 
         // Undefined parts of the Mesh in z_values[][] are NAN.
         // Replace NAN corrections with 0.0 to prevent NAN propagation.
-        if (isnan(z0)) z0 = 0.0;
+        if (ISNAN(z0)) z0 = 0.0;
 
         if (!inf_normalized_flag) {
           on_axis_distance = use_x_dist ? next_mesh_line_x - start.x : ry - start.y;
@@ -330,7 +323,7 @@
    * Returns true if did NOT move, false if moved (requires current_position update).
    */
 
-  bool _O2 unified_bed_leveling::line_to_destination_segmented(const feedRate_t &scaled_fr_mm_s) {
+  bool _O2 unified_bed_leveling::line_to_destination_segmented(const_feedRate_t scaled_fr_mm_s) {
 
     if (!position_is_reachable(destination))  // fail if moving outside reachable boundary
       return true;                            // did not move, so current_position still accurate
@@ -342,7 +335,7 @@
 
     #if IS_KINEMATIC
       const float seconds = cart_xy_mm / scaled_fr_mm_s;                             // Duration of XY move at requested rate
-      uint16_t segments = LROUND(delta_segments_per_second * seconds),               // Preferred number of segments for distance @ feedrate
+      uint16_t segments = LROUND(segments_per_second * seconds),                     // Preferred number of segments for distance @ feedrate
                seglimit = LROUND(cart_xy_mm * RECIPROCAL(DELTA_SEGMENT_MIN_LENGTH)); // Number of segments at minimum segment length
       NOMORE(segments, seglimit);                                                    // Limit to minimum segment length (fewer segments)
     #else
@@ -404,18 +397,18 @@
         int8_t((raw.x - (MESH_MIN_X)) * RECIPROCAL(MESH_X_DIST)),
         int8_t((raw.y - (MESH_MIN_Y)) * RECIPROCAL(MESH_Y_DIST))
       };
-      LIMIT(icell.x, 0, (GRID_MAX_POINTS_X) - 1);
-      LIMIT(icell.y, 0, (GRID_MAX_POINTS_Y) - 1);
+      LIMIT(icell.x, 0, GRID_MAX_CELLS_X);
+      LIMIT(icell.y, 0, GRID_MAX_CELLS_Y);
 
       float z_x0y0 = z_values[icell.x  ][icell.y  ],  // z at lower left corner
             z_x1y0 = z_values[icell.x+1][icell.y  ],  // z at upper left corner
             z_x0y1 = z_values[icell.x  ][icell.y+1],  // z at lower right corner
             z_x1y1 = z_values[icell.x+1][icell.y+1];  // z at upper right corner
 
-      if (isnan(z_x0y0)) z_x0y0 = 0;              // ideally activating planner.leveling_active (G29 A)
-      if (isnan(z_x1y0)) z_x1y0 = 0;              //   should refuse if any invalid mesh points
-      if (isnan(z_x0y1)) z_x0y1 = 0;              //   in order to avoid isnan tests per cell,
-      if (isnan(z_x1y1)) z_x1y1 = 0;              //   thus guessing zero for undefined points
+      if (ISNAN(z_x0y0)) z_x0y0 = 0;              // ideally activating planner.leveling_active (G29 A)
+      if (ISNAN(z_x1y0)) z_x1y0 = 0;              //   should refuse if any invalid mesh points
+      if (ISNAN(z_x0y1)) z_x0y1 = 0;              //   in order to avoid ISNAN tests per cell,
+      if (ISNAN(z_x1y1)) z_x1y1 = 0;              //   thus guessing zero for undefined points
 
       const xy_pos_t pos = { mesh_index_to_xpos(icell.x), mesh_index_to_ypos(icell.y) };
       xy_pos_t cell = raw - pos;

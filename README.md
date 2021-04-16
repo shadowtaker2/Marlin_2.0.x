@@ -10,7 +10,15 @@
 Additional documentation can be found at the [Marlin Home Page](https://marlinfw.org/).
 Please test this firmware and let us know if it misbehaves in any way. Volunteers are standing by!
 
-# Last release of Marlin 2.0 for Delta FLSun QQ-S Pro (motherboard HISPEED).
+# Last release of Marlin BugFix 2.0.8 for Delta FLSun QQS-Pro (motherboard HISPEED).
+
+- 20201122 Add options in QQS_Config (BMG&BMGmini (step), Flying Extruder)
+- 20201022 Updated Marlin BugFix 2.0.8.1 for FLSun QQS-Pro with A4988 and TMC220x (Easy to configure by "QQS_Config.h" file)**
+- Integration in the Marlin firmware of the HISPEED motherboard and configuration files for the QQS-Pro.
+- Fixed Deploy/Stow ZProbe
+- Fixed for users using E3Dv6 hotend
+- Others TIPS(QQS_Config.h, Quick calibration, Menu management of NeoPixel leds, etc).
+
 
 **20201010** Updated Marlin 2.0.7 for FLSun QQS-Pro.
   
@@ -63,7 +71,14 @@ To build Marlin 2.0 you'll need [Arduino IDE 1.8.8 or newer](https://www.arduino
 
 ## Marlin Support
 
-For best results getting help with configuration and troubleshooting, please use the following resources:
+- This branch is for fixing bugs and integrating any new features for the duration of the Marlin 2.0.x life-cycle.
+- Follow the [Coding Standards](https://marlinfw.org/docs/development/coding_standards.html) to gain points with the maintainers.
+- Please submit Feature Requests and Bug Reports to the [Issue Queue](https://github.com/MarlinFirmware/Marlin/issues/new/choose). Support resources are also listed there.
+- Whenever you add new features, be sure to add tests to `buildroot/tests` and then run your tests locally, if possible.
+  - It's optional: Running all the tests on Windows might take a long time, and they will run anyway on GitHub.
+  - If you're running the tests on Linux (or on WSL with the code on a Linux volume) the speed is much faster.
+  - You can use `make tests-all-local` or `make tests-single-local TEST_TARGET=...`.
+  - If you prefer Docker you can use `make tests-all-local-docker` or `make tests-all-local-docker TEST_TARGET=...`.
 
 - [Marlin Documentation](http://marlinfw.org) - Official Marlin documentation
 - [Marlin Discord](https://discord.gg/n5NJ59y) - Discuss issues with Marlin users and developers
@@ -81,8 +96,7 @@ The current Marlin dev team consists of:
  - Roxanne Neufeld [[@Roxy-3D](https://github.com/Roxy-3D)] - USA
  - Chris Pepper [[@p3p](https://github.com/p3p)] - UK
  - Bob Kuhn [[@Bob-the-Kuhn](https://github.com/Bob-the-Kuhn)] - USA
- - Erik van der Zalm [[@ErikZalm](https://github.com/ErikZalm)] - Netherlands &nbsp; [![Flattr Erik](https://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=ErikZalm&url=https://github.com/MarlinFirmware/Marlin&title=Marlin&language=&tags=github&category=software)
-
+ - Erik van der Zalm [[@ErikZalm](https://github.com/ErikZalm)] - Netherlands 
 ## License
 
 Marlin is published under the [GPL license](/LICENSE) because we believe in open development. The GPL comes with both rights and obligations. Whether you use Marlin firmware as the driver for your open or closed-source product, you must keep Marlin open, and you must provide your compatible Marlin source code to end users upon request. The most straightforward way to comply with the Marlin license is to make a fork of Marlin on Github, perform your modifications, and direct users to your modified fork.
