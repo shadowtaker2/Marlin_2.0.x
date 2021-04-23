@@ -238,8 +238,21 @@
 //
 //#define POWER_LOSS_PIN                      PA1   // PW_SO
 #if ENABLED(BACKUP_POWER_SUPPLY)
-  #define POWER_LOSS_PIN                    PA2   // PW_DET (UPS) MKSPWC
+  #define POWER_LOSS_PIN                    PA2   // PW_DET (MKSUPS) 
+  #define PS_ON_PIN                         PA3  // MKSPWC
 #endif
+  //#define POWER_LOSS_PIN                  PA2   // PW_DET nano
+  #define PS_ON_PIN                       PA3  // PW_OFF nano
+//#define POWER_LOSS_PIN                      PA2   // PW_DET mini
+
+//#define MKSPWC
+  #ifdef MKSPWC
+    #define SUICIDE_PIN                     PB2   // Enable MKSPWC SUICIDE PIN
+    #define SUICIDE_PIN_INVERTING          false  // Enable MKSPWC PIN STATE
+    #define KILL_PIN                        PA2   // Enable MKSPWC DET PIN
+    #define KILL_PIN_STATE                  true  // Enable MKSPWC PIN STATE
+  #endif
+//#define PS_ON_PIN                           PA3   // PW_OFF mini
 
 /**
  *    Connector J2
@@ -256,10 +269,10 @@
 //
 // Power Supply Control
 //
-#if ENABLED(PSU_CONTROL)
+#if ENABLED(PSU_CONTRO)
   #define KILL_PIN                          PA2   // PW_DET
   #define KILL_PIN_INVERTING                true
-  //#define PS_ON_PIN                       PA3   // PW_CN /PW_OFF
+  #define PS_ON_PIN                       PA3   // PW_CN /PW_OFF
 #endif
 
 #define MT_DET_1_PIN                        PA4   // MT_DET
