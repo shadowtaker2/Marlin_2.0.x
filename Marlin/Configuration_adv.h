@@ -929,7 +929,7 @@
 #define DEFAULT_STEPPER_DEACTIVE_TIME (2*60)
 #define DISABLE_INACTIVE_X true
 #define DISABLE_INACTIVE_Y true
-#define DISABLE_INACTIVE_Z false // Set 'false' if the nozzle could fall onto your printed part!
+#define DISABLE_INACTIVE_Z true // Set 'false' if the nozzle could fall onto your printed part!
 #define DISABLE_INACTIVE_E true
 
 // Default Minimum Feedrates for printing and travel moves
@@ -1057,7 +1057,7 @@
  * vibration and surface artifacts. The algorithm adapts to provide the best possible step smoothing at the
  * lowest stepping frequencies.
  */
-//#define ADAPTIVE_STEP_SMOOTHING
+#define ADAPTIVE_STEP_SMOOTHING
 
 /**
  * Custom Microstepping
@@ -1159,14 +1159,14 @@
 
   // Add Probe Z Offset calibration to the Z Probe Offsets menu
   #if HAS_BED_PROBE
-    //#define PROBE_OFFSET_WIZARD
+    #define PROBE_OFFSET_WIZARD
     #if ENABLED(PROBE_OFFSET_WIZARD)
       //
       // Enable to init the Probe Z-Offset when starting the Wizard.
       // Use a height slightly above the estimated nozzle-to-probe Z offset.
       // For example, with an offset of -5, consider a starting height of -4.
       //
-      //#define PROBE_OFFSET_WIZARD_START_Z -4.0
+      #define PROBE_OFFSET_WIZARD_START_Z -15.2
 
       // Set a convenient position to do the calibration (probing point and nozzle/bed-distance)
       //#define PROBE_OFFSET_WIZARD_XY_POS { X_CENTER, Y_CENTER }
@@ -1316,7 +1316,7 @@
    */
   #define POWER_LOSS_RECOVERY
   #if ENABLED(POWER_LOSS_RECOVERY)
-    #define PLR_ENABLED_DEFAULT   true  // Power Loss Recovery enabled by default. (Set with 'M413 Sn' & M500)
+    #define PLR_ENABLED_DEFAULT   false  // Power Loss Recovery enabled by default. (Set with 'M413 Sn' & M500)
     //#define BACKUP_POWER_SUPPLY       // Backup power / UPS to move the steppers on power loss
     //#define POWER_LOSS_ZRAISE       2 // (mm) Z axis raise on resume (on power loss with UPS)
     #define POWER_LOSS_PIN           -1 // Pin to detect power loss. Set to -1 to disable default pin on boards without module.
@@ -1586,7 +1586,7 @@
 // Additional options for DGUS / DWIN displays
 //
 #if HAS_DGUS_LCD
-  #define LCD_SERIAL_PORT 3
+  #define LCD_SERIAL_PORT 1//3
   #define LCD_BAUDRATE 115200
 
   #define DGUS_RX_BUFFER_SIZE 128
@@ -1648,12 +1648,12 @@
 // Specify additional languages for the UI. Default specified by LCD_LANGUAGE.
 //
 #if ANY(DOGLCD, TFT_COLOR_UI, TOUCH_UI_FTDI_EVE)
-  //#define LCD_LANGUAGE_2 fr
-  //#define LCD_LANGUAGE_3 de
-  //#define LCD_LANGUAGE_4 es
-  //#define LCD_LANGUAGE_5 it
+  #define LCD_LANGUAGE_2 fr
+  #define LCD_LANGUAGE_3 de
+  #define LCD_LANGUAGE_4 es
+  #define LCD_LANGUAGE_5 it
   #ifdef LCD_LANGUAGE_2
-    //#define LCD_LANGUAGE_AUTO_SAVE // Automatically save language to EEPROM on change
+    #define LCD_LANGUAGE_AUTO_SAVE // Automatically save language to EEPROM on change
   #endif
 #endif
 
@@ -1836,7 +1836,7 @@
  *
  * See https://marlinfw.org/docs/features/lin_advance.html for full instructions.
  */
-//#define LIN_ADVANCE
+#define LIN_ADVANCE
 #if ENABLED(LIN_ADVANCE)
   //#define EXTRA_LIN_ADVANCE_K // Enable for second linear advance constants
   #define LIN_ADVANCE_K 0.22    // Unit: mm compression per 1mm/s extruder speed
@@ -2114,7 +2114,7 @@
 #endif
 
 // Add M575 G-code to change the baud rate
-//#define BAUD_RATE_GCODE
+#define BAUD_RATE_GCODE
 
 #if ENABLED(SDSUPPORT)
   // Enable this option to collect and display the maximum
@@ -2140,7 +2140,7 @@
  * Currently handles M108, M112, M410, M876
  * NOTE: Not yet implemented for all platforms.
  */
-//#define EMERGENCY_PARSER
+#define EMERGENCY_PARSER
 
 /**
  * Realtime Reporting (requires EMERGENCY_PARSER)
@@ -2563,7 +2563,7 @@
   #endif
 
   #if AXIS_IS_TMC(E0)
-    #define E0_CURRENT      850
+    #define E0_CURRENT      700
     #define E0_MICROSTEPS    16
     #define E0_RSENSE         0.11
     #define E0_CHAIN_POS     -1
@@ -2844,7 +2844,7 @@
    * Enable M122 debugging command for TMC stepper drivers.
    * M122 S0/1 will enable continous reporting.
    */
-  //#define TMC_DEBUG
+  #define TMC_DEBUG
 
   /**
    * You can set your own advanced settings by filling in predefined functions.
