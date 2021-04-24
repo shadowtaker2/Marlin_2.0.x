@@ -82,7 +82,9 @@
 //
 // Servos
 //
-//#define SERVO0_PIN                        PA8   // use IO0 to enable BLTOUCH support/remove Mks_Wifi
+#ifndef SERVO0_PIN
+  #define SERVO0_PIN                        PA8   // Enable BLTOUCH support on IO0 (WIFI connector)
+#endif
 
 //
 // Limit Switches
@@ -241,18 +243,6 @@
   #define POWER_LOSS_PIN                    PA2   // PW_DET (MKSUPS) 
   #define PS_ON_PIN                         PA3  // MKSPWC
 #endif
-  //#define POWER_LOSS_PIN                  PA2   // PW_DET nano
-  #define PS_ON_PIN                       PA3  // PW_OFF nano
-//#define POWER_LOSS_PIN                      PA2   // PW_DET mini
-
-//#define MKSPWC
-  #ifdef MKSPWC
-    #define SUICIDE_PIN                     PB2   // Enable MKSPWC SUICIDE PIN
-    #define SUICIDE_PIN_INVERTING          false  // Enable MKSPWC PIN STATE
-    #define KILL_PIN                        PA2   // Enable MKSPWC DET PIN
-    #define KILL_PIN_STATE                  true  // Enable MKSPWC PIN STATE
-  #endif
-//#define PS_ON_PIN                           PA3   // PW_OFF mini
 
 /**
  *    Connector J2
@@ -269,7 +259,7 @@
 //
 // Power Supply Control
 //
-#if ENABLED(PSU_CONTRO)
+#if ENABLED(PSU_CONTROL)
   #define KILL_PIN                          PA2   // PW_DET
   #define KILL_PIN_INVERTING                true
   #define PS_ON_PIN                       PA3   // PW_CN /PW_OFF
