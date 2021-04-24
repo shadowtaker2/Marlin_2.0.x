@@ -23,14 +23,14 @@
 
 #include "../DGUSDisplayDef.h"
 
-//#define DGUS_MKS_RUNOUT_SENSOR
+#define DGUS_MKS_RUNOUT_SENSOR
 
 #define LOGO_TIME_DELAY TERN(USE_MKS_GREEN_UI, 8000, 1500)
 
 #if ENABLED(DGUS_MKS_RUNOUT_SENSOR)
-  #define MT_DET_1_PIN         1
-  #define MT_DET_2_PIN         2
-  #define MT_DET_PIN_INVERTING false
+  //#define MT_DET_1_PIN         1
+  //#define MT_DET_2_PIN         2
+  //#define MT_DET_PIN_INVERTING false
 #endif
 
 #define MKS_FINSH
@@ -428,7 +428,7 @@ constexpr uint8_t VP_M117_LEN = 0x20;
 
 // Heater status
 constexpr uint16_t VP_E0_STATUS = 0x3410;
-constexpr uint16_t VP_E1_STATUS = 0x3412;
+//constexpr uint16_t VP_E1_STATUS = 0x3412;
 //constexpr uint16_t VP_E2_STATUS = 0x3414;
 //constexpr uint16_t VP_E3_STATUS = 0x3416;
 //constexpr uint16_t VP_E4_STATUS = 0x3418;
@@ -737,7 +737,7 @@ constexpr uint16_t SP_T_Bed_Set   = 0x5040;
   /* -------------------------------0x4000-0x4FFF------------------------------- */
   // Heater Control Buttons , triged between "cool down" and "heat PLA" state
   constexpr uint16_t VP_E0_CONTROL = 0x4010;
-  constexpr uint16_t VP_E1_CONTROL = 0x4012;
+  //constexpr uint16_t VP_E1_CONTROL = 0x4012;
   //constexpr uint16_t VP_E2_CONTROL = 0x2214;
   //constexpr uint16_t VP_E3_CONTROL = 0x2216;
   //constexpr uint16_t VP_E4_CONTROL = 0x2218;
@@ -746,7 +746,7 @@ constexpr uint16_t SP_T_Bed_Set   = 0x5040;
 
   // Preheat
   constexpr uint16_t VP_E0_BED_PREHEAT = 0x4020;
-  constexpr uint16_t VP_E1_BED_PREHEAT = 0x4022;
+  //constexpr uint16_t VP_E1_BED_PREHEAT = 0x4022;
   //constexpr uint16_t VP_E2_BED_PREHEAT = 0x4024;
   //constexpr uint16_t VP_E3_BED_PREHEAT = 0x4026;
   //constexpr uint16_t VP_E4_BED_PREHEAT = 0x4028;
