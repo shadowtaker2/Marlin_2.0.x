@@ -12,7 +12,7 @@
 * -Comment/Uncomment line to add or modify some options. 
 *  Default is for QQS and it's uncommented ;-)
 */
-//#define XP
+#define XP
 /*_______________________1___________________________*/
 //==================== Hardware =====================//
 /*-------------Motherboard/Printer-(1 CHOICE)-------*/
@@ -24,7 +24,7 @@
 /*________________________2___________________________*/
           /*-----Type Drivers-(1 CHOICE)-----*/
 /* MODE STOCK for QQS & Q5 */
-#define STOCK                      // (S) For 4xA4988(green or red color) (Default_QQS)
+//#define STOCK                      // (S) For 4xA4988(green or red color) (Default_QQS)
                                      // (S) For 3xTMC2208+1xA4988 (Default_Q5)
 
 /* MODE STANDALONE XYZ+E for QQS & Q5 */
@@ -36,7 +36,7 @@
 //#define Q_UART9                    //(U9) 4xTMC2209 Note: remove on your printer the module WIFI and wire your TMC.
 
 /* SPECIAL MODE UART XYZ+E for QQS-Pro */
-//#define QQS_UARTH                  //(UH) Mode special 2209 wiring with one I/O pin (Remove module ESP12)
+#define QQS_UARTH                  //(UH) Mode special 2209 wiring with one I/O pin (Remove module ESP12)
 
 /**========================2bis=================================//
  * -- If you have an other stepper driver for EXTRUDER----------//
