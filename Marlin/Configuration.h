@@ -1471,7 +1471,7 @@
 #endif
 
 // Max software endstops constrain movement within maximum coordinate bounds
-//#define MAX_SOFTWARE_ENDSTOPS
+#define MAX_SOFTWARE_ENDSTOPS
 #if ENABLED(MAX_SOFTWARE_ENDSTOPS)
   #define MAX_SOFTWARE_ENDSTOP_X
   #define MAX_SOFTWARE_ENDSTOP_Y
@@ -2785,7 +2785,7 @@
  *   TFT_ROTATE_270, TFT_ROTATE_270_MIRROR_X, TFT_ROTATE_270_MIRROR_Y,
  *   TFT_MIRROR_X, TFT_MIRROR_Y, TFT_NO_ROTATION
  */
-#ifdef Q5
+#ifndef Q5
   #define TFT_ROTATION TFT_ROTATE_180
 #endif
 
@@ -2809,7 +2809,7 @@
   #define TOUCH_SCREEN_CALIBRATION //or (M995) 
 
   // QQS-Pro use MKS Robin TFT v2.0
-  #ifdef QQSP
+  #ifndef QQSP
     #define TOUCH_CALIBRATION_X 12033
     #define TOUCH_CALIBRATION_Y -9047
     #define TOUCH_OFFSET_X        -30
