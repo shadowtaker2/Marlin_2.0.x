@@ -116,9 +116,8 @@
  * Currently Ethernet (-2) is only supported on Teensy 4.1 boards.
  * :[-2, -1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#define SERIAL_PORT_2 1
-
 #if ENABLED(ESP_WIFI)
+    #define SERIAL_PORT_2 2
     #define NUM_SERIAL 2  //MKS WIFI
 #endif
 
@@ -148,7 +147,7 @@
 
 // Name displayed in the LCD "Ready" message and Info menu
 #ifdef QQSP
-  #define CUSTOM_MACHINE_NAME "DeltaFoxies QQS-Pro"
+  //#define CUSTOM_MACHINE_NAME "DeltaFoxies QQS-Pro"
 #endif
 #ifdef Q5
   #define CUSTOM_MACHINE_NAME "DeltaFoxies Q5"
@@ -1622,7 +1621,9 @@
  * Turn on with the command 'M111 S32'.
  * NOTE: Requires a lot of PROGMEM!
  */
-//#define DEBUG_LEVELING_FEATURE
+#ifdef XP
+  #define DEBUG_LEVELING_FEATURE
+#endif
 
 #if ANY(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL, PROBE_MANUALLY)
   // Set a height for the start of manual adjustment
@@ -2619,7 +2620,7 @@
 
 //#define DGUS_LCD_UI_MKS
 #if ENABLED(DGUS_LCD_UI_MKS)
-  #define USE_MKS_GREEN_UI
+  //#define USE_MKS_GREEN_UI
 #endif
 
 //
@@ -2789,7 +2790,7 @@
  *   TFT_ROTATE_270, TFT_ROTATE_270_MIRROR_X, TFT_ROTATE_270_MIRROR_Y,
  *   TFT_MIRROR_X, TFT_MIRROR_Y, TFT_NO_ROTATION
  */
-#ifndef Q5
+#ifdef Q5
   #define TFT_ROTATION TFT_ROTATE_180
 #endif
 
@@ -2805,7 +2806,7 @@
 //
 // ADS7843/XPT2046 ADC Touchscreen such as ILI9341 2.8
 //
-#define TOUCH_SCREEN  //Disable when using LVGL
+//#define TOUCH_SCREEN  //Disable when using LVGL
 #if ENABLED(TOUCH_SCREEN)
   #define BUTTON_DELAY_EDIT  50 // (ms) Button repeat delay for edit screens
   #define BUTTON_DELAY_MENU 250 // (ms) Button repeat delay for menus
@@ -2813,7 +2814,7 @@
   #define TOUCH_SCREEN_CALIBRATION //or (M995) 
 
   // QQS-Pro use MKS Robin TFT v2.0
-  #ifndef QQSP
+  #ifdef QQSP
     #define TOUCH_CALIBRATION_X 12033
     #define TOUCH_CALIBRATION_Y -9047
     #define TOUCH_OFFSET_X        -30

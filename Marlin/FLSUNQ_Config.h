@@ -12,7 +12,7 @@
 * -Comment/Uncomment line to add or modify some options. 
 *  Default is for QQS and it's uncommented ;-)
 */
-#define XP
+//#define XP
 /*_______________________1___________________________*/
 //==================== Hardware =====================//
 /*-------------Motherboard/Printer-(1 CHOICE)-------*/
@@ -24,7 +24,7 @@
 /*________________________2___________________________*/
           /*-----Type Drivers-(1 CHOICE)-----*/
 /* MODE STOCK for QQS & Q5 */
-//#define STOCK                      // (S) For 4xA4988(green or red color) (Default_QQS)
+#define STOCK                      // (S) For 4xA4988(green or red color) (Default_QQS)
                                      // (S) For 3xTMC2208+1xA4988 (Default_Q5)
 
 /* MODE STANDALONE XYZ+E for QQS & Q5 */
@@ -36,7 +36,7 @@
 //#define Q_UART9                    //(U9) 4xTMC2209 Note: remove on your printer the module WIFI and wire your TMC.
 
 /* SPECIAL MODE UART XYZ+E for QQS-Pro */
-#define QQS_UARTH                  //(UH) Mode special 2209 wiring with one I/O pin (Remove module ESP12)
+//#define QQS_UARTH                  //(UH) Mode special 2209 wiring with one I/O pin (Remove module ESP12)
 
 /**========================2bis=================================//
  * -- If you have an other stepper driver for EXTRUDER----------//
@@ -57,10 +57,14 @@
         */
 #define MKS_ROBIN_TFT32            // Mks_Robin_TFT_V2.0 (Default)
 //#define TFT_GENERIC                // For the user who haven't the same screen.
-
+//#define DGUS_LCD_UI_MKS            // Mks_H43_v1.0
                 /*--- Choice UI TFT ----*/
 #define TFT_COLOR_UI               //(C) UI MARLIN (Default)
+#define TOUCH_SCREEN               //(C) UI MARLIN (Default)
+
 //#define TFT_CLASSIC_UI             //(F) UI STANDARD (type LCD)
+
+//#define USE_MKS_GREEN_UI             // Mks_H43_v1.0
 
 /* ======================================//
 * === Note:Languages already integrated==// 
@@ -68,7 +72,7 @@
 * =======================================//
 */
 //#define LCD_LANGUAGE en            // Change for your country ('bg':'Bulgarian', 'ca':'Catalan', 'cz':'Czech', 'da':'Danish', 'el':'Greek', 'fi':'Finnish', 'hr':'Croatian', 'hu':'Hungarian', 'jp_kana':'Japanese', 'nl':'Dutch', 'pl':'Polish', 'pt_br':'Portuguese (Brazilian)', 'ro':'Romanian', 'ru':'Russian', 'sk':'Slovak', 'sv':'Swedish', 'tr':'Turkish', 'uk':'Ukrainian', 'vi':'Vietnamese', 'zh_CN':'Chinese (Simplified)', etc)
-#define BOOT_MARLIN_LOGO_SMALL     // Small Logo Marlin to reduce de binary. Comment to have normal LOGO. (Default)
+//#define BOOT_MARLIN_LOGO_SMALL     // Small Logo Marlin to reduce de binary. Comment to have normal LOGO. (Default)
 
 /*__________________________4______________________________*/
                   /*----  Modules -----*/
@@ -132,7 +136,7 @@
 //#define PREHEAT_SHORTCUT_MENU_ITEM // add preheat/temperature menu (first page)
 
 // For user who change their nozzle thermistor by another one ex: "ATC Semitec 104GT-2" = 5 
-//#define TEMP_SENSOR_0 5             // uncomment with a good number/type.
+//#define TEMP_SENSOR_0 13//5             // uncomment with a good number/type.
 
 // ---Expe tools Levelling-------
 //#define LEVEL_BED_CORNERS
