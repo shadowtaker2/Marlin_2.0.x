@@ -242,7 +242,6 @@
 #if ENABLED(THERMAL_PROTECTION_HOTENDS)
   #define THERMAL_PROTECTION_PERIOD 40        // Seconds
   #define THERMAL_PROTECTION_HYSTERESIS 6     // Degrees Celsius
-  
   //#define ADAPTIVE_FAN_SLOWING              // Slow part cooling fan if temperature drops
   #if BOTH(ADAPTIVE_FAN_SLOWING, PIDTEMP)
     //#define NO_FAN_SLOWING_IN_PID_TUNING    // Don't slow fan speed during M303
@@ -737,12 +736,8 @@
  */
 //#define SENSORLESS_BACKOFF_MM  { 2, 2, 2 }     //2209 (mm) Backoff from endstops before sensorless homing
 #define HOMING_BUMP_MM      { 5, 5, 5 }       // (mm) Backoff from endstops after first bump
-                                              // For delta all values must be the same
-#ifdef Q5
-  #define HOMING_BUMP_DIVISOR { 4, 4, 4 }
-#else
-  #define HOMING_BUMP_DIVISOR { 10, 10, 10 }       // Re-Bump Speed Divisor (Divides the Homing Feedrate)
-#endif
+                                              // For delta all values must be the same                                                          
+#define HOMING_BUMP_DIVISOR { 4, 4, 4 }       // Re-Bump Speed Divisor (Divides the Homing Feedrate)
 //#define HOMING_BACKOFF_POST_MM { 2, 2, 2 }  // (mm) Backoff from endstops after homing
 
 //#define QUICK_HOME                          // If G28 contains XY do a diagonal move first
@@ -932,7 +927,7 @@
 #define DEFAULT_STEPPER_DEACTIVE_TIME (2*60)
 #define DISABLE_INACTIVE_X true
 #define DISABLE_INACTIVE_Y true
-#define DISABLE_INACTIVE_Z false  // Set 'false' if the nozzle could fall onto your printed part!
+#define DISABLE_INACTIVE_Z true  // Set 'false' if the nozzle could fall onto your printed part!
 #define DISABLE_INACTIVE_E true
 
 // Default Minimum Feedrates for printing and travel moves
@@ -1579,7 +1574,7 @@
   #define STATUS_HOTEND_INVERTED      // Show solid nozzle bitmaps when heating (Requires STATUS_HOTEND_ANIM)
   #define STATUS_HOTEND_ANIM          // Use a second bitmap to indicate hotend heating
   #define STATUS_BED_ANIM             // Use a second bitmap to indicate bed heating
-  #define STATUS_CHAMBER_ANIM         // Use a second bitmap to indicate chamber heating
+  //#define STATUS_CHAMBER_ANIM         // Use a second bitmap to indicate chamber heating
   //#define STATUS_CUTTER_ANIM        // Use a second bitmap to indicate spindle / laser active
   //#define STATUS_COOLER_ANIM        // Use a second bitmap to indicate laser cooling
   //#define STATUS_FLOWMETER_ANIM     // Use multiple bitmaps to indicate coolant flow
@@ -1997,7 +1992,7 @@
 //
 // G2/G3 Arc Support
 //
-#define ARC_SUPPORT                 // Disable this feature to save ~3226 bytes
+#define ARC_SUPPORT               // Disable this feature to save ~3226 bytes
 #if ENABLED(ARC_SUPPORT)
   #define MM_PER_ARC_SEGMENT      1 // (mm) Length (or minimum length) of each arc segment
   //#define ARC_SEGMENTS_PER_R    1 // Max segment length, MM_PER = Min
@@ -3602,15 +3597,15 @@
   #define MAIN_MENU_ITEM_5_CONFIRM
 
   #define MAIN_MENU_ITEM_6_DESC "Bed Leveling UBL for " PREHEAT_1_LABEL
-  #define MAIN_MENU_ITEM_6_GCODE "G28\nG29 P1 T\nG29 P3 T\nG29 P3\nG29 S0\nG29 A\nM500\nM140 S0"
+  #define MAIN_MENU_ITEM_6_GCODE "M1004 H0 B60 S0"
   #define MAIN_MENU_ITEM_6_CONFIRM
 
   #define MAIN_MENU_ITEM_7_DESC "Bed Leveling UBL for " PREHEAT_4_LABEL
-  #define MAIN_MENU_ITEM_7_GCODE "G28\nM190 S" STRINGIFY(PREHEAT_4_TEMP_BED) "\nG29 P1 T\nG29 P3 T\nG29 P3\nG29 S1\nG29 A\nM500\nM140 S0"
+  #define MAIN_MENU_ITEM_7_GCODE "M1004 H0 B80 S0\nM500\nM140 S0"
   #define MAIN_MENU_ITEM_7_CONFIRM
 
   #define MAIN_MENU_ITEM_8_DESC "Bed Leveling UBL for " PREHEAT_2_LABEL
-  #define MAIN_MENU_ITEM_8_GCODE "G28\nM190 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nG29 P1 T\nG29 P3 T\nG29 P3\nG29 S2\nG29 A\nM500\nM140 S0"
+  #define MAIN_MENU_ITEM_8_GCODE "M1004 H0 B90 S0\nM500\nM140 S0"
   #define MAIN_MENU_ITEM_8_CONFIRM
 
   #define MAIN_MENU_ITEM_9_DESC "Reboot Printer"

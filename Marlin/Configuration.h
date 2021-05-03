@@ -90,12 +90,12 @@
 #define SHOW_BOOTSCREEN
 
 // Show the bitmap in Marlin/_Bootscreen.h on startup.
-#ifdef TFT_CLASSIC_UI
+#if ANY(TFT_CLASSIC_UI, TFT_REPRAP)
   #define SHOW_CUSTOM_BOOTSCREEN  //TIPS
 #endif
 
 // Show the bitmap in Marlin/_Statusscreen.h on the status screen.
-#ifdef TFT_CLASSIC_UI
+#if ANY(TFT_CLASSIC_UI, TFT_REPRAP)
   #define CUSTOM_STATUS_SCREEN_IMAGE  //TIPS
 #endif
 
@@ -1424,7 +1424,7 @@
  *  - Use a low value (i.e., Z_MIN_POS) if the nozzle falls down to the bed.
  *  - Use a large value (i.e., Z_MAX_POS) if the bed falls down, away from the nozzle.
  */
-//#define Z_IDLE_HEIGHT Z_HOME_POS
+#define Z_IDLE_HEIGHT Z_HOME_POS
 
 //#define Z_HOMING_HEIGHT  4      // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...
                                   // Be sure to have this much clearance over your Z_MAX_POS to prevent grinding.
@@ -1923,7 +1923,7 @@
 // Preheat Constants - Up to 5 are supported without changes
 //
 #define PREHEAT_1_LABEL       "PLA"
-#define PREHEAT_1_TEMP_HOTEND 205
+#define PREHEAT_1_TEMP_HOTEND 200
 #define PREHEAT_1_TEMP_BED     60
 #define PREHEAT_1_TEMP_CHAMBER 35
 #define PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
@@ -1937,11 +1937,13 @@
 #define PREHEAT_3_LABEL       "TPU"
 #define PREHEAT_3_TEMP_HOTEND 230
 #define PREHEAT_3_TEMP_BED     50
+#define PREHEAT_2_TEMP_CHAMBER 35                                 
 #define PREHEAT_3_FAN_SPEED     0 // Value from 0 to 255
 
 #define PREHEAT_4_LABEL       "PETG"
 #define PREHEAT_4_TEMP_HOTEND 240
 #define PREHEAT_4_TEMP_BED     80
+#define PREHEAT_2_TEMP_CHAMBER 35                                 
 #define PREHEAT_4_FAN_SPEED     0 // Value from 0 to 255
 
 /**
@@ -2746,6 +2748,11 @@
 // 480x320, 3.5", FSMC Stock Display from ET5
 //
 //#define ANET_ET5_TFT35
+
+//
+// 1024x600, 7", RGB Stock Display from BIQU-BX
+//
+//#define BIQU_BX_TFT70
 
 //
 // Generic TFT with detailed options

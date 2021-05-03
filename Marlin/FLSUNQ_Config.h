@@ -93,6 +93,7 @@
 
 // BMG Extruder (B) Extruder step(417).
 //#define BMG                       //(B) Uncommment for BMG Left/Right.
+//#define SHERPA                     //(P) Uncommment for MiniSherpa.
 
 /*__________________________5_____________________________*/
       /** =============================
@@ -106,6 +107,7 @@
 //#define PREHEAT_BEFORE_PROBING     //(P) Run a PreHeat bed at 60°C (Default)
 //#define PREHEAT_BEFORE_LEVELING    
 #define AUTO_BED_LEVELING_UBL      //(U) (Default)
+#define UBL_MESH_WIZARD            //(u) Wizard UBL.  
 
 //--------IF YOUR USED ABL, DISABLE "SPECIAL MENU"= #define CUSTOM_MENU_MAIN
 //#define AUTO_BED_LEVELING_BILINEAR //(A)
@@ -140,6 +142,7 @@
 
 // ---Expe tools Levelling-------
 //#define LEVEL_BED_CORNERS
+//#define G26_MESH_VALIDATION
 
 /*__________________________8__________________________*/
 /** ===================================================
@@ -176,12 +179,12 @@
 // Variables to calculate steps and current
 //eSteps
 #ifdef BMG
-  #define EXTRUDER_STEPS 417
+  #define EXTRUDER_STEPS 417    // Extruder BMG(Left/Right)
+#else
+  #ifdef SHERPA
+    #define EXTRUDER_STEPS 700  // Extruder Mini-Sherpa
   #else
-  #ifndef Q5
-    #define EXTRUDER_STEPS 397  //TITAN(Default)
-  #else
-    #define EXTRUDER_STEPS 422 //TITAN
+    #define EXTRUDER_STEPS 405  // Extruder TITAN(Default)
   #endif
 #endif
 
@@ -200,7 +203,10 @@
   #define XYZ_CURRENT_HOME  800
 #endif  
 #ifndef E_CURRENT
-  #define E_CURRENT         850
+  #ifdef SHERPA
+    #define E_CURRENT         300
+  #else
+    #define E_CURRENT         850
 #endif
 
 // Set for QQS(4xA4988) or Q5(3x2208+A4988) 
