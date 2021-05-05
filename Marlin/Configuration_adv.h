@@ -927,7 +927,7 @@
 #define DEFAULT_STEPPER_DEACTIVE_TIME (2*60)
 #define DISABLE_INACTIVE_X true
 #define DISABLE_INACTIVE_Y true
-#define DISABLE_INACTIVE_Z true  // Set 'false' if the nozzle could fall onto your printed part!
+#define DISABLE_INACTIVE_Z false  // Set 'false' if the nozzle could fall onto your printed part!
 #define DISABLE_INACTIVE_E true
 
 // Default Minimum Feedrates for printing and travel moves
@@ -3601,11 +3601,11 @@
   #define MAIN_MENU_ITEM_6_CONFIRM
 
   #define MAIN_MENU_ITEM_7_DESC "Bed Leveling UBL for " PREHEAT_4_LABEL
-  #define MAIN_MENU_ITEM_7_GCODE "M1004 H0 B80 S0\nM500\nM140 S0"
+  #define MAIN_MENU_ITEM_7_GCODE "M1004 H0 B80 S1"
   #define MAIN_MENU_ITEM_7_CONFIRM
 
   #define MAIN_MENU_ITEM_8_DESC "Bed Leveling UBL for " PREHEAT_2_LABEL
-  #define MAIN_MENU_ITEM_8_GCODE "M1004 H0 B90 S0\nM500\nM140 S0"
+  #define MAIN_MENU_ITEM_8_GCODE "M1004 H0 B90 S2"
   #define MAIN_MENU_ITEM_8_CONFIRM
 
   #define MAIN_MENU_ITEM_9_DESC "Reboot Printer"
