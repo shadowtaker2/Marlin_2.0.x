@@ -207,6 +207,7 @@
     #define E_CURRENT         300
   #else
     #define E_CURRENT         850
+  #endif
 #endif
 
 // Set for QQS(4xA4988) or Q5(3x2208+A4988) 
