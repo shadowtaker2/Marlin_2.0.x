@@ -12,7 +12,7 @@
 * -Comment/Uncomment line to add or modify some options. 
 *  Default is for QQS and it's uncommented ;-)
 */
-//#define XP
+#define XP
 /*_______________________1___________________________*/
 //==================== Hardware =====================//
 /*-------------Motherboard/Printer-(1 CHOICE)-------*/
@@ -24,7 +24,7 @@
 /*________________________2___________________________*/
           /*-----Type Drivers-(1 CHOICE)-----*/
 /* MODE STOCK for QQS & Q5 */
-#define STOCK                      // (S) For 4xA4988(green or red color) (Default_QQS)
+//#define STOCK                      // (S) For 4xA4988(green or red color) (Default_QQS)
                                      // (S) For 3xTMC2208+1xA4988 (Default_Q5)
 
 /* MODE STANDALONE XYZ+E for QQS & Q5 */
@@ -36,7 +36,7 @@
 //#define Q_UART9                    //(U9) 4xTMC2209 Note: remove on your printer the module WIFI and wire your TMC.
 
 /* SPECIAL MODE UART XYZ+E for QQS-Pro */
-//#define QQS_UARTH                  //(UH) Mode special 2209 wiring with one I/O pin (Remove module ESP12)
+#define QQS_UARTH                  //(UH) Mode special 2209 wiring with one I/O pin (Remove module ESP12)
 
 /**========================2bis=================================//
  * -- If you have an other stepper driver for EXTRUDER----------//
@@ -72,14 +72,14 @@
 * =======================================//
 */
 //#define LCD_LANGUAGE en            // Change for your country ('bg':'Bulgarian', 'ca':'Catalan', 'cz':'Czech', 'da':'Danish', 'el':'Greek', 'fi':'Finnish', 'hr':'Croatian', 'hu':'Hungarian', 'jp_kana':'Japanese', 'nl':'Dutch', 'pl':'Polish', 'pt_br':'Portuguese (Brazilian)', 'ro':'Romanian', 'ru':'Russian', 'sk':'Slovak', 'sv':'Swedish', 'tr':'Turkish', 'uk':'Ukrainian', 'vi':'Vietnamese', 'zh_CN':'Chinese (Simplified)', etc)
-//#define BOOT_MARLIN_LOGO_SMALL     // Small Logo Marlin to reduce de binary. Comment to have normal LOGO. (Default)
+#define BOOT_MARLIN_LOGO_SMALL     // Small Logo Marlin to reduce de binary. Comment to have normal LOGO(Default).
 
 /*__________________________4______________________________*/
                   /*----  Modules -----*/
-#define ESP_WIFI                   //(W) Module ESP8266/ESP12 (Default_QQS)
+//#define ESP_WIFI                   //(W) Module ESP8266/ESP12 (Default_QQS)
 //#define USES_MKS_WIFI_FUNCTION
 /*For LedStrip which need an external power source on Vcc pin.*/
-//#define NEOPIXEL_LED               //(N) Use port GPIO Wifi module (PC7)
+#define NEOPIXEL_LED               //(N) Use port GPIO Wifi module (PC7)
 
 /**=========================================================
  * =========================================================
@@ -89,11 +89,11 @@
  * ====== Default eStep (T=397/422)/(B=417)   ==============
  * =========================================================
  */
-//#define INV_EXT                    // Uncommment to reverse direction for BMG.
+#define INV_EXT                    // Uncommment to reverse direction for BMG.
 
 // BMG Extruder (B) Extruder step(417).
 //#define BMG                       //(B) Uncommment for BMG Left/Right.
-//#define SHERPA                     //(P) Uncommment for MiniSherpa.
+#define SHERPA                     //(P) Uncommment for MiniSherpa.
 
 /*__________________________5_____________________________*/
       /** =============================
@@ -104,7 +104,7 @@
       */
 
 //#define DELTA_HOME_TO_SAFE_ZONE    // Option to move down after homing to a height where XYZ movement is unconstrained.
-//#define PREHEAT_BEFORE_PROBING     //(P) Run a PreHeat bed at 60°C (Default)
+#define PREHEAT_BEFORE_PROBING     //(P) Run a PreHeat bed at 60°C (Default)
 //#define PREHEAT_BEFORE_LEVELING    
 #define AUTO_BED_LEVELING_UBL      //(U) (Default)
 #define UBL_MESH_WIZARD            //(u) Wizard UBL.  
@@ -138,7 +138,7 @@
 //#define PREHEAT_SHORTCUT_MENU_ITEM // add preheat/temperature menu (first page)
 
 // For user who change their nozzle thermistor by another one ex: "ATC Semitec 104GT-2" = 5 
-//#define TEMP_SENSOR_0 13//5             // uncomment with a good number/type.
+#define TEMP_SENSOR_0 13//5             // uncomment with a good number/type.
 
 // ---Expe tools Levelling-------
 //#define LEVEL_BED_CORNERS
@@ -182,7 +182,7 @@
   #define EXTRUDER_STEPS 417    // Extruder BMG(Left/Right)
 #else
   #ifdef SHERPA
-    #define EXTRUDER_STEPS 700  // Extruder Mini-Sherpa
+    #define EXTRUDER_STEPS 1400  // Extruder Mini-Sherpa
   #else
     #define EXTRUDER_STEPS 405  // Extruder TITAN(Default)
   #endif
