@@ -166,7 +166,6 @@
     #define Z_SERIAL_TX_PIN                   PC7   // IO1
     #define Z_SERIAL_RX_PIN                   PC7   // IO1
   #endif
-
 #else
   // Motor current PWM pins
   #define MOTOR_CURRENT_PWM_XY_PIN          PA6   // VREF2/3 CONTROL XY
@@ -236,7 +235,7 @@
 //
 // Misc. Functions
 //
-//#define POWER_LOSS_PIN                      PA1   // PW_SO
+//#define POWER_LOSS_PIN                    PA1   // PW_SO
 #if ENABLED(BACKUP_POWER_SUPPLY)
   #define POWER_LOSS_PIN                    PA2   // PW_DET (UPS) MKSPWC
 #endif
