@@ -29,9 +29,10 @@
  * #define SERIAL_PORT_2 3
  */
 
-#if NOT_TARGET(__STM32F1__, STM32F1xx)
-  #error "Oops! Select an STM32F1 board in 'Tools > Board.'"
-#elif HOTENDS > 1 || E_STEPPERS > 1
+//#if NOT_TARGET(__STM32F1__, STM32F1xx)
+//  #error "Oops! Select an STM32F1 board in 'Tools > Board.'"
+//#endif
+#if HOTENDS > 1 || E_STEPPERS > 1
   #error "FLSUN HiSpeedV1 only supports one hotend / E-stepper. Comment out this line to continue."
 #endif
 
@@ -135,7 +136,7 @@
     #define  X_SLAVE_ADDRESS 3    // |  |  :
     #define  Y_SLAVE_ADDRESS 2    // :  |  :
     #define  Z_SLAVE_ADDRESS 1    // |  :  :
-    //#define E0_SLAVE_ADDRESS 0    // :  :  :
+    #define E0_SLAVE_ADDRESS 0    // :  :  :
 
     #define X_SERIAL_TX_PIN                  PA8  // IO0
     #define X_SERIAL_RX_PIN      X_SERIAL_TX_PIN  // IO0
