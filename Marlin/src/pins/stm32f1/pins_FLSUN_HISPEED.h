@@ -135,7 +135,7 @@
     #define  X_SLAVE_ADDRESS 3    // |  |  :
     #define  Y_SLAVE_ADDRESS 2    // :  |  :
     #define  Z_SLAVE_ADDRESS 1    // |  :  :
-    #define E0_SLAVE_ADDRESS 0    // :  :  :
+    //#define E0_SLAVE_ADDRESS 0    // :  :  :
 
     #define X_SERIAL_TX_PIN                  PA8  // IO0
     #define X_SERIAL_RX_PIN      X_SERIAL_TX_PIN  // IO0
