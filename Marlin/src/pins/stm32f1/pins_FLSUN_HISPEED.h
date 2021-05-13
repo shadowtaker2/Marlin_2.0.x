@@ -175,7 +175,7 @@
   #define MOTOR_CURRENT_PWM_Z_PIN           PA7   // VREF4 CONTROL Z
   #define MOTOR_CURRENT_PWM_RANGE          1500   // (255 * (1000mA / 65535)) * 257 = 1000 is equal 1.6v Vref in turn equal 1Amp
   #ifndef DEFAULT_PWM_MOTOR_CURRENT
-    #define DEFAULT_PWM_MOTOR_CURRENT { 900, 900, 850 }
+    #define DEFAULT_PWM_MOTOR_CURRENT { 900, 900, 300 }
   #endif
 
   /**
@@ -197,8 +197,11 @@
   //#define ESP_WIFI_MODULE_BAUDRATE      BAUDRATE  // Must use same BAUDRATE as SERIAL_PORT & SERIAL_PORT_2
   //#define ESP_WIFI_MODULE_RESET_PIN         PA5   // WIFI CTRL/RST
   //#define ESP_WIFI_MODULE_ENABLE_PIN        -1
+  //#define ESP_WIFI_MODULE_GPIO0_PIN           PA8   //IO0
+  //#define ESP_WIFI_MODULE_GPIO4_PIN           PC7   //IO1
   //#define ESP_WIFI_MODULE_TXD_PIN           PA9   // MKS or ESP WIFI RX PIN
   //#define ESP_WIFI_MODULE_RXD_PIN           PA10  // MKS or ESP WIFI TX PIN
+  //#else
   #define WIFI_IO0_PIN                      PA8   // MKS ESP WIFI IO0 PIN
   #define WIFI_IO1_PIN       			          PC7   // MKS ESP WIFI IO1 PIN
   #define WIFI_RESET_PIN				            PA5   // MKS ESP WIFI RESET PIN
@@ -217,7 +220,7 @@
   #define MOTOR_CURRENT_PWM_E_PIN           PB0   // VREF1 CONTROL E
   #define MOTOR_CURRENT_PWM_RANGE           1500  // (255 * (1000mA / 65535)) * 257 = 1000 is equal 1.6v Vref in turn equal 1Amp
   #ifndef DEFAULT_PWM_MOTOR_CURRENT
-   #define DEFAULT_PWM_MOTOR_CURRENT { 900, 900, 850 }
+   #define DEFAULT_PWM_MOTOR_CURRENT { 900, 900, 300 }
   #endif
 #endif
 
