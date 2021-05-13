@@ -29,14 +29,14 @@
 
 /* MODE STANDALONE XYZ+E for QQS & Q5 */
 //#define ALL_TMC8                    //(8) For 4xTMC2208_STANDALONE
-//#define ALL_TMC9                    //(9) For 4xTMC2209_STANDALONE
+#define ALL_TMC9                    //(9) For 4xTMC2209_STANDALONE
 
 /* MODE UART XYZ+E for QQS & Q5 */
 //#define Q_UART8                    //(U8) 4xTMC2208 Note: remove on your printer the module WIFI and wire your TMC.
 //#define Q_UART9                    //(U9) 4xTMC2209 Note: remove on your printer the module WIFI and wire your TMC.
 
 /* SPECIAL MODE UART XYZ+E for QQS-Pro */
-#define QQS_UARTH                  //(UH) Mode special 2209 wiring with one I/O pin (Remove module ESP12)
+//#define QQS_UARTH                  //(UH) Mode special 2209 wiring with one I/O pin (Remove module ESP12)
 
 /**========================2bis=================================//
  * -- If you have an other stepper driver for EXTRUDER----------//
@@ -47,7 +47,7 @@
  */
 //#define DRIVER_EXT A4988  //TMC2209_STANDALONE //LV8729
 //Only WITH Q5 older stepper(A4988/DRV8825/LV8729)
-//#define INV_EXT
+#define INV_EXT
 
 /*__________________________3________________________________*/
         /** =============================
@@ -72,14 +72,16 @@
 * =======================================//
 */
 //#define LCD_LANGUAGE en            // Change for your country ('bg':'Bulgarian', 'ca':'Catalan', 'cz':'Czech', 'da':'Danish', 'el':'Greek', 'fi':'Finnish', 'hr':'Croatian', 'hu':'Hungarian', 'jp_kana':'Japanese', 'nl':'Dutch', 'pl':'Polish', 'pt_br':'Portuguese (Brazilian)', 'ro':'Romanian', 'ru':'Russian', 'sk':'Slovak', 'sv':'Swedish', 'tr':'Turkish', 'uk':'Ukrainian', 'vi':'Vietnamese', 'zh_CN':'Chinese (Simplified)', etc)
-#define BOOT_MARLIN_LOGO_SMALL     // Small Logo Marlin to reduce de binary. Comment to have normal LOGO(Default).
+//#define BOOT_MARLIN_LOGO_SMALL     // Small Logo Marlin to reduce de binary. Comment to have normal LOGO(Default).
 
 /*__________________________4______________________________*/
                   /*----  Modules -----*/
-//#define ESP_WIFI                   //(W) Module ESP8266/ESP12 (Default_QQS)
-//#define USES_MKS_WIFI_FUNCTION
+
+//#define MKS_WIFI                   //(W) Module ESP8266/ESP12 (Default_QQS)
+//#define ESP3D_30                 //(w) Enable firmware ESP3D v3.0 (ESP8266/ESP12)
+
 /*For LedStrip which need an external power source on Vcc pin.*/
-#define NEOPIXEL_LED               //(N) Use port GPIO Wifi module (PC7)
+//#define NEOPIXEL_LED               //(N) Use port GPIO Wifi module (PC7)
 
 /**=========================================================
  * =========================================================
@@ -104,7 +106,7 @@
       */
 
 //#define DELTA_HOME_TO_SAFE_ZONE    // Option to move down after homing to a height where XYZ movement is unconstrained.
-#define PREHEAT_BEFORE_PROBING     //(P) Run a PreHeat bed at 60°C (Default)
+//#define PREHEAT_BEFORE_PROBING     //(P) Run a PreHeat bed at 60°C (Default)
 //#define PREHEAT_BEFORE_LEVELING    
 #define AUTO_BED_LEVELING_UBL      //(U) (Default)
 #define UBL_MESH_WIZARD            //(u) Wizard UBL.  
@@ -117,7 +119,7 @@
     //======Many options for Modules: ===========//
 #define LIN_ADVANCE                //(L) with K=0 For TMC_UART prefer mode spreadCycle(by TFT menu) or commented if problem (Default)
 #define ARC_SUPPORT                //(R) (Default)
-#define POWER_LOSS_RECOVERY        // Continue print after Power-Loss.(Defaul_QQS)
+//#define POWER_LOSS_RECOVERY        // Continue print after Power-Loss.(Defaul_QQS)
 
 //=================================================================================//
 //======================== End_Hardware ===========================================//
@@ -151,15 +153,27 @@
 */
 //#define HOST_ACTION_COMMANDS        // Action Command Prompt support Message on Octoprint
 //------ Support for MeatPack G-code compression (OCTOPRINT)--------//
-//#define MEATPACK_ON_SERIAL_PORT_1   // (M) With connection USB
+#define MEATPACK_ON_SERIAL_PORT_1   // (M) With connection USB
 //#define MEATPACK_ON_SERIAL_PORT_2   // With other connection like Tx/Rx Wifi socket.
-//#define BINARY_FILE_TRANSFER        // Bin transfert for host like ESP3D or others.
-//#define CANCEL_OBJECTS              // Add menu "Cancel Objet"
 
+//#define CANCEL_OBJECTS              // Add menu "Cancel Objet"
 
 // Options for Modules Hardware
 #ifdef NEOPIXEL_LED
   #define LED_CONTROL_MENU           // To control LedStrip.
+#endif
+
+// Options for Modules Hardware MKS_WIFI
+#define MKS_WIFI                   //(W) Module ESP8266/ESP12 (Default_QQS)
+#define ESP3D_30                 //(w) Enable firmware ESP3D v3.0 (ESP8266/ESP12)
+
+#ifdef MKS_WIFI
+  #define ESP_WIFI
+  #ifdef ESP3D_30
+    #define MKS_WIFI_MODULE 
+    #define USES_MKS_WIFI_FUNCTION    // Bin transfert MKS for ESP3D firmware v3.0 or others
+  #endif
+  //#define BINARY_FILE_TRANSFER     // Bin transfert for ESP3D firmware v2.1 or others.
 #endif
 
 //TFT Type For TFT_GENERIC
@@ -182,7 +196,7 @@
   #define EXTRUDER_STEPS 417    // Extruder BMG(Left/Right)
 #else
   #ifdef SHERPA
-    #define EXTRUDER_STEPS 1400  // Extruder Mini-Sherpa
+    #define EXTRUDER_STEPS 702  // Extruder Mini-Sherpa
   #else
     #define EXTRUDER_STEPS 405  // Extruder TITAN(Default)
   #endif
