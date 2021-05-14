@@ -11,10 +11,13 @@ Additional documentation can be found at the [Marlin Home Page](https://marlinfw
 Please test this firmware and let us know if it misbehaves in any way. Volunteers are standing by!
 
 # Last release of Marlin BugFix 2.0.8 for Delta FLSun QQS-Pro (motherboard HISPEED).
-
-- 20201122 Add options in QQS_Config (BMG&BMGmini (step), Flying Extruder)
-- 20201022 Updated Marlin BugFix 2.0.8.1 for FLSun QQS-Pro with A4988 and TMC220x (Easy to configure by "QQS_Config.h" file)**
-- Integration in the Marlin firmware of the HISPEED motherboard and configuration files for the QQS-Pro.
+ 
+**20210514** 2.0.8+
+- New wizards for UBL and ZoffSet.
+- New menu for Delta users.
+- Add options in FLSUNQ_Config (BMG&BMGmini(steps), Flying Extruder, thermistor, ...)
+- Easy to configure by "FLSUNQ_Config.h" file,
+- Integration in the Marlin firmware of the HISPEED motherboard and configuration files for the QQS-Pro,
 - Fixed Deploy/Stow ZProbe
 - Fixed for users using E3Dv6 hotend
 - Others TIPS(QQS_Config.h, Quick calibration, Menu management of NeoPixel leds, etc).
