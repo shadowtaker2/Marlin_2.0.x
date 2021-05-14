@@ -1,7 +1,20 @@
-**Exemple:** 
-  8CWBL-Name_Of_Firmware.bin =>  (8)TMC2208 standalone - (C)UI Marlin - (W)Module Wifi - (B)Extruder BMG - (L)LinearAdvance  
+Each firmware has a header that corresponds to the hardware (board) and functions used in the firmware.
+Below is an example with the firmware for a QQS-Pro printer with a HiSpeedv1 board with TMC2208 stepper drivers:
 
-  **Note**: After choosing your binary, remove the "8CWBL-" header or rename the file to "Robin_mini.bin" for QQS,
+**Exemple:**
+8CWBPULR-Robin_mini.bin 
+=> 
+   - (8)TMC2208 standalone - 
+   - (C)UI Marlin TFT32 - 
+   - (W)Wifi module - 
+   - (T)Extruder Titan - 
+   - (P)PreHeat bed - 
+   - (U)Leveling mode -
+   - (L)LinearAdvance - 
+   - (R)Arc function enabled.
+
+
+  **Note**: After choosing your binary, remove the "8CWTPULR-" header or rename the file to "Robin_mini.bin" for QQS,
   place it on your SD card, insert your SD card into the printer and power on your printer.
 
   **Caption:**
