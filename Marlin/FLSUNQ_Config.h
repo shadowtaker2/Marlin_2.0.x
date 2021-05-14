@@ -12,11 +12,11 @@
 * -Comment/Uncomment line to add or modify some options. 
 *  Default is for QQS and it's uncommented ;-)
 */
-#define XP
+//#define XP
 /*_______________________1___________________________*/
 //==================== Hardware =====================//
 /*-------------Motherboard/Printer-(1 CHOICE)-------*/
-#define QQSP                       // env = flsun_hispeedv1 (Default_QQS)
+#define QQSP                       //  (Default_QQS) env = flsun_hispeedv1
 //#define Q5                         // env = mks_nano_robin35 (change in platformio.ini file or 
                                      // click on the "Default" icon on the bottom edge of the window and 
                                      // choose "mks_robin_nano35").
@@ -24,12 +24,12 @@
 /*________________________2___________________________*/
           /*-----Type Drivers-(1 CHOICE)-----*/
 /* MODE STOCK for QQS & Q5 */
-//#define STOCK                      // (S) For 4xA4988(green or red color) (Default_QQS)
-                                     // (S) For 3xTMC2208+1xA4988 (Default_Q5)
+#define STOCK                      // (S) (Default_QQS) For 4xA4988(green or red color).
+                                     // (S) (Default_Q5) For 3xTMC2208+1xA4988.
 
 /* MODE STANDALONE XYZ+E for QQS & Q5 */
 //#define ALL_TMC8                    //(8) For 4xTMC2208_STANDALONE
-#define ALL_TMC9                    //(9) For 4xTMC2209_STANDALONE
+//#define ALL_TMC9                    //(9) For 4xTMC2209_STANDALONE
 
 /* MODE UART XYZ+E for QQS & Q5 */
 //#define Q_UART8                    //(U8) 4xTMC2208 Note: remove on your printer the module WIFI and wire your TMC.
@@ -45,9 +45,9 @@
  * -- TMC2208_STANDALONE/TMC2209_STANDALONE/TMC2208/TMC2209. ---//
  * =============================================================//
  */
-//#define DRIVER_EXT A4988  //TMC2209_STANDALONE //LV8729
+//#define DRIVER_EXT A4988  //TMC2209_STANDALONE //LV8729//
 //Only WITH Q5 older stepper(A4988/DRV8825/LV8729)
-#define INV_EXT
+//#define INV_EXT
 
 /*__________________________3________________________________*/
         /** =============================
@@ -55,16 +55,14 @@
         * = Driver TFT Color (1 CHOICE)=
         * ==============================
         */
-#define MKS_ROBIN_TFT32            // Mks_Robin_TFT_V2.0 (Default)
+#define MKS_ROBIN_TFT32            //  (Default) Mks_Robin_TFT_V2.0
 //#define TFT_GENERIC                // For the user who haven't the same screen.
-//#define DGUS_LCD_UI_MKS            // Mks_H43_v1.0
-                /*--- Choice UI TFT ----*/
-#define TFT_COLOR_UI               //(C) UI MARLIN (Default)
-#define TOUCH_SCREEN               //(C) UI MARLIN (Default)
 
+                /*--- Choice UI TFT ----*/
+#define TFT_COLOR_UI               //(C) (Default) UI MARLIN
 //#define TFT_CLASSIC_UI             //(F) UI STANDARD (type LCD)
 
-//#define USE_MKS_GREEN_UI             // Mks_H43_v1.0
+#define TOUCH_SCREEN               //(C/F) (Default) UI MARLIN
 
 /* ======================================//
 * === Note:Languages already integrated==// 
@@ -77,8 +75,8 @@
 /*__________________________4______________________________*/
                   /*----  Modules -----*/
 
-//#define MKS_WIFI                   //(W) Module ESP8266/ESP12 (Default_QQS)
-//#define ESP3D_30                 //(w) Enable firmware ESP3D v3.0 (ESP8266/ESP12)
+#define MKS_WIFI                   //(W) (Default_QQS) Module ESP8266/ESP12
+//#define ESP3D_30                   //(w) Enable firmware ESP3D v3.0 (ESP8266/ESP12)
 
 /*For LedStrip which need an external power source on Vcc pin.*/
 //#define NEOPIXEL_LED               //(N) Use port GPIO Wifi module (PC7)
@@ -88,14 +86,14 @@
  * = QQS/Q5 Stock have a clone (T)ITAN EXtruder(Default),===
  * = If you have another choose by uncomment your extruder.=
  * = Also you can change the direction.=====================
- * ====== Default eStep (T=397/422)/(B=417)   ==============
+ * ====== Default eStep (T=397/422)/(B=417)/(H+702) ========
  * =========================================================
  */
-#define INV_EXT                    // Uncommment to reverse direction for BMG.
+//#define INV_EXT                    // Uncommment to reverse direction for BMG/Sherpa.
 
 // BMG Extruder (B) Extruder step(417).
-//#define BMG                       //(B) Uncommment for BMG Left/Right.
-#define SHERPA                     //(P) Uncommment for MiniSherpa.
+//#define BMG                        //(B) Uncommment for BMG Left/Right.
+//#define SHERPA                     //(h) Uncommment for Mini-Sherpa.
 
 /*__________________________5_____________________________*/
       /** =============================
@@ -106,20 +104,19 @@
       */
 
 //#define DELTA_HOME_TO_SAFE_ZONE    // Option to move down after homing to a height where XYZ movement is unconstrained.
-//#define PREHEAT_BEFORE_PROBING     //(P) Run a PreHeat bed at 60°C (Default)
+#define PREHEAT_BEFORE_PROBING     //(P) (Default) Run a PreHeat bed at 60°C
 //#define PREHEAT_BEFORE_LEVELING    
-#define AUTO_BED_LEVELING_UBL      //(U) (Default)
-#define UBL_MESH_WIZARD            //(u) Wizard UBL.  
+#define AUTO_BED_LEVELING_UBL      //(U) (Default) Wizard UBL includes. 
 
-//--------IF YOUR USED ABL, DISABLE "SPECIAL MENU"= #define CUSTOM_MENU_MAIN
+//--------IF YOUR USED ABL, DISABLE "SPECIAL MENU DELTA"= #define CUSTOM_MENU_MAIN
 //#define AUTO_BED_LEVELING_BILINEAR //(A)
 #define UBL_HILBERT_CURVE          // (Default)
 
 /*__________________________6__________________________*/
     //======Many options for Modules: ===========//
-#define LIN_ADVANCE                //(L) with K=0 For TMC_UART prefer mode spreadCycle(by TFT menu) or commented if problem (Default)
+#define LIN_ADVANCE                //(L) (Default) with K=0 For TMC_UART2208 prefer mode spreadCycle(by TFT menu) or commented if problem.
 #define ARC_SUPPORT                //(R) (Default)
-//#define POWER_LOSS_RECOVERY        // Continue print after Power-Loss.(Defaul_QQS)
+#define POWER_LOSS_RECOVERY        // (Default) Continue print after Power-Loss.
 
 //=================================================================================//
 //======================== End_Hardware ===========================================//
@@ -131,20 +128,20 @@
  * = like (Prontoface/Octoprint/HostRepertier/Astoprint)=
  * ====== Choice add menu on TFT: (OPT) =================
  */
-#define DELTA_CALIBRATION_MENU     // auto for CLASSIC and COLOR (Default).
-#define CUSTOM_MENU_MAIN           // Main Menu UBL: "Menu Special Delta" (Default).
-#define PID_EDIT_MENU              // tune PID Bed and Nozzle (Default).
-#define PID_AUTOTUNE_MENU          // tune auto PID (Default).
-#define LCD_INFO_MENU              // Informations printer (Default).
-#define PROBE_OFFSET_WIZARD        // add Menu to manage the Z_OffSet (Default).
+#define DELTA_CALIBRATION_MENU     //  (Default) Auto for CLASSIC and COLOR.
+#define CUSTOM_MENU_MAIN           //  (Default) Main Menu UBL: "Menu Special Delta".
+#define PID_EDIT_MENU              //  (Default) Tune PID Bed and Nozzle.
+#define PID_AUTOTUNE_MENU          //  (Default) Tune auto PID.
+#define LCD_INFO_MENU              //  (Default) Informations printer.
+#define PROBE_OFFSET_WIZARD        //  (Default) Add Menu to manage the Z_OffSet.
 //#define PREHEAT_SHORTCUT_MENU_ITEM // add preheat/temperature menu (first page)
 
 // For user who change their nozzle thermistor by another one ex: "ATC Semitec 104GT-2" = 5 
-#define TEMP_SENSOR_0 13//5             // uncomment with a good number/type.
+//#define TEMP_SENSOR_0 13             // uncomment with a good number/type.
 
 // ---Expe tools Levelling-------
 //#define LEVEL_BED_CORNERS
-//#define G26_MESH_VALIDATION
+//#define G26_MESH_VALIDATION          // Print Mesh Validation Pattern tool(By menu).
 
 /*__________________________8__________________________*/
 /** ===================================================
@@ -153,27 +150,27 @@
 */
 //#define HOST_ACTION_COMMANDS        // Action Command Prompt support Message on Octoprint
 //------ Support for MeatPack G-code compression (OCTOPRINT)--------//
-#define MEATPACK_ON_SERIAL_PORT_1   // (M) With connection USB
+//#define MEATPACK_ON_SERIAL_PORT_1   // (M) With connection USB
 //#define MEATPACK_ON_SERIAL_PORT_2   // With other connection like Tx/Rx Wifi socket.
 
 //#define CANCEL_OBJECTS              // Add menu "Cancel Objet"
 
-// Options for Modules Hardware
-#ifdef NEOPIXEL_LED
-  #define LED_CONTROL_MENU           // To control LedStrip.
-#endif
-
-// Options for Modules Hardware MKS_WIFI
-#define MKS_WIFI                   //(W) Module ESP8266/ESP12 (Default_QQS)
-#define ESP3D_30                 //(w) Enable firmware ESP3D v3.0 (ESP8266/ESP12)
-
+/** ========================================
+* == Options for Modules Hardware MKS_WIFI
+* ==========================================
+* Note:You must update the Wifi module with
+* the ESP3D firmware or the MKS(Stock) firmware.
+* https://github.com/Foxies-CSTL/Marlin_2.0.x/tree/FLSUN_QQS-PRO-MULTI/Marlin/Firmwares/ESP3D
+*/
+// 
 #ifdef MKS_WIFI
   #define ESP_WIFI
   #ifdef ESP3D_30
-    #define MKS_WIFI_MODULE 
+    #define MKS_WIFI_MODULE           // Work with TFT_LVGL_UI(Modern UI using LVGL-MKS)
     #define USES_MKS_WIFI_FUNCTION    // Bin transfert MKS for ESP3D firmware v3.0 or others
   #endif
   //#define BINARY_FILE_TRANSFER     // Bin transfert for ESP3D firmware v2.1 or others.
+                                     // Not compatible with the MEATPACK option. 
 #endif
 
 //TFT Type For TFT_GENERIC
@@ -183,13 +180,23 @@
   #define TFT_RES_320x240
 #endif
 
+// Options for Modules Hardware
+#ifdef NEOPIXEL_LED
+  #define LED_CONTROL_MENU            // To control LedStrip.
+#endif
+
+/** -------------------------------------------------
+ * Special mod: Disable MKS_WIFI/TFT part/DELTA_MENU 
+ *          TFT Type Mks_H43 
+ */
+//#define DGUS_LCD_UI_MKS             // Mks_H43_v1.0 Note: The wiring is done on the UART2
+                                      // Wifi port(PA10/PA9) for Tx/Rx.
 /**
  * =================================================
  * ===Part for Hardware definitions=================
  * ===Don't change if you're not sure how to do it.= 
  * =================================================
  */
-
 // Variables to calculate steps and current
 //eSteps
 #ifdef BMG

@@ -150,9 +150,6 @@
       #define ESP_WIFI_MODULE_COM               2
       #define ESP_WIFI_MODULE_BAUDRATE      BAUDRATE
       //#define ESP_WIFI_MODULE_RESET_PIN         PA5
-      #define ESP_WIFI_MODULE_ENABLE_PIN        -1
-      #define ESP_WIFI_MODULE_TXD_PIN           PA9
-      #define ESP_WIFI_MODULE_RXD_PIN           PA10
     #endif 
   #else /*  TMC220x   */
     // SoftwareSerial with one pin per driver
