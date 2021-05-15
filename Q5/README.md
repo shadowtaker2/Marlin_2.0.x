@@ -39,6 +39,7 @@ Below is an example with the firmware for a Q5 printer with a Mks_Robin_nanov1.2
   - (T) Extruder Titan
   - (B) Extruder BMG
   - (b) Extruder BMG mini
+  - (h) Extruder mini-Sherpa
   
   **/*-------Others options in firmware----*/**
   - (A) BED_LEVELING_BILINEAR

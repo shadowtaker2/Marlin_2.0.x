@@ -1,9 +1,25 @@
-**Exemple:** 
-  8CWBL-Name_Of_Firmware.bin =>  (8)TMC2208 standalone - (C)UI Marlin - (W)Module Wifi - (B)Extruder BMG - (L)LinearAdvance  
+Each firmware has a header that corresponds to the hardware (board) and functions used in the firmware.
+Below is an example with the firmware for a Q5 printer with a Mks_Robin_nanov1.2 board with TMC2208 and A4988 stepper drivers:
 
-  **Note**: After choosing your binary, remove the "8CWBL-" header or rename the file to "Robin_mini.bin" for QQS or "Robin_nano.bin" for Q5,
+**Exemple:**
+8+SCWBPULR-Robin_nano.bin 
+=> - (8+S)TMC2208 standalone + A4988 - 
+   - (C)UI Marlin TFT32 - 
+   - (W)Wifi module - 
+   - (T)Extruder Titan - 
+   - (P)PreHeat bed - 
+   - (U)Leveling mode -
+   - (L)LinearAdvance - 
+   - (R)Arc function enabled.
+
+  **Note**: After choosing your binary, remove the "8CWBL-SRKxx" header or rename the file to "firmware.bin" for QQS-SKR,
   place it on your SD card, insert your SD card into the printer and power on your printer.
 
+  **/*-------Others Firmwares for QQS with SKR family or Mks_Nano Family----*/**
+  - (QQS)U9rTPULR16-SKR14T_firmware   QQS SKR14T(4xTMC2209UART)16steps with TITAN extruder. 
+  - (QQS)U8rBPUR32-SKR12PRO_firmware     QQS SKR12PRO(4xTMC2208_standAlone)32steps without LA, with BMG extruder.
+  - (QQS)U9rTPULR16-SKR14_firmware QQS with SKRv1.4 Board with emulation LCD (Marlin Mode)
+  
   **Caption:**
 
   **/*------Drivers--------*/**
@@ -15,6 +31,8 @@
   - (U8+) 3xTMC2208 (XYZ) + Choice for E0 (A4988,TMC220x) 
   - (U9+) 3xTMC2209 (XYZ) + Choice for E0 (A4988,TMC220x)
   - **(UH) 4xTMC2209_UART with one wire (option modules Wifi/Rpi/Neopixel)**
+  - (16) All drivers 16steps
+  - (32) All drivers 32steps
 
   **/*-------Options UI TFT--------*/**
   - (F) UI STANDARD (Emulation LCD screen on TFT)
@@ -28,6 +46,7 @@
   - (T) Extruder Titan
   - (B) Extruder BMG
   - (b) Extruder BMG mini
+  - (h) Extruder mini-Sherpa
   
   **/*-------Others options in firmware----*/**
   - (A) BED_LEVELING_BILINEAR
@@ -44,8 +63,4 @@
   - LCD_LANGUAGE (Change to the native language)
   - etc 
   
-  **/*-------Others Firmwares for Q5 nanov1.2 or QQS with SKR family or Mks_Nano Family----*/**
-  - (Q5_8+SCTPULR-Robin_nano)   Q5 Stock(3xTMC2208+1xA4988) with TITAN extruder. 
-  - (Q5_9CBPULR-Robin_nano)     Q5 with 4xTMC2209 with BMG extruder.
-  - (QQS)U9rTPULR16-SKR14_firmware QQS with SKRv1.4 Board with emulation LCD (Marlin Mode)
 ***
