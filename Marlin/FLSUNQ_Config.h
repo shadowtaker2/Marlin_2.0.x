@@ -114,7 +114,7 @@
 
 /*__________________________6__________________________*/
     //======Many options for Modules: ===========//
-#define LIN_ADVANCE                //(L) (Default) with K=0 For TMC_UART2208 prefer mode spreadCycle(by TFT menu) or commented if problem.
+//#define LIN_ADVANCE                //(L) (Default2209) with K=0 For TMC_UART2208 prefer mode spreadCycle(by TFT menu) or commented if problem.
 #define ARC_SUPPORT                //(R) (Default)
 #define POWER_LOSS_RECOVERY        // (Default) Continue print after Power-Loss.
 
@@ -254,6 +254,7 @@
 // Set for TMC2209_STANDALONE 
 #ifdef ALL_TMC9
     #define Q_TMC
+    #define LIN_ADVANCE
     #define DRIVER_AXES TMC2209_STANDALONE
     #ifndef DRIVER_EXT
       #define DRIVER_EXT TMC2209_STANDALONE
@@ -272,6 +273,7 @@
 // Software Serial UART for TMC2209
 #ifdef Q_UART9
     #define Q_TMC
+    #define LIN_ADVANCE
     #define STEALTHCHOP_E
     #define DRIVER_AXES TMC2209
     #ifndef DRIVER_EXT
@@ -297,6 +299,7 @@
 // and proper jumper configuration. Uses I/O pins PA8(Default QQS).
 #ifdef QQS_UARTH
     #define Q_TMC
+    #define LIN_ADVANCE
     #define TMC_HARDWARE_SERIAL
     #define STEALTHCHOP_E
     #define DRIVER_AXES TMC2209

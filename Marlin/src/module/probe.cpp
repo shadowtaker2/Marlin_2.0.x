@@ -289,7 +289,7 @@ FORCE_INLINE void probe_specific_action(const bool deploy) {
       BUZZ(100, 698);
 
       PGM_P const ds_str = deploy ? GET_TEXT(MSG_MANUAL_DEPLOY) : GET_TEXT(MSG_MANUAL_STOW);
-      ui.reset_status();       // To display the new status message
+      ui.return_to_status();       // To display the new status message
       ui.set_status_P(ds_str, 99);
       SERIAL_ECHOLNPGM_P(ds_str);
 
