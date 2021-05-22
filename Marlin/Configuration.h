@@ -933,7 +933,7 @@
 // variables to calculate steps
 //#define EXTRUDER_STEPS 397
 #define XYZ_FULL_STEPS_PER_ROTATION 200
-#ifdef PXP
+#ifdef XP
   #define XYZ_MICROSTEPS 32
   #define E_MICROSTEPS 32
 #else
