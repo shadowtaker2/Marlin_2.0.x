@@ -189,8 +189,9 @@
 #ifndef FIL_RUNOUT2_PIN
   #define FIL_RUNOUT2_PIN               MT_DET_2
 #endif
-
-#define POWER_LOSS_PIN                    PW_DET
+#ifndef POWER_LOSS_PIN
+  #define POWER_LOSS_PIN                  PW_DET
+#endif
 #define PS_ON_PIN                         PW_OFF
 
 //
@@ -293,7 +294,7 @@
   #define TFT_RST_PIN                       PC6
   #define TFT_A0_PIN                  TFT_DC_PIN
 
-  #define TFT_RESET_PIN                     PC6
+  //#define TFT_RESET_PIN                     PC6
   #define TFT_BACKLIGHT_PIN                 PD13
 
   #define TOUCH_BUTTONS_HW_SPI
