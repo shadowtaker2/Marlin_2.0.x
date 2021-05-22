@@ -955,9 +955,9 @@
  * Use M201 F<freq> G<min%> to change limits at runtime.
  */
 #ifdef XP
-  #define XY_FREQUENCY_LIMIT      23 // (Hz) Maximum frequency of small zigzag infill moves. Set with M201 F<hertz>.
+  #define XY_FREQUENCY_LIMIT      27 // (Hz) Maximum frequency of small zigzag infill moves. Set with M201 F<hertz>.
   #ifdef XY_FREQUENCY_LIMIT
-    #define XY_FREQUENCY_MIN_PERCENT 5 // (percent) Minimum FR percentage to apply. Set with M201 G<min%>.
+    #define XY_FREQUENCY_MIN_PERCENT 10 // (percent) Minimum FR percentage to apply. Set with M201 G<min%>.
   #endif
 #endif
 // Minimum planner junction speed. Sets the default minimum speed the planner plans for at the end
@@ -1077,7 +1077,7 @@
 //#define MICROSTEP32 HIGH,LOW,HIGH
 
 // Microstep settings (Requires a board with pins named X_MS1, X_MS2, etc.)
-#ifdef PXP
+#ifdef XP
   #define MICROSTEP_MODES { 32, 32, 32, 32, 32, 32 }
 #else
   #define MICROSTEP_MODES { 16, 16, 16, 16, 16, 16 } // [1,2,4,8,16]
