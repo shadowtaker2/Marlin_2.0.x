@@ -13,6 +13,7 @@
 *  Default is for QQS and it's uncommented ;-)
 */
 //#define XP
+//#define DBUG
 /*_______________________1___________________________*/
 //==================== Hardware =====================//
 /*-------------Motherboard/Printer-(1 CHOICE)-------*/
@@ -114,7 +115,7 @@
 
 /*__________________________6__________________________*/
     //======Many options for Modules: ===========//
-//#define LIN_ADVANCE                //(L) (Default2209) with K=0 For TMC_UART2208 prefer mode spreadCycle(by TFT menu) or commented if problem.
+#define LIN_ADVANCE                //(L) (Default2209) with K=0 For TMC_UART2208 prefer mode spreadCycle(by TFT menu) or commented if problem.
 #define ARC_SUPPORT                //(R) (Default)
 #define POWER_LOSS_RECOVERY        // (Default) Continue print after Power-Loss.
 
@@ -150,7 +151,7 @@
 */
 //#define HOST_ACTION_COMMANDS        // Action Command Prompt support Message on Octoprint
 //------ Support for MeatPack G-code compression (OCTOPRINT)--------//
-//#define MEATPACK_ON_SERIAL_PORT_1   // (M) With connection USB
+#define MEATPACK_ON_SERIAL_PORT_1   // (M) With connection USB
 //#define MEATPACK_ON_SERIAL_PORT_2   // With other connection like Tx/Rx Wifi socket.
 
 //#define CANCEL_OBJECTS              // Add menu "Cancel Objet"
@@ -246,6 +247,7 @@
 // Set for TMC2208_STANDALONE
 #ifdef ALL_TMC8
     #define Q_TMC
+    #undef LIN_ADVANCE
     #define DRIVER_AXES TMC2208_STANDALONE
     #ifndef DRIVER_EXT
       #define DRIVER_EXT TMC2208_STANDALONE
@@ -254,7 +256,6 @@
 // Set for TMC2209_STANDALONE 
 #ifdef ALL_TMC9
     #define Q_TMC
-    #define LIN_ADVANCE
     #define DRIVER_AXES TMC2209_STANDALONE
     #ifndef DRIVER_EXT
       #define DRIVER_EXT TMC2209_STANDALONE
@@ -264,6 +265,7 @@
 // Software Serial UART for TMC2208
 #ifdef Q_UART8
     #define Q_TMC
+    #undef LIN_ADVANCE
     #define DRIVER_AXES TMC2208
     #ifndef DRIVER_EXT
       #define DRIVER_EXT TMC2208
@@ -273,7 +275,6 @@
 // Software Serial UART for TMC2209
 #ifdef Q_UART9
     #define Q_TMC
-    #define LIN_ADVANCE
     #define STEALTHCHOP_E
     #define DRIVER_AXES TMC2209
     #ifndef DRIVER_EXT
@@ -299,7 +300,6 @@
 // and proper jumper configuration. Uses I/O pins PA8(Default QQS).
 #ifdef QQS_UARTH
     #define Q_TMC
-    #define LIN_ADVANCE
     #define TMC_HARDWARE_SERIAL
     #define STEALTHCHOP_E
     #define DRIVER_AXES TMC2209
