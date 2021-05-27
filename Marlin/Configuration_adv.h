@@ -960,6 +960,7 @@
     #define XY_FREQUENCY_MIN_PERCENT 10 // (percent) Minimum FR percentage to apply. Set with M201 G<min%>.
   #endif
 #endif
+
 // Minimum planner junction speed. Sets the default minimum speed the planner plans for at the end
 // of the buffer and all stops. This should not be much greater than zero and should only be changed
 // if unwanted behavior is observed on a user's machine when running at very slow speeds.
@@ -1142,12 +1143,8 @@
 // @section lcd
 
 #if EITHER(IS_ULTIPANEL, EXTENSIBLE_UI)
-  #ifdef Q5
-    #define MANUAL_FEEDRATE_XYZ 35*60
-  #else
-    #define MANUAL_FEEDRATE_XYZ 50*60
-  #endif
-  #define MANUAL_FEEDRATE { MANUAL_FEEDRATE_XYZ, MANUAL_FEEDRATE_XYZ, MANUAL_FEEDRATE_XYZ, 60 } // (mm/min) Feedrates for manual moves along X, Y, Z, E from panel
+  #define MANUAL_FEEDRATE_XYZ 35*60
+  #define MANUAL_FEEDRATE { MANUAL_FEEDRATE_XYZ, MANUAL_FEEDRATE_XYZ, 5*60, 60 } // (mm/min) Feedrates for manual moves along X, Y, Z, E from panel
   #define FINE_MANUAL_MOVE 0.025    // (mm) Smallest manual move (< 0.1mm) applying to Z on most machines
   #if IS_ULTIPANEL
     #define MANUAL_E_MOVES_RELATIVE // Display extruder move distance rather than "position"
@@ -2357,9 +2354,9 @@
   //#define ADVANCED_PAUSE_CONTINUOUS_PURGE       // Purge continuously up to the purge length until interrupted.
   #define ADVANCED_PAUSE_PURGE_FEEDRATE        3  // (mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
   #define ADVANCED_PAUSE_PURGE_LENGTH         50  // (mm) Length to extrude after loading.
-                                                  //   Set to 0 for manual extrusion.
-                                                  //   Filament can be extruded repeatedly from the Filament Change menu
-                                                  //   until extrusion is consistent, and to purge old filament.
+                                                  // Set to 0 for manual extrusion.
+                                                  // Filament can be extruded repeatedly from the Filament Change menu
+                                                  // until extrusion is consistent, and to purge old filament.
   #define ADVANCED_PAUSE_RESUME_PRIME          0  // (mm) Extra distance to prime nozzle after returning from park.
   //#define ADVANCED_PAUSE_FANS_PAUSE             // Turn off print-cooling fans while the machine is paused.
 
@@ -2533,7 +2530,7 @@
   #if AXIS_IS_TMC(X2)
     #define X2_CURRENT      800
     #define X2_CURRENT_HOME X2_CURRENT
-    #define X2_MICROSTEPS   X_MICROSTEPS
+    #define X2_MICROSTEPS    X_MICROSTEPS
     #define X2_RSENSE         0.11
     #define X2_CHAIN_POS     -1
     //#define X2_INTERPOLATE true
@@ -2551,7 +2548,7 @@
   #if AXIS_IS_TMC(Y2)
     #define Y2_CURRENT      800
     #define Y2_CURRENT_HOME Y2_CURRENT
-    #define Y2_MICROSTEPS   Y_MICROSTEPS
+    #define Y2_MICROSTEPS    Y_MICROSTEPS
     #define Y2_RSENSE         0.11
     #define Y2_CHAIN_POS     -1
     //#define Y2_INTERPOLATE true
@@ -2595,7 +2592,7 @@
 
   #if AXIS_IS_TMC(E0)
     #define E0_CURRENT      E_CURRENT
-    #define E0_MICROSTEPS   E_MICROSTEPS
+    #define E0_MICROSTEPS    E_MICROSTEPS
     #define E0_RSENSE         0.11
     #define E0_CHAIN_POS     -1
     //#define E0_INTERPOLATE true
