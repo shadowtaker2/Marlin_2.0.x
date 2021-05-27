@@ -130,6 +130,7 @@
  * Currently Ethernet (-2) is only supported on Teensy 4.1 boards.
  * :[-2, -1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
+ //#define SERIAL_PORT_2 -1
 
 #ifdef ESP_WIFI
   #ifdef ESP3D_30
@@ -563,6 +564,10 @@
       #define DEFAULT_Kp  28.16
       #define DEFAULT_Ki   3.38
       #define DEFAULT_Kd  58.69
+                                  
+                                 
+                                  
+            
     #endif
     // FLSUN QQS-Pro, PET 235 C with 70% part cooling
     //M301 P21.67 I1.25 D93.81        PLA
@@ -737,6 +742,7 @@
   // Make delta curves from many straight lines (linear interpolation).
   // This is a trade-off between visible corners (not enough segments)
   // and processor overload (too many expensive sqrt calls).
+            
   #define DELTA_SEGMENTS_PER_SECOND 100  //200
 
   // After homing move down to a height where XY movement is unconstrained
@@ -2697,7 +2703,7 @@
 // 480x320, 3.5", SPI Display From MKS
 // Normally used in MKS Robin Nano V2
 //
-//#define MKS_TS35_V2_0
+//#define MKS_TS35_V2_0 //Define on FLSUNQ_Config
 
 //
 // 320x240, 2.4", FSMC Display From MKS
@@ -2709,7 +2715,7 @@
 // 320x240, 2.8", FSMC Display From MKS
 // Normally used in MKS Robin Nano V1.2
 //
-//#define MKS_ROBIN_TFT28 //Define on FLSUNQ_Config
+//#define MKS_ROBIN_TFT28
 
 //
 // 320x240, 3.2", FSMC Display From MKS
@@ -2833,7 +2839,7 @@
   #define TOUCH_SCREEN_CALIBRATION //or (M995) 
 
   // QQS-Pro use MKS Robin TFT v2.0
-  #ifdef QQSP
+  #if BOTH(QQSP, MKS_ROBIN_TFT32)||BOTH(QQSR, MKS_ROBIN_TFT32)
     #define TOUCH_CALIBRATION_X 12033
     #define TOUCH_CALIBRATION_Y -9047
     #define TOUCH_OFFSET_X        -30
