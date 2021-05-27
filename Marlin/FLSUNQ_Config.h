@@ -6,7 +6,9 @@
 *
 * For a Delta printer start with one of the configuration files in the
 * config/examples/delta/FLSUN/ directory and customize for your machine.
-*
+* 
+* Wiki: https://github.com/Foxies-CSTL/Marlin_2.0.x/wiki
+* 
 * TIPS/NOTES:
 * -For TMC mode UART, look the "pins_FLSUN_HISPEED.h" file (src/pins/stm32f1/) for more information to wire.
 * -Comment/Uncomment line to add or modify some options. 
@@ -57,6 +59,7 @@
         * ==============================
         */
 #define MKS_ROBIN_TFT32            //  (Default) Mks_Robin_TFT_V2.0
+//#define MKS_TS35_V2_0
 //#define TFT_GENERIC                // For the user who haven't the same screen.
 
                 /*--- Choice UI TFT ----*/
@@ -108,10 +111,11 @@
 #define PREHEAT_BEFORE_PROBING     //(P) (Default) Run a PreHeat bed at 60°C
 //#define PREHEAT_BEFORE_LEVELING    
 #define AUTO_BED_LEVELING_UBL      //(U) (Default) Wizard UBL includes. 
+#define UBL_HILBERT_CURVE          // (Default)
 
 //--------IF YOUR USED ABL, DISABLE "SPECIAL MENU DELTA"= #define CUSTOM_MENU_MAIN
 //#define AUTO_BED_LEVELING_BILINEAR //(A)
-#define UBL_HILBERT_CURVE          // (Default)
+
 
 /*__________________________6__________________________*/
     //======Many options for Modules: ===========//
@@ -135,7 +139,8 @@
 #define PID_AUTOTUNE_MENU          //  (Default) Tune auto PID.
 #define LCD_INFO_MENU              //  (Default) Informations printer.
 #define PROBE_OFFSET_WIZARD        //  (Default) Add Menu to manage the Z_OffSet.
-//#define PREHEAT_SHORTCUT_MENU_ITEM // add preheat/temperature menu (first page)
+//#define PREHEAT_SHORTCUT_MENU_ITEM // Add preheat/temperature menu (first page)
+//#define CANCEL_OBJECTS             // Add menu "Cancel Objet"
 
 // For user who change their nozzle thermistor by another one ex: "ATC Semitec 104GT-2" = 5 
 //#define TEMP_SENSOR_0 13             // uncomment with a good number/type.
@@ -150,18 +155,17 @@
 * ======================================================
 */
 //#define HOST_ACTION_COMMANDS        // Action Command Prompt support Message on Octoprint
-//------ Support for MeatPack G-code compression (OCTOPRINT)--------//
-#define MEATPACK_ON_SERIAL_PORT_1   // (M) With connection USB
-//#define MEATPACK_ON_SERIAL_PORT_2   // With other connection like Tx/Rx Wifi socket.
 
-//#define CANCEL_OBJECTS              // Add menu "Cancel Objet"
+//------ Support for MeatPack G-code compression (OCTOPRINT)--------//
+#define MEATPACK_ON_SERIAL_PORT_1   //(M) With connection USB
+//#define MEATPACK_ON_SERIAL_PORT_2   // With other connection like Tx/Rx Wifi socket.
 
 /** ========================================
 * == Options for Modules Hardware MKS_WIFI
 * ==========================================
 * Note:You must update the Wifi module with
 * the ESP3D firmware or the MKS(Stock) firmware.
-* https://github.com/Foxies-CSTL/Marlin_2.0.x/tree/FLSUN_QQS-PRO-MULTI/Marlin/Firmwares/ESP3D
+* https://github.com/Foxies-CSTL/Marlin_2.0.x/wiki/5.Firmware-Wifi
 */
 // 
 #ifdef MKS_WIFI

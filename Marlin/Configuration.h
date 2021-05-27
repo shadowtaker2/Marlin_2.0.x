@@ -160,6 +160,7 @@
 #ifndef MOTHERBOARD
   #ifdef QQSP
     #define MOTHERBOARD BOARD_FLSUN_HISPEED
+    //#define MOTHERBOARD BOARD_MKS_ROBIN_NANO_V3
   #endif  
   #ifdef Q5
     #define MOTHERBOARD BOARD_MKS_ROBIN_NANO
