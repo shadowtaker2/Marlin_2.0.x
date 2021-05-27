@@ -2777,7 +2777,7 @@
    * M912 - Clear stepper driver overtemperature pre-warn condition flag.
    * M122 - Report driver parameters (Requires TMC_DEBUG)
    */
-  #ifdef XP
+  #ifdef XP1
     #define MONITOR_DRIVER_STATUS
   #endif
 
