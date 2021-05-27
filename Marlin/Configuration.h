@@ -2839,7 +2839,7 @@
   #define TOUCH_SCREEN_CALIBRATION //or (M995) 
 
   // QQS-Pro use MKS Robin TFT v2.0
-  #if BOTH(QQSP, MKS_ROBIN_TFT32)||BOTH(QQSR, MKS_ROBIN_TFT32)
+  #if BOTH(QQSP, MKS_ROBIN_TFT32)
     #define TOUCH_CALIBRATION_X 12033
     #define TOUCH_CALIBRATION_Y -9047
     #define TOUCH_OFFSET_X        -30
@@ -2953,7 +2953,7 @@
   //#define NEOPIXEL_PIN  LED_PWM  // LED driving pin
   //#define NEOPIXEL2_TYPE NEOPIXEL_TYPE
   //#define NEOPIXEL2_PIN      5
-  #define NEOPIXEL_PIXELS     18   // Number of LEDs in the strip, larger of 2 strips if 2 neopixel strips are used
+  #define NEOPIXEL_PIXELS     9   // Number of LEDs in the strip, larger of 2 strips if 2 neopixel strips are used
   //#define NEOPIXEL_IS_SEQUENTIAL // Sequential display for temperature change - LED by LED. Disable to change all LEDs at once.
   #define NEOPIXEL_BRIGHTNESS 250  // Initial brightness (0-255)
   #define NEOPIXEL_STARTUP_TEST  // Cycle through colors at startup
