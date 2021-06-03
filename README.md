@@ -1,4 +1,4 @@
-# Marlin 3D Printer Firmware
+# Marlin 3D Delta Printer Firmwares
 
 ![GitHub](https://img.shields.io/github/license/marlinfirmware/marlin.svg)
 ![GitHub contributors](https://img.shields.io/github/contributors/marlinfirmware/marlin.svg)
@@ -11,7 +11,11 @@ Additional documentation can be found at the [Marlin Home Page](https://marlinfw
 Please test this firmware and let us know if it misbehaves in any way. Volunteers are standing by!
 
 # Last release of Marlin BugFix 2.0.8 for Delta FLSun QQS-Pro (motherboard HISPEED).
- 
+
+**20210602** 2.0.8.1+
+- Last Bugfix 2.0.8.2
+- Some Tests for users'board.
+
 **20210514** 2.0.8+
 - New wizards for UBL and ZoffSet.
 - New menu for Delta users.
