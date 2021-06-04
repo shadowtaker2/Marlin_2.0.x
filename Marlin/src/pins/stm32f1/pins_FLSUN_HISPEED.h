@@ -26,7 +26,7 @@
  * FLSun Hispeed (clone MKS_Robin_miniV2) board.
  *
  * MKS Robin Mini USB uses UART3 (PB10-TX, PB11-RX)
- * #define SERIAL_PORT_2 3
+ * #define SERIAL_PORT 3
  */
 
 #if NOT_TARGET(__STM32F1__, STM32F1xx)
@@ -172,7 +172,7 @@
   #define MOTOR_CURRENT_PWM_Z_PIN           PA7   // VREF4 CONTROL Z
   #define MOTOR_CURRENT_PWM_RANGE          1500   // (255 * (1000mA / 65535)) * 257 = 1000 is equal 1.6v Vref in turn equal 1Amp
   #ifndef DEFAULT_PWM_MOTOR_CURRENT
-    #define DEFAULT_PWM_MOTOR_CURRENT { 900, 900, 300 }
+    #define DEFAULT_PWM_MOTOR_CURRENT { 900, 900, 900 }
   #endif
 
   /**
@@ -217,7 +217,7 @@
   #define MOTOR_CURRENT_PWM_E_PIN           PB0   // VREF1 CONTROL E
   #define MOTOR_CURRENT_PWM_RANGE           1500  // (255 * (1000mA / 65535)) * 257 = 1000 is equal 1.6v Vref in turn equal 1Amp
   #ifndef DEFAULT_PWM_MOTOR_CURRENT
-   #define DEFAULT_PWM_MOTOR_CURRENT { 900, 900, 300 }
+   #define DEFAULT_PWM_MOTOR_CURRENT { 900, 900, 900 }
   #endif
 #endif
 
