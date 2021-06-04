@@ -59,7 +59,7 @@
         * ==============================
         */
 #define MKS_ROBIN_TFT32            //  (Default) Mks_Robin_TFT_V2.0
-//#define MKS_TS35_V2_0
+//#define MKS_TS35_V2_00             // Only for NanoV2 or V3
 //#define TFT_GENERIC                // For the user who haven't the same screen.
 
                 /*--- Choice UI TFT ----*/
