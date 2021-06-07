@@ -12,9 +12,9 @@
 * TIPS/NOTES:
 * -For TMC mode UART, look the "pins_FLSUN_HISPEED.h" file (src/pins/stm32f1/) for more information to wire.
 * -Comment/Uncomment line to add or modify some options. 
-*  Default is for QQS and it's uncommented ;-)
+*  Default is actif for QQS and it's uncommented ;-)
 */
-//#define XP
+#include "Config_XP.h"  //For tests on my dev'printer!!
 //#define DBUG
 /*_______________________1___________________________*/
 //==================== Hardware =====================//
@@ -111,7 +111,7 @@
 #define PREHEAT_BEFORE_PROBING     //(P) (Default) Run a PreHeat bed at 60°C
 //#define PREHEAT_BEFORE_LEVELING    
 #define AUTO_BED_LEVELING_UBL      //(U) (Default) Wizard UBL includes. 
-#define UBL_HILBERT_CURVE          // (Default)
+#define UBL_HILBERT_CURVE          //(U) (Default)
 
 //--------IF YOUR USED ABL, DISABLE "SPECIAL MENU DELTA"= #define CUSTOM_MENU_MAIN
 //#define AUTO_BED_LEVELING_BILINEAR //(A)
@@ -133,14 +133,9 @@
  * = like (Prontoface/Octoprint/HostRepertier/Astoprint)=
  * ====== Choice add menu on TFT: (OPT) =================
  */
-#define DELTA_CALIBRATION_MENU     //  (Default) Auto for CLASSIC and COLOR.
 #define CUSTOM_MENU_MAIN           //  (Default) Main Menu UBL: "Menu Special Delta".
-#define PID_EDIT_MENU              //  (Default) Tune PID Bed and Nozzle.
-#define PID_AUTOTUNE_MENU          //  (Default) Tune auto PID.
-#define LCD_INFO_MENU              //  (Default) Informations printer.
 #define PROBE_OFFSET_WIZARD        //  (Default) Add Menu to manage the Z_OffSet.
-//#define PREHEAT_SHORTCUT_MENU_ITEM // Add preheat/temperature menu (first page)
-//#define CANCEL_OBJECTS             // Add menu "Cancel Objet"
+#define ADD_MENUS                  //  (Default) Add menu PID, DELTA, INFO
 
 // For user who change their nozzle thermistor by another one ex: "ATC Semitec 104GT-2" = 5 
 //#define TEMP_SENSOR_0 13             // uncomment with a good number/type.
@@ -157,7 +152,7 @@
 //#define HOST_ACTION_COMMANDS        // Action Command Prompt support Message on Octoprint
 
 //------ Support for MeatPack G-code compression (OCTOPRINT)--------//
-#define MEATPACK_ON_SERIAL_PORT_1   //(M) With connection USB
+//#define MEATPACK_ON_SERIAL_PORT_1   //(M) With connection USB
 //#define MEATPACK_ON_SERIAL_PORT_2   // With other connection like Tx/Rx Wifi socket.
 
 /** ========================================
@@ -185,10 +180,24 @@
   #define TFT_RES_320x240
 #endif
 
+//= For users who dont have a terminal//
+#ifdef ADD_MENUS
+  #define DELTA_CALIBRATION_MENU     //  (Default) Auto for CLASSIC and COLOR.
+  #define PID_EDIT_MENU              //  (Default) Tune PID Bed and Nozzle.
+  #define PID_AUTOTUNE_MENU          //  (Default) Tune auto PID.
+  #define LCD_INFO_MENU              //  (Default) Informations printer.
+  //#define PREHEAT_SHORTCUT_MENU_ITEM // Add preheat/temperature menu (first page)
+  //#define CANCEL_OBJECTS             // Add menu "Cancel Objet"
+#endif
+
 // Options for Modules Hardware
 #ifdef NEOPIXEL_LED
   #define LED_CONTROL_MENU            // To control LedStrip.
 #endif
+
+//For other PROBE like IR, TouchMI, Nozzle
+//#define XPROBE            // Set to invert the logic of the PROBE.
+//#define Z_OFFSET -2.5     // Set your own OffSet
 
 /** -------------------------------------------------
  * Special mod: Disable MKS_WIFI/TFT part/DELTA_MENU 
@@ -204,21 +213,23 @@
  */
 // Variables to calculate steps and current
 //eSteps
-#ifdef BMG
-  #define EXTRUDER_STEPS 417    // Extruder BMG(Left/Right)
-#else
+#ifndef EXTRUDER_STEPS
   #ifdef SHERPA
     #define EXTRUDER_STEPS 702  // Extruder Mini-Sherpa
+  #elif ENABLED(BMG)
+    #define EXTRUDER_STEPS 441  // Extruder BMG(Left/Right)
   #else
     #define EXTRUDER_STEPS 405  // Extruder TITAN(Default)
   #endif
 #endif
 
 //Z_OffSet
-#ifndef Q5
-  #define Z_OFFSET       -16.2
-#else
-  #define Z_OFFSET       -18
+#ifndef Z_OFFSET
+  #ifndef Q5
+    #define Z_OFFSET       -16.2
+  #else
+    #define Z_OFFSET       -18
+  #endif
 #endif
 
 // TMC
@@ -226,13 +237,13 @@
   #define XYZ_CURRENT       900
 #endif
 #ifndef XYZ_CURRENT_HOME
-  #define XYZ_CURRENT_HOME  800
+  #define XYZ_CURRENT_HOME  600
 #endif  
 #ifndef E_CURRENT
   #ifdef SHERPA
-    #define E_CURRENT         300
+    #define E_CURRENT       300
   #else
-    #define E_CURRENT         850
+    #define E_CURRENT       850
   #endif
 #endif
 

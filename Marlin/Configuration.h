@@ -603,10 +603,6 @@
       #define DEFAULT_Kp  28.16
       #define DEFAULT_Ki   3.38
       #define DEFAULT_Kd  58.69
-                                  
-                                 
-                                  
-            
     #endif
     // FLSUN QQS-Pro, PET 235 C with 70% part cooling
     //M301 P21.67 I1.25 D93.81        PLA
@@ -785,9 +781,8 @@
   #define DELTA_SEGMENTS_PER_SECOND 100  //200
 
   // After homing move down to a height where XY movement is unconstrained
-  #ifdef XP
-    #define DELTA_HOME_TO_SAFE_ZONE
-  #endif
+  //#define DELTA_HOME_TO_SAFE_ZONE
+
 
   // Delta calibration menu
   // uncomment to add three points calibration menu option.
@@ -909,7 +904,11 @@
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
 #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define Y_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#define Z_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#ifdef XPROBE
+  #define Z_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#else
+  #define Z_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#endif
 #define I_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define J_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define K_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -919,7 +918,11 @@
 #define I_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define J_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define K_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#define Z_MIN_PROBE_ENDSTOP_INVERTING true // Set to true to invert the logic of the probe.
+#ifdef XPROBE
+  #define Z_MIN_PROBE_ENDSTOP_INVERTING false // Set to true to invert the logic of the probe.
+#else
+  #define Z_MIN_PROBE_ENDSTOP_INVERTING true // Set to true to invert the logic of the probe.
+#endif
 
 /**
  * Stepper Drivers
@@ -1007,9 +1010,8 @@
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
 // variables to calculate steps
-//#define EXTRUDER_STEPS 397
 #define XYZ_FULL_STEPS_PER_ROTATION 200
-#ifdef XP
+#ifdef MICROSTEPS32
   #define XYZ_MICROSTEPS 32
   #define E_MICROSTEPS 32
 #else
@@ -1400,7 +1402,9 @@
 #define Z_MIN_PROBE_REPEATABILITY_TEST
 
 // Before deploy/stow pause for user confirmation
-#define PAUSE_BEFORE_DEPLOY_STOW
+#ifndef XP
+  #define PAUSE_BEFORE_DEPLOY_STOW
+#endif
 #if ENABLED(PAUSE_BEFORE_DEPLOY_STOW)
   //#define PAUSE_PROBE_DEPLOY_WHEN_TRIGGERED // For Manual Deploy Allenkey Probe
 #endif
@@ -1523,7 +1527,7 @@
  *  - Use a low value (i.e., Z_MIN_POS) if the nozzle falls down to the bed.
  *  - Use a large value (i.e., Z_MAX_POS) if the bed falls down, away from the nozzle.
  */
-#define Z_IDLE_HEIGHT Z_HOME_POS
+//#define Z_IDLE_HEIGHT Z_HOME_POS
 
 //#define Z_HOMING_HEIGHT  4      // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...
                                   // Be sure to have this much clearance over your Z_MAX_POS to prevent grinding.
@@ -2949,13 +2953,6 @@
 
   #define TOUCH_SCREEN_CALIBRATION //or (M995) 
 
-  // QQS-Pro use MKS Robin TFT v2.0
-  #if BOTH(QQSP, MKS_ROBIN_TFT32)
-    #define TOUCH_CALIBRATION_X 12033
-    #define TOUCH_CALIBRATION_Y -9047
-    #define TOUCH_OFFSET_X        -30
-    #define TOUCH_OFFSET_Y        254
-  #endif
   //#define TOUCH_CALIBRATION_X 12316
   //#define TOUCH_CALIBRATION_Y -8981
   //#define TOUCH_OFFSET_X        -43
@@ -3064,7 +3061,7 @@
   //#define NEOPIXEL_PIN  LED_PWM  // LED driving pin
   //#define NEOPIXEL2_TYPE NEOPIXEL_TYPE
   //#define NEOPIXEL2_PIN      5
-  #define NEOPIXEL_PIXELS     9   // Number of LEDs in the strip, larger of 2 strips if 2 neopixel strips are used
+  #define NEOPIXEL_PIXELS     18   // Number of LEDs in the strip, larger of 2 strips if 2 neopixel strips are used
   //#define NEOPIXEL_IS_SEQUENTIAL // Sequential display for temperature change - LED by LED. Disable to change all LEDs at once.
   #define NEOPIXEL_BRIGHTNESS 250  // Initial brightness (0-255)
   #define NEOPIXEL_STARTUP_TEST  // Cycle through colors at startup

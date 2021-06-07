@@ -89,10 +89,21 @@
 //
 // Limit Switches
 //
+#define X_DIAG_PIN                          PA15  //-X
+#define Y_DIAG_PIN                          PA12  //-Y
+#define Z_DIAG_PIN                          PC4  //-Z
+
 #define X_STOP_PIN                          PA15  // -X
 #define Y_STOP_PIN                          PA12  // -Y
 #define Z_MIN_PIN                           PA11  // -Z
 #define Z_MAX_PIN                           PC4   // +Z
+
+//
+// Z Probe 
+//
+#ifndef Z_MIN_PROBE_PIN
+  #define Z_MIN_PROBE_PIN                  PA11
+#endif
 
 #ifndef FIL_RUNOUT_PIN
   #define FIL_RUNOUT_PIN            MT_DET_1_PIN
@@ -123,7 +134,9 @@
  * to the most compatible.
  */
 #if HAS_TMC_UART
-  #define TMC_BAUD_RATE                   19200
+  #ifndef TMC_BAUD_RATE
+    #define TMC_BAUD_RATE                   19200
+  #endif
   #ifdef TMC_HARDWARE_SERIAL /*  TMC2209 */
     /**
     * HardwareSerial with one pin for four drivers.
@@ -134,6 +147,10 @@
     */
     // The 4xTMC2209 module doesn't have a serial multiplexer and
     // needs to set *_SLAVE_ADDRESS in Configuration_adv.h for X,Y,Z,E0
+    //#define X_HARDWARE_SERIAL  MSerial3
+    //#define Y_HARDWARE_SERIAL  MSerial3
+    //#define Z_HARDWARE_SERIAL  MSerial3
+    //#define E0_HARDWARE_SERIAL MSerial3
     #define  X_SLAVE_ADDRESS 3    // |  |  :
     #define  Y_SLAVE_ADDRESS 2    // :  |  :
     #define  Z_SLAVE_ADDRESS 1    // |  :  :
