@@ -14,7 +14,7 @@
 * -Comment/Uncomment line to add or modify some options. 
 *  Default is actif for QQS and it's uncommented ;-)
 */
-#include "Config_XP.h"  //For tests on my dev'printer!!
+//#include "Config_XP.h"  //For tests on my dev'printer!!
 //#define DBUG
 /*_______________________1___________________________*/
 //==================== Hardware =====================//
