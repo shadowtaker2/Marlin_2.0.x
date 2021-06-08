@@ -87,10 +87,19 @@
 //
 // Limit Switches
 //
+#define X_DIAG_PIN                         PA15  // +X
+#define Y_DIAG_PIN                         PA12  // +Y
+#define Z_DIAG_PIN                         PC4   // +Z
+
 #define X_STOP_PIN                          PA15  // -X
 #define Y_STOP_PIN                          PA12  // -Y
-#define Z_MIN_PIN                           PA11  // -Z
 #define Z_MAX_PIN                           PC4   // +Z
+#define Z_MIN_PIN                           PA11  // -Z
+
+//
+#ifndef Z_MIN_PROBE_PIN
+  #define Z_MIN_PROBE_PIN                  PA11
+#endif
 
 #ifndef FIL_RUNOUT_PIN
   #define FIL_RUNOUT_PIN            MT_DET_1_PIN
@@ -121,15 +130,50 @@
  * to the most compatible.
  */
 #if HAS_TMC_UART
-  // SoftwareSerial with one pin per driver
-  // Compatible with TMC2208 and TMC2209 drivers
-  #define X_SERIAL_TX_PIN                   PA10  // RXD1
-  #define X_SERIAL_RX_PIN                   PA10  // RXD1
-  #define Y_SERIAL_TX_PIN                   PA9   // TXD1
-  #define Y_SERIAL_RX_PIN                   PA9   // TXD1
-  #define Z_SERIAL_TX_PIN                   PC7   // IO1
-  #define Z_SERIAL_RX_PIN                   PC7   // IO1
-  #define TMC_BAUD_RATE                    19200
+  #ifndef TMC_BAUD_RATE
+    #define TMC_BAUD_RATE                   19200
+  #endif
+  #ifdef TMC_HARDWARE_SERIAL /*  TMC2209 */
+    /**
+    * HardwareSerial with one pin for four drivers.
+    * Compatible with TMC2209. Provides best performance.
+    * Requires SLAVE_ADDRESS definitions in Configuration_adv.h and proper
+    * jumper configuration. Uses only one I/O pin like PA10/PA9/PC7/PA8.
+    * Install the jumpers in the following way, for example:
+    */
+    // The 4xTMC2209 module doesn't have a serial multiplexer and
+    // needs to set *_SLAVE_ADDRESS in Configuration_adv.h for X,Y,Z,E0
+    //#define X_HARDWARE_SERIAL Serial1
+    //#define Y_HARDWARE_SERIAL Serial1
+    //#define Z_HARDWARE_SERIAL Serial1
+    #define  X_SLAVE_ADDRESS 3    // |  |  :
+    #define  Y_SLAVE_ADDRESS 2    // :  |  :
+    #define  Z_SLAVE_ADDRESS 1    // |  :  :
+    //#define E0_SLAVE_ADDRESS 0    // :  :  :
+
+    #define X_SERIAL_TX_PIN                  PA8  // IO0
+    #define X_SERIAL_RX_PIN      X_SERIAL_TX_PIN  // IO0
+    #define Y_SERIAL_TX_PIN      X_SERIAL_TX_PIN  // IO0
+    #define Y_SERIAL_RX_PIN      X_SERIAL_TX_PIN  // IO0
+    #define Z_SERIAL_TX_PIN      X_SERIAL_TX_PIN  // IO0
+    #define Z_SERIAL_RX_PIN      X_SERIAL_TX_PIN  // IO0
+    #ifdef ESP_WIFI
+      //Module ESP-WIFI
+      #define ESP_WIFI_MODULE_COM               2
+      #define ESP_WIFI_MODULE_BAUDRATE      BAUDRATE
+      //#define ESP_WIFI_MODULE_RESET_PIN         PA5
+    #endif
+  #else
+      // SoftwareSerial with one pin per driver
+      // Compatible with TMC2208 and TMC2209 drivers
+      #define X_SERIAL_TX_PIN                   PA10  // RXD1
+      #define X_SERIAL_RX_PIN                   PA10  // RXD1
+      #define Y_SERIAL_TX_PIN                   PA9   // TXD1
+      #define Y_SERIAL_RX_PIN                   PA9   // TXD1
+      #define Z_SERIAL_TX_PIN                   PC7   // IO1
+      #define Z_SERIAL_RX_PIN                   PC7   // IO1
+      #define TMC_BAUD_RATE                    19200
+  #endif
 #else
   // Motor current PWM pins
   #define MOTOR_CURRENT_PWM_XY_PIN          PA6   // VREF2/3 CONTROL XY
@@ -224,6 +268,8 @@
 #define MT_DET_1_PIN                        PA4   // MT_DET
 #define MT_DET_2_PIN                        PE6   // FALA_CRTL
 #define MT_DET_PIN_INVERTING               false
+#define PW_DET                              PA2
+#define PW_OFF                              PA3
 
 //
 // LED / NEOPixel
@@ -254,7 +300,6 @@
 #else
   #define SDIO_SUPPORT
   #define SDIO_CLOCK                     4500000  // 4.5 MHz
-  #define SDIO_READ_RETRIES                   16
   #define ONBOARD_SPI_DEVICE                   1  // SPI1
   #define ONBOARD_SD_CS_PIN                 PC11
   #define SD_DETECT_PIN                     -1    // SD_CD (-1 active refresh)
@@ -307,6 +352,11 @@
 #elif HAS_GRAPHICAL_TFT
   #define TFT_RESET_PIN                     PC6
   #define TFT_BACKLIGHT_PIN                 PD13
+#elif HAS_WIRED_LCD
+  #define BEEPER_PIN                        PC5
+  #define LCD_PINS_ENABLE                   -1
+  #define LCD_PINS_RS                       PD11
+  #define LCD_BACKLIGHT_PIN                 PD13
 #endif
 
 #if NEED_TOUCH_PINS
