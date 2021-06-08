@@ -947,7 +947,8 @@
 
 // Slow down the machine if the lookahead buffer is (by default) half full.
 // Increase the slowdown divisor for larger buffer sizes.
-//(don't use SLOWDOWN with DELTA because DELTA generates hundreds of segments per second)
+// DELTA should ignore Z_SAFE_HOMING and SLOWDOWN
+// (don't use SLOWDOWN with DELTA because DELTA generates hundreds of segments per second)
 //#define SLOWDOWN
 #if ENABLED(SLOWDOWN)
   #define SLOWDOWN_DIVISOR 2
@@ -963,7 +964,6 @@
   #ifdef XY_FREQUENCY_LIMIT
     #define XY_FREQUENCY_MIN_PERCENT 10 // (percent) Minimum FR percentage to apply. Set with M201 G<min%>.
   #endif
-
 
 // Minimum planner junction speed. Sets the default minimum speed the planner plans for at the end
 // of the buffer and all stops. This should not be much greater than zero and should only be changed
@@ -1324,7 +1324,7 @@
 
   //#define MEDIA_MENU_AT_TOP               // Force the media menu to be listed on the top of the main menu
 
-  #define EVENT_GCODE_SD_ABORT "G28"      // G-code to run on SD Abort Print (e.g., "G28XY" or "G27")
+  #define EVENT_GCODE_SD_ABORT "G28"        // G-code to run on SD Abort Print (e.g., "G28XY" or "G27")
 
   #if ENABLED(PRINTER_EVENT_LEDS)
     #define PE_LEDS_COMPLETED_TIME  (30*60) // (seconds) Time to keep the LED "done" color before restoring normal illumination
@@ -2655,14 +2655,14 @@
 
   #if AXIS_IS_TMC(E0)
     #define E0_CURRENT      E_CURRENT
-    #define E0_MICROSTEPS    E_MICROSTEPS
+    #define E0_MICROSTEPS   E_MICROSTEPS
     #define E0_RSENSE         0.11
     #define E0_CHAIN_POS     -1
     //#define E0_INTERPOLATE true
   #endif
 
   #if AXIS_IS_TMC(E1)
-    #define E1_CURRENT      E_CURRENT
+    #define E1_CURRENT      E0_CURRENT
     #define E1_MICROSTEPS   E0_MICROSTEPS
     #define E1_RSENSE         0.11
     #define E1_CHAIN_POS     -1
@@ -2670,7 +2670,7 @@
   #endif
 
   #if AXIS_IS_TMC(E2)
-    #define E2_CURRENT      E_CURRENT
+    #define E2_CURRENT      E0_CURRENT
     #define E2_MICROSTEPS   E0_MICROSTEPS
     #define E2_RSENSE         0.11
     #define E2_CHAIN_POS     -1
@@ -3682,7 +3682,7 @@
  */
 
 // Custom Menu: Main Menu
-//#define CUSTOM_MENU_MAIN
+//#define CUSTOM_MENU_MAIN  //Define on FLSUNQ_Config
 #if ENABLED(CUSTOM_MENU_MAIN)
   #define CUSTOM_MENU_MAIN_TITLE "Special Menu Delta & Leveling"
   //#define CUSTOM_MENU_MAIN_SCRIPT_DONE "M117 User Script Done"
@@ -3707,7 +3707,7 @@
   #define MAIN_MENU_ITEM_4_CONFIRM
 
   #define MAIN_MENU_ITEM_5_DESC "Run PID Nozzle for " PREHEAT_1_LABEL
-  #define MAIN_MENU_ITEM_5_GCODE "M106 S180\nM303 E0 C8 S210 U\nM500\nG28\nM107"
+  #define MAIN_MENU_ITEM_5_GCODE "M106 P0 S180\nM303 E0 C8 S210 U\nM500\nG28\nM107"
   #define MAIN_MENU_ITEM_5_CONFIRM
 
   #define MAIN_MENU_ITEM_6_DESC "Bed Leveling UBL for " PREHEAT_1_LABEL
@@ -3837,7 +3837,7 @@
  *
  * Implement M486 to allow Marlin to skip objects
  */
-//#define CANCEL_OBJECTS
+//#define CANCEL_OBJECTS  //Define on FLSUNQ_Config
 #if ENABLED(CANCEL_OBJECTS)
   #define CANCEL_OBJECTS_REPORTING // Emit the current object as a status message
 #endif
