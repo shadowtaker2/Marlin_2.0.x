@@ -10,7 +10,7 @@
 Additional documentation can be found at the [Marlin Home Page](https://marlinfw.org/).
 Please test this firmware and let us know if it misbehaves in any way. Volunteers are standing by!
 
-# Last release of Marlin BugFix 2.0.9 for Delta FLSun QQS-Pro (motherboard HISPEED_V1) & Q5 ((motherboard NANO_V1).
+# Last release of Marlin 2.0.x for Delta FLSun QQS-Pro (motherboard HISPEED_V1) & Q5 (motherboard NANO_V1).
 
 **20210610** 2.0.8.2
 - Last Marlin Release 2.0.8.2
