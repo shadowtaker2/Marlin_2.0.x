@@ -142,7 +142,6 @@
   #else
     #define SERIAL_PORT_2 1
     #define NUM_SERIAL 2
-    #define BAUDRATE_2 250000
   #endif
 #else
   #define BAUDRATE_2 250000
