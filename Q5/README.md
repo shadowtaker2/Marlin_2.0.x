@@ -1,3 +1,7 @@
+### 2021-06-10 MARLIN 2.0.8.2 OFFICIAL RELEASE
+ 
+ - Q5 STOCK With 3xTMC2208 + 1xA4988 = Q5_STOCK-Robin_nano.bin
+
 Each firmware has a header that corresponds to the hardware (board) and functions used in the firmware.
 Below is an example with the firmware for a Q5 printer with a Mks_Robin_nanov1.2 board with TMC2208 and A4988 stepper drivers:
 

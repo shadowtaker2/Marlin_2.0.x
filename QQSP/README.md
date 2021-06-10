@@ -1,3 +1,8 @@
+### 2021-06-10 MARLIN 2.0.8.2 OFFICIAL RELEASE
+
+- QQS-Pro STOCK With 4xA4988 = QQSP_STOCK-Robin_mini.bin
+- QQS-Pro STOCK With 3xTMC2208 + 1xA4988 = QQSP_STOCK_TMC-Robin_mini.bin
+  
 Each firmware has a header that corresponds to the hardware (board) and functions used in the firmware.
 Below is an example with the firmware for a QQS-Pro printer with a HiSpeedv1 board with TMC2208 stepper drivers:
 
