@@ -162,7 +162,7 @@
     #define Y_SERIAL_RX_PIN      X_SERIAL_TX_PIN  // IO0
     #define Z_SERIAL_TX_PIN      X_SERIAL_TX_PIN  // IO0
     #define Z_SERIAL_RX_PIN      X_SERIAL_TX_PIN  // IO0
-    #ifdef ESP_WIFI
+    #ifdef ESP_WIF
       //Module ESP-WIFI
       #define ESP_WIFI_MODULE_COM               2
       #define ESP_WIFI_MODULE_BAUDRATE      BAUDRATE

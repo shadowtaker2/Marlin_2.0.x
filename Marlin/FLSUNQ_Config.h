@@ -59,12 +59,13 @@
         * ==============================
         */
 #define MKS_ROBIN_TFT32                 // (Default) Mks_Robin_TFT_V2.0
-//#define MKS_TS35_V2_00                // Only for NanoV2 or V3
+//#define MKS_TS35_V2_0                 // Only for NanoV2 or V3
 //#define TFT_GENERIC                   // For the user who haven't the same screen.
 
                 /*--- Choice UI TFT ----*/
 #define TFT_COLOR_UI                     //(C) (Default) UI MARLIN
 //#define TFT_CLASSIC_UI                 //(F) UI STANDARD (type LCD)
+//#define TFT_LVGL_UI                    //(I) UI MKS => uncomment #define ADD_MENUS
 
 #define TOUCH_SCREEN                     //(C/F) (Default) UI MARLIN
 
@@ -162,7 +163,7 @@
 */
 // 
 #ifdef MKS_WIFI
-  #define ESP_WIFI
+  #define ESP_WIF
   #ifdef ESP3D_30
     #define MKS_WIFI_MODULE           // Work with TFT_LVGL_UI(Modern UI using LVGL-MKS)
     #define USES_MKS_WIFI_FUNCTION    // Bin transfert MKS for ESP3D firmware v3.0 or others
