@@ -140,7 +140,6 @@
   #else
     #define SERIAL_PORT_2 1
     #define NUM_SERIAL 2
-    #define BAUDRATE_2 250000
   #endif
 #else
   #define BAUDRATE_2 250000
@@ -795,7 +794,7 @@
 
   #if ENABLED(DELTA_AUTO_CALIBRATION)
     // set the default number of probe points : n*n (1 -> 7)
-    #define DELTA_CALIBRATION_DEFAULT_POINTS  4
+    #define DELTA_CALIBRATION_DEFAULT_POINTS 4
   #endif
 
   #if EITHER(DELTA_AUTO_CALIBRATION, DELTA_CALIBRATION_MENU)
@@ -822,7 +821,7 @@
     #define DELTA_RADIUS 140.8               // (mm) Get this value from G33 auto calibrate
 
     // Distance between bed and nozzle Z home position
-    #define DELTA_HEIGHT 370.00              //370 E3D-360 (mm) Get this value from G33 auto calibrate
+    #define DELTA_HEIGHT 375.00              //370 E3D-360 (mm) Get this value from G33 auto calibrate
 
     #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 } // Get these values from G33 auto calibrate
 
@@ -846,8 +845,10 @@
 // Specify here all the endstop connectors that are connected to any endstop or probe.
 // Almost all printers will be using one per axis. Probes will use one or more of the
 // extra connectors. Leave undefined any used for non-endstop and non-probe purposes.
-//#define USE_XMIN_PLUG
-//#define USE_YMIN_PLUG
+#ifdef N_PROBE
+  #define USE_XMIN_PLUG
+  #define USE_YMIN_PLUG
+#endif
 #define USE_ZMIN_PLUG // a Z probe
 //#define USE_IMIN_PLUG
 //#define USE_JMIN_PLUG
@@ -900,10 +901,10 @@
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
 #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define Y_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#ifdef XPROBE
-  #define Z_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#else
+#ifndef X_PROBE
   #define Z_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#else
+  #define Z_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #endif
 #define I_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define J_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -914,10 +915,10 @@
 #define I_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define J_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define K_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#ifdef XPROBE
-  #define Z_MIN_PROBE_ENDSTOP_INVERTING false // Set to true to invert the logic of the probe.
-#else
+#ifndef X_PROBE
   #define Z_MIN_PROBE_ENDSTOP_INVERTING true // Set to true to invert the logic of the probe.
+#else
+  #define Z_MIN_PROBE_ENDSTOP_INVERTING false // Set to true to invert the logic of the probe.
 #endif
 
 /**
@@ -1072,7 +1073,7 @@
  */
 #define CLASSIC_JERK  //DELTA
 #if ENABLED(CLASSIC_JERK)
-  #define DEFAULT_XJERK 10.0
+  #define DEFAULT_XJERK XYZJERK
   #define DEFAULT_YJERK DEFAULT_XJERK
   #define DEFAULT_ZJERK DEFAULT_XJERK // Must be same as XY for delta
   //#define DEFAULT_IJERK  0.3
@@ -1086,7 +1087,7 @@
   #endif
 #endif
 
-#define DEFAULT_EJERK    5.0  // May be used by Linear Advance
+#define DEFAULT_EJERK    EJERK  // May be used by Linear Advance
 
 /**
  * Junction Deviation Factor
@@ -1125,7 +1126,9 @@
  * The probe replaces the Z-MIN endstop and is used for Z homing.
  * (Automatically enables USE_PROBE_FOR_Z_HOMING.)
  */
-#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+#ifndef N_PROBE
+  #define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+#endif
 
 // Force the use of the probe for Z-axis homing
 //#define USE_PROBE_FOR_Z_HOMING
@@ -1165,7 +1168,9 @@
  * A Fix-Mounted Probe either doesn't deploy or needs manual deployment.
  *   (e.g., an inductive probe or a nozzle-based probe-switch.)
  */
-#define FIX_MOUNTED_PROBE
+#ifndef N_PROBE
+  #define FIX_MOUNTED_PROBE
+#endif
 
 /**
  * Use the nozzle as the probe, as with a conductive
@@ -1303,7 +1308,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 0, 0, Z_OFFSET }  //OPT (QQS -16.2) (Q5 -18)
+#define NOZZLE_TO_PROBE_OFFSET { 0, 0, Z_OFFSET } //(QQS -16.2) (Q5 -18)
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
@@ -1317,7 +1322,7 @@
 #define Z_PROBE_FEEDRATE_FAST (40*60)  //2400
 
 // Feedrate (mm/min) for the "accurate" probe of each point
-#define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 4) //750
+#define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 6) //750
 
 /**
  * Probe Activation Switch
@@ -1358,7 +1363,7 @@
 #ifndef XP
   #define MULTIPLE_PROBING 2
 #endif
-//#define EXTRA_PROBING    1
+//#define EXTRA_PROBING  1
 
 /**
  * Z probes require clearance when deploying, stowing, and moving between
@@ -1389,7 +1394,7 @@
 #define Z_MIN_PROBE_REPEATABILITY_TEST
 
 // Before deploy/stow pause for user confirmation
-#ifndef XP
+#ifndef X_PROBE
   #define PAUSE_BEFORE_DEPLOY_STOW
 #endif
 #if ENABLED(PAUSE_BEFORE_DEPLOY_STOW)
@@ -1578,7 +1583,7 @@
 #endif
 
 #if EITHER(MIN_SOFTWARE_ENDSTOPS, MAX_SOFTWARE_ENDSTOPS)
-  #define SOFT_ENDSTOPS_MENU_ITEM  // Enable/Disable software endstops from the LCD
+  #define SOFT_ENDSTOPS_MENU_ITEM    // Enable/Disable software endstops from the LCD
 #endif
 
 /**
@@ -1798,12 +1803,12 @@
 
   //#define MESH_EDIT_GFX_OVERLAY   // Display a graphics overlay while editing the mesh
 
-  #define MESH_INSET 15            // Set Mesh bounds as an inset region of the bed
-  #define GRID_MAX_POINTS_X 8      // Don't use more than 15 points per axis, implementation limited.
+  #define MESH_INSET 15             // Set Mesh bounds as an inset region of the bed
+  #define GRID_MAX_POINTS_X 8       // Don't use more than 15 points per axis, implementation limited.
   /// 10=53points, 13=90points, 15=110points
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
-  //#define UBL_HILBERT_CURVE       //Define on FLSUNQ_Config // Use Hilbert distribution for less travel when probing multiple points
+  #define UBL_HILBERT_CURVE         // Use Hilbert distribution for less travel when probing multiple points
 
   #define UBL_MESH_EDIT_MOVES_Z     // Sophisticated users prefer no movement of nozzle
   #define UBL_SAVE_ACTIVE_ON_M500   // Save the currently active mesh in the current slot on M500
@@ -2004,7 +2009,7 @@
 // When enabled Marlin will send a busy status message to the host
 // every couple of seconds when it can't accept commands.
 //
-//#define HOST_KEEPALIVE_FEATURE        // Disable this if your host doesn't like keepalive messages
+#define HOST_KEEPALIVE_FEATURE        // Disable this if your host doesn't like keepalive messages
 #define DEFAULT_KEEPALIVE_INTERVAL 3  // Number of seconds between "busy" messages. Set with M113.
 #define BUSY_WHILE_HEATING            // Some hosts require "busy" messages even during heating
 
@@ -2038,13 +2043,13 @@
 #define PREHEAT_3_LABEL       "TPU"
 #define PREHEAT_3_TEMP_HOTEND 230
 #define PREHEAT_3_TEMP_BED     50
-#define PREHEAT_2_TEMP_CHAMBER 35                                 
+#define PREHEAT_2_TEMP_CHAMBER 35
 #define PREHEAT_3_FAN_SPEED     0 // Value from 0 to 255
 
 #define PREHEAT_4_LABEL       "PETG"
 #define PREHEAT_4_TEMP_HOTEND 230
 #define PREHEAT_4_TEMP_BED     80
-#define PREHEAT_2_TEMP_CHAMBER 35                                 
+#define PREHEAT_2_TEMP_CHAMBER 35
 #define PREHEAT_4_FAN_SPEED     0 // Value from 0 to 255
 
 /**
@@ -3049,7 +3054,7 @@
   #define NEOPIXEL_PIXELS     18   // Number of LEDs in the strip, larger of 2 strips if 2 neopixel strips are used
   //#define NEOPIXEL_IS_SEQUENTIAL // Sequential display for temperature change - LED by LED. Disable to change all LEDs at once.
   #define NEOPIXEL_BRIGHTNESS 250  // Initial brightness (0-255)
-  #define NEOPIXEL_STARTUP_TEST  // Cycle through colors at startup
+  #define NEOPIXEL_STARTUP_TEST    // Cycle through colors at startup
 
   // Support for second Adafruit NeoPixel LED driver controlled with M150 S1 ...
   //#define NEOPIXEL2_SEPARATE
