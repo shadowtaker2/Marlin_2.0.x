@@ -185,5 +185,7 @@ cmake-build-*
 
 #Python
 __pycache__
-Marlin/_Bootscreen.h
-*.h
+
+# Simulation / Native
+eeprom.dat
+imgui.ini
