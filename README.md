@@ -10,8 +10,9 @@
 Additional documentation can be found at the [Marlin Home Page](https://marlinfw.org/).
 Please test this firmware and let us know if it misbehaves in any way. Volunteers are standing by!
 
-# Last release of Marlin BugFix 2.0.8 for Delta FLSun QQS-Pro (motherboard HISPEED).
+# Last release of Marlin BugFix 2.0.9 for Delta FLSun printers.
 
+- 20210610 last bugfix 2.0.9
 - 20201122 Add options in QQS_Config (BMG&BMGmini (step), Flying Extruder)
 - 20201022 Updated Marlin BugFix 2.0.8.1 for FLSun QQS-Pro with A4988 and TMC220x (Easy to configure by "QQS_Config.h" file)**
 - Integration in the Marlin firmware of the HISPEED motherboard and configuration files for the QQS-Pro.
