@@ -1,20 +1,30 @@
-# Marlin 3D Printer Firmware
+# Marlin 3D Delta Printer Firmwares
 
 ![GitHub](https://img.shields.io/github/license/marlinfirmware/marlin.svg)
 ![GitHub contributors](https://img.shields.io/github/contributors/marlinfirmware/marlin.svg)
 ![GitHub Release Date](https://img.shields.io/github/release-date/marlinfirmware/marlin.svg)
 [![Build Status](https://github.com/MarlinFirmware/Marlin/workflows/CI/badge.svg?branch=bugfix-2.0.x)](https://github.com/MarlinFirmware/Marlin/actions)
 
-<img align="right" width=175 src="buildroot/share/pixmaps/logo/marlin-250.png" />
+<img align="right" width=175 src="pixmaps/logo/marlin-250.png" />
 
 Additional documentation can be found at the [Marlin Home Page](https://marlinfw.org/).
 Please test this firmware and let us know if it misbehaves in any way. Volunteers are standing by!
 
-# Last release of Marlin BugFix 2.0.8 for Delta FLSun QQS-Pro (motherboard HISPEED).
+# Latest stable source of Marlin 2.0.x for Delta FLSun QQS-Pro (motherboard HISPEED_V1) & Q5 (motherboard NANO_V1).
 
-- 20201122 Add options in QQS_Config (BMG&BMGmini (step), Flying Extruder)
-- 20201022 Updated Marlin BugFix 2.0.8.1 for FLSun QQS-Pro with A4988 and TMC220x (Easy to configure by "QQS_Config.h" file)**
-- Integration in the Marlin firmware of the HISPEED motherboard and configuration files for the QQS-Pro.
+**20210610** 2.0.8.2
+- Last Marlin Release 2.0.8.2
+
+**20210602** 2.0.8.1+
+- Last Bugfix 2.0.8.2
+- Some Tests for users'board.
+
+**20210514** 2.0.8+
+- New wizards for UBL and ZoffSet.
+- New menu for Delta users.
+- Add options in FLSUNQ_Config (BMG&BMGmini(steps), Flying Extruder, thermistor, ...)
+- Easy to configure by "FLSUNQ_Config.h" file,
+- Integration in the Marlin firmware of the HISPEED motherboard and configuration files for the QQS-Pro,
 - Fixed Deploy/Stow ZProbe
 - Fixed for users using E3Dv6 hotend
 - Others TIPS(QQS_Config.h, Quick calibration, Menu management of NeoPixel leds, etc).
@@ -40,10 +50,6 @@ Thanks to [Anders Salhman](https://github.com/AndersSahlman) & [Martin Carlsson]
 
 ## This is my experimental Marlin firmware on Delta FLSun QQ-S 
 
-## Example Configurations
-
-Before building Marlin you'll need to configure it for your specific hardware. Your vendor should have already provided source code with configurations for the installed firmware, but if you ever decide to upgrade you'll need updated configuration files. Marlin users have contributed dozens of tested example configurations to get you started. Visit the [MarlinFirmware/Configurations](https://github.com/MarlinFirmware/Configurations) repository to find the right configuration for your hardware.
-
 ## Building Marlin 2.0
 
 To build Marlin 2.0 you'll need [Arduino IDE 1.8.8 or newer](https://www.arduino.cc/en/main/software) or [PlatformIO](http://docs.platformio.org/en/latest/ide.html#platformio-ide). Detailed build and install instructions are posted at:
@@ -58,7 +64,6 @@ To build Marlin 2.0 you'll need [Arduino IDE 1.8.8 or newer](https://www.arduino
   [Arduino AVR](https://www.arduino.cc/)|ATmega|RAMPS, Melzi, RAMBo
   [Teensy++ 2.0](http://www.microchip.com/wwwproducts/en/AT90USB1286)|AT90USB1286|Printrboard
   [Arduino Due](https://www.arduino.cc/en/Guide/ArduinoDue)|SAM3X8E|RAMPS-FD, RADDS, RAMPS4DUE
-  [ESP32](https://github.com/espressif/arduino-esp32)|ESP32|FYSETC E4, E4d@BOX, MRR
   [LPC1768](http://www.nxp.com/products/microcontrollers-and-processors/arm-based-processors-and-mcus/lpc-cortex-m-mcus/lpc1700-cortex-m3/512kb-flash-64kb-sram-ethernet-usb-lqfp100-package:LPC1768FBD100)|ARM® Cortex-M3|MKS SBASE, Re-ARM, Selena Compact
   [LPC1769](https://www.nxp.com/products/processors-and-microcontrollers/arm-microcontrollers/general-purpose-mcus/lpc1700-cortex-m3/512kb-flash-64kb-sram-ethernet-usb-lqfp100-package:LPC1769FBD100)|ARM® Cortex-M3|Smoothieboard, Azteeg X5 mini, TH3D EZBoard
   [STM32F103](https://www.st.com/en/microcontrollers-microprocessors/stm32f103.html)|ARM® Cortex-M3|Malyan M200, GTM32 Pro, MKS Robin, BTT SKR Mini
@@ -67,9 +72,6 @@ To build Marlin 2.0 you'll need [Arduino IDE 1.8.8 or newer](https://www.arduino
   [SAMD51P20A](https://www.adafruit.com/product/4064)|ARM® Cortex-M4|Adafruit Grand Central M4
   [Teensy 3.5](https://www.pjrc.com/store/teensy35.html)|ARM® Cortex-M4|
   [Teensy 3.6](https://www.pjrc.com/store/teensy36.html)|ARM® Cortex-M4|
-  [Teensy 4.0](https://www.pjrc.com/store/teensy40.html)|ARM® Cortex-M7|
-  [Teensy 4.1](https://www.pjrc.com/store/teensy41.html)|ARM® Cortex-M7|
-  Linux Native|x86/ARM/etc.|Raspberry Pi
 
 ## Submitting Changes
 
@@ -79,7 +81,7 @@ To build Marlin 2.0 you'll need [Arduino IDE 1.8.8 or newer](https://www.arduino
 
 ## Marlin Support
 
-The Issue Queue is reserved for Bug Reports and Feature Requests. To get help with configuration and troubleshooting, please use the following resources:
+For best results getting help with configuration and troubleshooting, please use the following resources:
 
 - [Marlin Documentation](http://marlinfw.org) - Official Marlin documentation
 - [Marlin Discord](https://discord.gg/n5NJ59y) - Discuss issues with Marlin users and developers
@@ -89,21 +91,13 @@ The Issue Queue is reserved for Bug Reports and Feature Requests. To get help wi
 - Facebook Group ["Marlin Firmware for 3D Printers"](https://www.facebook.com/groups/3Dtechtalk/)
 - [Marlin Configuration](https://www.youtube.com/results?search_query=marlin+configuration) on YouTube
 
-## Contributors
+## Credits
 
-Marlin is constantly improving thanks to a huge number of contributors from all over the world bringing their specialties and talents. Huge thanks are due to [all the contributors](https://github.com/MarlinFirmware/Marlin/graphs/contributors) who regularly patch up bugs, help direct traffic, and basically keep Marlin from falling apart. Marlin's continued existence would not be possible without them.
+The current Marlin dev team consists of:
 
-## Administration
-
-Regular users can open and close their own issues, but only the administrators can do project-related things like add labels, merge changes, set milestones, and kick trolls. The current Marlin admin team consists of:
-
- - Scott Lahteine [[@thinkyhead](https://github.com/thinkyhead)] - USA - Project Maintainer &nbsp; [![Donate](https://api.flattr.com/button/flattr-badge-large.png)](http://www.thinkyhead.com/donate-to-marlin)
+ - Scott Lahteine [[@thinkyhead](https://github.com/thinkyhead)] - USA &nbsp; [Donate](http://www.thinkyhead.com/donate-to-marlin)
  - Roxanne Neufeld [[@Roxy-3D](https://github.com/Roxy-3D)] - USA
- - Keith Bennett [[@thisiskeithb](https://github.com/thisiskeithb)] - USA
- - Victor Oliveira [[@rhapsodyv](https://github.com/rhapsodyv)] - Brazil
  - Chris Pepper [[@p3p](https://github.com/p3p)] - UK
- - Jason Smith [[@sjasonsmith](https://github.com/sjasonsmith)] - USA
- - Luu Lac [[@sjasonsmith](https://github.com/sjasonsmith)] - USA
  - Bob Kuhn [[@Bob-the-Kuhn](https://github.com/Bob-the-Kuhn)] - USA
  - Erik van der Zalm [[@ErikZalm](https://github.com/ErikZalm)] - Netherlands 
 ## License
