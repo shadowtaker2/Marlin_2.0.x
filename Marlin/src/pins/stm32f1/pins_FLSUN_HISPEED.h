@@ -87,10 +87,21 @@
 //
 // Limit Switches
 //
-#define X_STOP_PIN                          PA15  // -X
-#define Y_STOP_PIN                          PA12  // -Y
+#define X_DIAG_PIN                          PA15  // +X
+#define Y_DIAG_PIN                          PA12  // +Y
+#define Z_DIAG_PIN                          PC4   // +Z
+
+#define X_STOP_PIN                          PA15  // +X
+#define Y_STOP_PIN                          PA12  // +Y
 #define Z_MIN_PIN                           PA11  // -Z
 #define Z_MAX_PIN                           PC4   // +Z
+
+//
+// Z Probe (when not Z_MIN_PIN)
+//
+#ifndef Z_MIN_PROBE_PIN
+  #define Z_MIN_PROBE_PIN                  PA11
+#endif
 
 #ifndef FIL_RUNOUT_PIN
   #define FIL_RUNOUT_PIN            MT_DET_1_PIN

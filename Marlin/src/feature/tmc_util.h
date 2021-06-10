@@ -362,9 +362,9 @@ void test_tmc_connection(const bool test_x=true, const bool test_y=true, const b
     constexpr uint16_t default_sg_guard_duration = 400;
 
     struct slow_homing_t {
-      xy_ulong_t acceleration;
+      xyz_ulong_t acceleration;
       #if ENABLED(HAS_CLASSIC_JERK)
-        xy_float_t jerk_xy;
+        xyz_float_t jerk_xyz;
       #endif
     };
   #endif

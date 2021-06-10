@@ -77,7 +77,7 @@
   #define COLOR_SELECTION_BG  0x9930  // #992380
 #endif
 #ifndef COLOR_WEBSITE_URL
-  #define COLOR_WEBSITE_URL   0x03B7  // #0075BD
+  #define COLOR_WEBSITE_URL   0xED03  // #EFA219 Change
 #endif
 
 #ifndef COLOR_INACTIVE
@@ -124,7 +124,7 @@
   #define COLOR_PROGRESS_FRAME    COLOR_WHITE
 #endif
 #ifndef COLOR_PROGRESS_BAR
-  #define COLOR_PROGRESS_BAR      COLOR_BLUE
+  #define COLOR_PROGRESS_BAR      COLOR_VIVID_GREEN //COLOR_BLUE Change
 #endif
 #ifndef COLOR_PROGRESS_BG
   #define COLOR_PROGRESS_BG       COLOR_BLACK
