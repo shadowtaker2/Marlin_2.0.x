@@ -61,7 +61,7 @@
 #define MKS_ROBIN_TFT32                 // (Default) Mks_Robin_TFT_V2.0
 //#define MKS_TS35_V2_0                 // Only for NanoV2 or V3
 //#define TFT_GENERIC                   // For the user who haven't the same screen.
-
+//#define TS35                          // for new TS35 for TFT GENERIC
                 /*--- Choice UI TFT ----*/
 #define TFT_COLOR_UI                     //(C) (Default) UI MARLIN
 //#define TFT_CLASSIC_UI                 //(F) UI STANDARD (type LCD)
@@ -174,9 +174,15 @@
 
 //TFT Type For TFT_GENERIC
 #if ENABLED(TFT_GENERIC)
-  #define TFT_DRIVER AUTO
-  #define TFT_INTERFACE_FSMC  //Default socket on MKS_nano, mini, hispeed.
-  #define TFT_RES_320x240
+  #ifdef TS35
+    #define TFT_DRIVER ST7796 // for new TS35v2
+    #define TFT_RES_480x320
+    #define TFT_INTERFACE_SPI
+  #else
+    #define TFT_DRIVER AUTO 
+    #define TFT_INTERFACE_FSMC  //Default socket on MKS_nano, mini, hispeed.
+    #define TFT_RES_320x240
+  #endif  
 #endif
 
 //= For users who dont have a terminal =//
