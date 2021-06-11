@@ -3,7 +3,7 @@
 *================= With pins_FLSUN_HiSPEED.h BOARD (QQS-Pro)================
 *================= With pins_MKS_ROBIN_NANO.h BOARD (Q5)====================
 *===========================================================================
-*                         MARLIN_v2.0.8.2
+*                         MARLIN_v2.0.9.x
 * For a Delta printer start with one of the configuration files in the
 * config/examples/delta/FLSUN/ directory and customize for your machine.
 * 
