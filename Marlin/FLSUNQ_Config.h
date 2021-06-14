@@ -191,14 +191,15 @@
   #define PID_EDIT_MENU                 //  (Default) Tune PID Bed and Nozzle.
   #define PID_AUTOTUNE_MENU             //  (Default) Tune auto PID.
   #define LCD_INFO_MENU                 //  (Default) Informations printer.
+  #ifdef NEOPIXEL_LED
+   #define LED_CONTROL_MENU              // To control LedStrip.
+  #endif
   //#define PREHEAT_SHORTCUT_MENU_ITEM  // Add preheat/temperature menu (first page)
   //#define CANCEL_OBJECTS              // Add menu "Cancel Objet"
 #endif
 
 // Options for Modules Hardware
-#ifdef NEOPIXEL_LED
-  #define LED_CONTROL_MENU              // To control LedStrip.
-#endif
+
 
 //For other PROBE like IR, TouchMI, Nozzle
 //#define X_PROBE                       // Set to invert the logic of the PROBE.

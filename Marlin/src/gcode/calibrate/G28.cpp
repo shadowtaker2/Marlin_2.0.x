@@ -259,7 +259,7 @@ void GcodeSuite::G28() {
   reset_stepper_timeout();
 
   #define HAS_CURRENT_HOME(N) (defined(N##_CURRENT_HOME) && N##_CURRENT_HOME != N##_CURRENT)
-  #if HAS_CURRENT_HOME(X) || HAS_CURRENT_HOME(X2) || HAS_CURRENT_HOME(Y) || HAS_CURRENT_HOME(Y2)
+  #if HAS_CURRENT_HOME(X) || HAS_CURRENT_HOME(X2) || HAS_CURRENT_HOME(Y) || HAS_CURRENT_HOME(Y2) || HAS_CURRENT_HOME(Z)
     #define HAS_HOMING_CURRENT 1
   #endif
 
@@ -286,6 +286,11 @@ void GcodeSuite::G28() {
       const int16_t tmc_save_current_Y2 = stepperY2.getMilliamps();
       stepperY2.rms_current(Y2_CURRENT_HOME);
       if (DEBUGGING(LEVELING)) debug_current(PSTR("Y2"), tmc_save_current_Y2, Y2_CURRENT_HOME);
+    #endif
+    #if HAS_CURRENT_HOME(Z) && ENABLED(DELTA)
+      const int16_t tmc_save_current_Z = stepperZ.getMilliamps();
+      stepperZ.rms_current(Z_CURRENT_HOME);
+      if (DEBUGGING(LEVELING)) debug_current(PSTR("Z"), tmc_save_current_Z, Z_CURRENT_HOME);
     #endif
   #endif
 
@@ -494,6 +499,9 @@ void GcodeSuite::G28() {
     #endif
     #if HAS_CURRENT_HOME(Y2)
       stepperY2.rms_current(tmc_save_current_Y2);
+    #endif
+    #if HAS_CURRENT_HOME(Z) && ENABLED(DELTA)       
+      stepperZ.rms_current(tmc_save_current_Z);
     #endif
     #if HAS_CURRENT_HOME(I)
       stepperI.rms_current(tmc_save_current_I);

@@ -110,6 +110,7 @@
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
 #define SERIAL_PORT 3
+//#define SERIAL_PORT -1 // MKS_TS35_V2_0 
 
 /**
  * Serial Port Baud Rate
@@ -142,7 +143,7 @@
     #define NUM_SERIAL 2
   #endif
 #else
-  #define BAUDRATE_2 250000
+  //#define BAUDRATE_2 250000
 #endif
                            
 
@@ -821,7 +822,7 @@
     #define DELTA_RADIUS 140.8               // (mm) Get this value from G33 auto calibrate
 
     // Distance between bed and nozzle Z home position
-    #define DELTA_HEIGHT 375.00              //370 E3D-360 (mm) Get this value from G33 auto calibrate
+    #define DELTA_HEIGHT 380.00              //370 E3D-360 (mm) Get this value from G33 auto calibrate
 
     #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 } // Get these values from G33 auto calibrate
 
