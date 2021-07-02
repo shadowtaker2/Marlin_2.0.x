@@ -93,16 +93,16 @@
 #define Y_DIAG_PIN                          PA12  //-Y
 #define Z_DIAG_PIN                          PC4  //-Z
 
-#define X_STOP_PIN                          PA15  // -X
-#define Y_STOP_PIN                          PA12  // -Y
-#define Z_MIN_PIN                           PA11  // -Z
-#define Z_MAX_PIN                           PC4   // +Z
-
-//
-// Z Probe 
-//
-#ifndef Z_MIN_PROBE_PIN
-  #define Z_MIN_PROBE_PIN                  PA11
+#ifdef SENSORLESS_PROBING
+  #define X_STOP_PIN                  X_DIAG_PIN 
+  #define Y_STOP_PIN                  Y_DIAG_PIN
+  #define Z_STOP_PIN                  Z_DIAG_PIN
+  #define Z_MIN_PIN                   Z_DIAG_PIN 
+#else
+  #define X_STOP_PIN                  X_DIAG_PIN  // +X 
+  #define Y_STOP_PIN                  Y_DIAG_PIN  // +Y
+  #define Z_MAX_PIN                   Z_DIAG_PIN  // +Z
+  #define Z_MIN_PIN                         PA11  // -Z
 #endif
 
 #ifndef FIL_RUNOUT_PIN
