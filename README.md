@@ -12,7 +12,10 @@ Please test this firmware and let us know if it misbehaves in any way. Volunteer
 
 # Latest stable source of Marlin 2.0.x for Delta FLSun QQS-Pro (motherboard HISPEED_V1) & Q5 (motherboard NANO_V1).
 
-**20210610** 2.0.8.2
+**20210702** 2.0.9
+- Last Marlin Release 2.0.9.1
+
+**20210610** 2.0.8
 - Last Marlin Release 2.0.8.2
 
 **20210602** 2.0.8.1+
@@ -35,20 +38,11 @@ Please test this firmware and let us know if it misbehaves in any way. Volunteer
   - [Update binairies (U8+S)]
   - [Enlarge range Z probe]
   - [Adjust Step/mm (417) for BMG LG] 
+## Marlin 2.0
 
-20201001 Updated Marlin 2.0.7 for FLSun QQ-S with A4988 and TMC220x mode _UART and _StandAlone.
+Marlin 2.0 takes this popular RepRap firmware to the next level by adding support for much faster 32-bit and ARM-based boards while improving support for 8-bit AVR boards. Read about Marlin's decision to use a "Hardware Abstraction Layer" below.
 
-20200830 Updated Marlin 2.0.6 for FLSun QQ-S with A4988 and TMC2208_StandAlone.
-
-20200827 Updated Marlin 2.0.6 for FLSun QQ-S with A4988.
-
-20200815 Updated Marlin 2.0.6 for FLSun QQ-S.
-
-Thanks to [Anders Salhman](https://github.com/AndersSahlman) & [Martin Carlsson](https://github.com/orecus) for their work and inspiration.
-
-## I am not responsible for any Damage done do your Printer by using this. Using anything else than stock firmware requieres quite some knowlege.
-
-## This is my experimental Marlin firmware on Delta FLSun QQ-S 
+Download earlier versions of Marlin on the [Releases page](https://github.com/MarlinFirmware/Marlin/releases).
 
 ## Building Marlin 2.0
 
@@ -98,6 +92,8 @@ The current Marlin dev team consists of:
  - Scott Lahteine [[@thinkyhead](https://github.com/thinkyhead)] - USA &nbsp; [Donate](http://www.thinkyhead.com/donate-to-marlin)
  - Roxanne Neufeld [[@Roxy-3D](https://github.com/Roxy-3D)] - USA
  - Chris Pepper [[@p3p](https://github.com/p3p)] - UK
+ - Jason Smith [[@sjasonsmith](https://github.com/sjasonsmith)] - USA
+ - Luu Lac [[@shitcreek](https://github.com/shitcreek)] - USA
  - Bob Kuhn [[@Bob-the-Kuhn](https://github.com/Bob-the-Kuhn)] - USA
  - Erik van der Zalm [[@ErikZalm](https://github.com/ErikZalm)] - Netherlands 
 ## License
