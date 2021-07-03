@@ -870,6 +870,9 @@
   #define USE_YMIN_PLUG
 #endif
 #define USE_ZMIN_PLUG // a Z probe
+//#define USE_IMIN_PLUG
+//#define USE_JMIN_PLUG
+//#define USE_KMIN_PLUG
 #define USE_XMAX_PLUG
 #define USE_YMAX_PLUG
 #define USE_ZMAX_PLUG
@@ -1467,14 +1470,21 @@
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
+//#define INVERT_X_DIR false  //QQS_A4988 Q5_220X
+//#define INVERT_Y_DIR false  //QQS_A4988 Q5_220X
+//#define INVERT_Z_DIR false  //QQS_A4988 Q5_220X
+//#define INVERT_I_DIR false
+//#define INVERT_J_DIR false
+//#define INVERT_K_DIR false
+
 #ifdef STOCK
-  #define INVERT_X_DIR false  //Q5_220X
-  #define INVERT_Y_DIR false  //Q5_220X
-  #define INVERT_Z_DIR false  //Q5_220X
+  #define INVERT_X_DIR false      //QQS_A4988 Q5_220X
+  #define INVERT_Y_DIR false      //QQS_A4988 Q5_220X
+  #define INVERT_Z_DIR false      //QQS_A4988 Q5_220X
   #ifdef INV_EXT
-    #define INVERT_E0_DIR false  //Q5_220X
+    #define INVERT_E0_DIR false   //Q5_220X
   #else
-    #define INVERT_E0_DIR true  //Q5_A4988
+    #define INVERT_E0_DIR true    //QQS-Q5_A4988
   #endif
 #endif
 #if BOTH(QQSP, Q_TMC)
@@ -1894,7 +1904,6 @@
  * Useful to retract or move the Z probe out of the way.
  */
 #define Z_PROBE_END_SCRIPT "G28"
-//#define Z_PROBE_END_SCRIPT "G0 Z30 F12000\n G0 X0 Y0 Z30"
 
 // @section homing
 
@@ -1910,15 +1919,13 @@
 //#define MANUAL_J_HOME_POS 0
 //#define MANUAL_K_HOME_POS 0
 
-// Use "Z Safe Homing" to avoid homing with a Z probe outside the bed area.
-//
-// With this feature enabled:
-//
-// - Allow Z homing only after X and Y homing AND stepper drivers still enabled.
-// - If stepper drivers time out, it will need X and Y homing again before Z homing.
-// - Move the Z probe (or nozzle) to a defined XY point before Z Homing.
-// - Prevent Z homing when the Z probe is outside bed area.
-//
+/**
+ * Use "Z Safe Homing" to avoid homing with a Z probe outside the bed area.
+ *
+ * - Moves the Z probe (or nozzle) to a defined XY point before Z homing.
+ * - Allows Z homing only when XY positions are known and trusted.
+ * - If stepper drivers sleep, XY homing may be required again before Z homing.
+ */
 //#define Z_SAFE_HOMING
 
 #if ENABLED(Z_SAFE_HOMING)
@@ -2045,7 +2052,7 @@
 #define PREHEAT_1_TEMP_HOTEND 200
 #define PREHEAT_1_TEMP_BED     60
 #define PREHEAT_1_TEMP_CHAMBER 35
-#define PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
+#define PREHEAT_1_FAN_SPEED   200 // Value from 0 to 255
 
 #define PREHEAT_2_LABEL       "ABS"
 #define PREHEAT_2_TEMP_HOTEND 240
@@ -2956,10 +2963,11 @@
 
   #define TOUCH_SCREEN_CALIBRATION //or (M995) 
 
-  //#define TOUCH_CALIBRATION_X 12316
-  //#define TOUCH_CALIBRATION_Y -8981
-  //#define TOUCH_OFFSET_X        -43
-  //#define TOUCH_OFFSET_Y        257
+  // QQS-Pro use MKS Robin TFT v2.0
+  //#define TOUCH_CALIBRATION_X   12033
+  //#define TOUCH_CALIBRATION_Y   -9047
+  //#define TOUCH_OFFSET_X          -30
+  //#define TOUCH_OFFSET_Y          254
   //#define TOUCH_ORIENTATION TOUCH_LANDSCAPE
 
   #if BOTH(TOUCH_SCREEN_CALIBRATION, EEPROM_SETTINGS)
