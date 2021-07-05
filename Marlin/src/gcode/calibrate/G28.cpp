@@ -170,7 +170,6 @@
                                  planner.settings.max_acceleration_mm_per_s2[Y_AXIS]);
     planner.settings.max_acceleration_mm_per_s2[X_AXIS] = 100;
     planner.settings.max_acceleration_mm_per_s2[Y_AXIS] = 100;
-    TERN_(DELTA, planner.settings.max_acceleration_mm_per_s2[Z_AXIS] = 100);
     #if HAS_CLASSIC_JERK
       motion_state.jerk_state = planner.max_jerk;
       planner.max_jerk.set(0, 0);
@@ -287,11 +286,6 @@ void GcodeSuite::G28() {
       const int16_t tmc_save_current_Y2 = stepperY2.getMilliamps();
       stepperY2.rms_current(Y2_CURRENT_HOME);
       if (DEBUGGING(LEVELING)) debug_current(PSTR("Y2"), tmc_save_current_Y2, Y2_CURRENT_HOME);
-    #endif
-    #if HAS_CURRENT_HOME(Z) && ENABLED(DELTA)
-      const int16_t tmc_save_current_Z = stepperZ.getMilliamps();
-      stepperZ.rms_current(Z_CURRENT_HOME);
-      if (DEBUGGING(LEVELING)) debug_current(PSTR("Z"), tmc_save_current_Z, Z_CURRENT_HOME);
     #endif
   #endif
 

@@ -4205,7 +4205,9 @@
 //
 // M43 - display pin status, toggle pins, watch pins, watch endstops & toggle LED, test servo probe
 //
-//#define PINS_DEBUGGING
+#ifdef DBUG
+  #define PINS_DEBUGGING
+#endif
 
 // Enable Marlin dev mode which adds some special commands
 #ifdef DBUG

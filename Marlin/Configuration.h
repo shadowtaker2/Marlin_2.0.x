@@ -66,7 +66,7 @@
 // Download configurations from the link above and customize for your machine.
 // Examples are located in config/examples/delta, .../SCARA, and .../TPARA.
 //
-#define CONFIG_EXAMPLES_DIR "delta/FLSUN/QQS-Pro"
+//#define CONFIG_EXAMPLES_DIR "delta/FLSUN/QQS-Pro"
 #include "FLSUNQ_Config.h"
 
 //===========================================================================
@@ -926,9 +926,15 @@
 #else
   #define Z_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #endif
+#define I_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define J_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define K_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define X_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define Y_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define Z_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define I_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define J_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define K_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #ifndef X_PROBE
   #define Z_MIN_PROBE_ENDSTOP_INVERTING true // Set to true to invert the logic of the probe.
 #else
@@ -1488,15 +1494,9 @@
   #endif
 #endif
 #if BOTH(QQSP, Q_TMC)
-  #ifdef XP
-    #define INVERT_X_DIR false
-    #define INVERT_Y_DIR false
-    #define INVERT_Z_DIR false
-  #else
-    #define INVERT_X_DIR true
-    #define INVERT_Y_DIR true
-    #define INVERT_Z_DIR true
-  #endif
+  #define INVERT_X_DIR true
+  #define INVERT_Y_DIR true
+  #define INVERT_Z_DIR true
   #ifdef INV_EXT
     #define INVERT_E0_DIR true
   #else
