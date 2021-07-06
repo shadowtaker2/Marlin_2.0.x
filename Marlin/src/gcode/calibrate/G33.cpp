@@ -71,9 +71,7 @@ float lcd_probe_pt(const xy_pos_t &xy);
 
 void ac_home() {
   endstops.enable(true);
-  TERN_(SENSORLESS_HOMING, probe.set_homing_current(true));
   home_delta();
-  TERN_(SENSORLESS_HOMING, probe.set_homing_current(false));
   endstops.not_homing();
 }
 
