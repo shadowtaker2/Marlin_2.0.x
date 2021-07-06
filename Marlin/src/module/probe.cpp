@@ -68,9 +68,10 @@
   #include "servo.h"
 #endif
 
-#if ENABLED(SENSORLESS_PROBING)
+#if EITHER(SENSORLESS_PROBING, SENSORLESS_HOMING)
   #include "stepper.h"
   #include "../feature/tmc_util.h"
+  #include "stepper/trinamic.h"
 #endif
 
 #if HAS_QUIET_PROBING
@@ -493,11 +494,12 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
   #if ENABLED(SENSORLESS_PROBING)
     sensorless_t stealth_states { false };
     #if ENABLED(DELTA)
-      stealth_states.x = tmc_enable_stallguard(stepperX);
+      stealth_states.x = tmc_enable_stallguard(stepperX); // Delta watches all DIAG pins for a stall
       stealth_states.y = tmc_enable_stallguard(stepperY);
     #endif
-    stealth_states.z = tmc_enable_stallguard(stepperZ);
+    stealth_states.z = tmc_enable_stallguard(stepperZ); // All machines will check Z-DIAG for stall
     endstops.enable(true);
+    set_homing_current(true); // The "homing" current also applies to probing
   #endif
 
   TERN_(HAS_QUIET_PROBING, set_probing_paused(true));
@@ -524,6 +526,7 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
       tmc_disable_stallguard(stepperY, stealth_states.y);
     #endif
     tmc_disable_stallguard(stepperZ, stealth_states.z);
+    set_homing_current(false);
   #endif
 
   if (probe_triggered && TERN0(BLTOUCH_SLOW_MODE, bltouch.stow())) // Stow in LOW SPEED MODE on every trigger
@@ -814,5 +817,88 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
   }
 
 #endif // HAS_Z_SERVO_PROBE
+
+#if EITHER(SENSORLESS_PROBING, SENSORLESS_HOMING)
+
+  sensorless_t stealth_states { false };
+  /**
+   * Disable stealthChop if used. Enable diag1 pin on driver.
+   */
+  void Probe::enable_stallguard_diag1() {
+    #if ENABLED(DELTA)
+      stealth_states.x = tmc_enable_stallguard(stepperX);
+      stealth_states.y = tmc_enable_stallguard(stepperY);
+      stealth_states.z = tmc_enable_stallguard(stepperZ);
+    #endif
+
+    endstops.enable(true);
+  }
+    /**
+   * Re-enable stealthChop if used. Disable diag1 pin on driver.
+   */
+  void Probe::disable_stallguard_diag1() {
+    endstops.not_homing();
+    #if ENABLED(DELTA)
+      tmc_disable_stallguard(stepperX, stealth_states.x);
+      tmc_disable_stallguard(stepperY, stealth_states.y);
+      tmc_disable_stallguard(stepperZ, stealth_states.z);
+    #endif
+
+  }
+
+  /**
+   * Change the current in the TMC drivers to N##_CURRENT_HOME. And we save the current configuration of each TMC driver.
+   */
+  void Probe::set_homing_current(const bool onoff) {
+    #if ENABLED(DELTA)
+      static int16_t saved_current_X, saved_current_Y;
+    #endif
+    static int16_t saved_current_Z;
+    #define HAS_CURRENT_HOME(N) (defined(N##_CURRENT_HOME) && N##_CURRENT_HOME != N##_CURRENT)
+    #if HAS_CURRENT_HOME(X) || HAS_CURRENT_HOME(Y) || HAS_CURRENT_HOME(Z)
+      auto debug_current_on = [](PGM_P const s, const int16_t a, const int16_t b) {
+        if (DEBUGGING(LEVELING)) { DEBUG_ECHOPGM_P(s); DEBUG_ECHOLNPAIR(" current: ", a, " -> ", b); }
+      };
+      if (onoff) {
+        #if ENABLED(DELTA)
+          #if HAS_CURRENT_HOME(X)
+            saved_current_X = stepperX.getMilliamps();
+            stepperX.rms_current(X_CURRENT_HOME);
+            debug_current_on(PSTR("X"), saved_current_X, X_CURRENT_HOME);
+          #endif
+          #if HAS_CURRENT_HOME(Y)
+            saved_current_Y = stepperY.getMilliamps();
+            stepperY.rms_current(Y_CURRENT_HOME);
+            debug_current_on(PSTR("Y"), saved_current_Y, Y_CURRENT_HOME);
+          #endif
+        #endif
+        #if HAS_CURRENT_HOME(Z)
+          saved_current_Z = stepperZ.getMilliamps();
+          stepperZ.rms_current(Z_CURRENT_HOME);
+          debug_current_on(PSTR("Z"), saved_current_Z, Z_CURRENT_HOME);
+        #endif
+        TERN_(IMPROVE_HOMING_RELIABILITY, planner.enable_stall_prevention(true));
+      }
+      else {
+        #if ENABLED(DELTA)
+          #if HAS_CURRENT_HOME(X)
+            stepperX.rms_current(saved_current_X);
+            debug_current_on(PSTR("X"), X_CURRENT_HOME, saved_current_X);
+          #endif
+          #if HAS_CURRENT_HOME(Y)
+            stepperY.rms_current(saved_current_Y);
+            debug_current_on(PSTR("Y"), Y_CURRENT_HOME, saved_current_Y);
+          #endif
+        #endif
+        #if HAS_CURRENT_HOME(Z)
+          stepperZ.rms_current(saved_current_Z);
+          debug_current_on(PSTR("Z"), Z_CURRENT_HOME, saved_current_Z);
+        #endif
+        TERN_(IMPROVE_HOMING_RELIABILITY, planner.enable_stall_prevention(false));
+      }
+    #endif
+  }
+
+#endif // SENSORLESS_PROBING
 
 #endif // HAS_BED_PROBE
