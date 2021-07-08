@@ -58,13 +58,16 @@
         * = Driver TFT Color (1 CHOICE)=
         * ==============================
         */
-#define MKS_ROBIN_TFT32                 // (Default) Mks_Robin_TFT_V2.0
-//#define MKS_TS35_V2_00                // Only for NanoV2 or V3
-//#define TFT_GENERIC                   // For the user who haven't the same screen.
+#define MKS_ROBIN_TFT32        // (Default) Mks_Robin_TFT_V2.0
+//#define MKS_TS35_V2_00       // Only for NanoV2 or V3
+//#define TFT_GENERIC          // For the user who haven't the same screen.
+
+//#define DGUS_LCD_UI_MKS      // Mks_H43_v1.0 
+//Note for H43: The wiring is done on the UART2 (Wifi socket pins(PA10/PA9) for Tx/Rx).
 
                 /*--- Choice UI TFT ----*/
-#define TFT_COLOR_UI                     //(C) (Default) UI MARLIN
-//#define TFT_CLASSIC_UI                 //(F) UI STANDARD (type LCD)
+#define TFT_COLOR_UI                     //(C) (Default) UI Color MARLIN
+//#define TFT_CLASSIC_UI                 //(F) Standard LCD (UI Classic LCD)
 
 #define TOUCH_SCREEN                     //(C/F) (Default) UI MARLIN
 
@@ -90,14 +93,14 @@
  * = QQS/Q5 Stock have a clone (T)ITAN EXtruder(Default),===
  * = If you have another choose by uncomment your extruder.=
  * = Also you can change the direction.=====================
- * ====== Default eStep (T=397/422)/(B=417)/(H+702) ========
+ * ====== Default eStep (T=397/422)/(B=417)/(N+722) ========
  * =========================================================
  */
 //#define INV_EXT                        // Uncommment to reverse direction for BMG/Sherpa.
 
 // BMG Extruder (B) Extruder step(417).
 //#define BMG                            //(B) Uncommment for BMG Left/Right.
-//#define SHERPA                         //(h) Uncommment for Mini-Sherpa.
+//#define NEMA14                         //(N) Uncommment for Mini-Sherpa/SuperDrive.
 
 /*__________________________5_____________________________*/
       /** =============================
@@ -112,14 +115,26 @@
 //#define PREHEAT_BEFORE_LEVELING    
 #define AUTO_BED_LEVELING_UBL          //(U) (Default) Wizard UBL includes. 
 
+// ---Expe tools Levelling-------
+//#define G26_MESH_VALIDATION          // Print Mesh Validation Pattern tool(By menu).
+//#define LEVEL_BED_CORNERS
+
 //--------IF YOUR USED ABL, DISABLE "SPECIAL MENU DELTA"= #define CUSTOM_MENU_MAIN
 //#define AUTO_BED_LEVELING_BILINEAR   //(A)
 
 /*_______________________6____________________*/
-    //======Many options for Modules: ========//
-#define LIN_ADVANCE                           //(L) (Default2209) with K=0 For TMC_UART2208 prefer mode spreadCycle(by TFT menu) or commented if problem.
-#define ARC_SUPPORT                           //(R) (Default)
-#define POWER_LOSS_RECOVERY                   // (Default) Continue print after Power-Loss.
+  //======Many options for Modules: ========//
+#define LIN_ADVANCE                //(L) (Default2209) with K=0 For TMC_UART2208 prefer mode spreadCycle(by TFT menu) or commented if problem.
+#define POWER_LOSS_RECOVERY        // (Default) Continue print after Power-Loss.
+
+// WARNING:These options need wiring pins DIAG to EndStop plug(Signal).
+// more at the bottom page.
+//#define STALLGUARD_1               // Special mod for TMC2209 = SENSORLESS_HOMING
+//#define STALLGUARD_2               // Special mod for TMC2209 = SENSORLESS_PROBING
+
+//For other PROBE fixed without deploy like IR, buzzer, Nozzle, ...
+//#define X_PROBE                   // Set to invert the logic of the PROBE.
+//#define Z_OFFSET -2.5             // Set your own OffSet
 
 //=================================================================================//
 //======================== End_Hardware ===========================================//
@@ -131,23 +146,20 @@
  * = like (Prontoface/Octoprint/HostRepertier/Astoprint)=
  * ====== Choice add menu on TFT: (OPT) =================
  */
-#define CUSTOM_MENU_MAIN               //  (Default) Main Menu UBL: "Menu Special Delta".
-#define PROBE_OFFSET_WIZARD            //  (Default) Add Menu to manage the Z_OffSet.
-#define ADD_MENUS                      //  (Default) Add menu PID, DELTA, INFO
+#define ADD_MENUS                      //  (Default) Add menu PID, DELTA, INFO,...
 
-// For user who change their nozzle thermistor by another one ex: "ATC Semitec 104GT-2" = 5 
+// For user who change their nozzle thermistor 
+// by another one ex: "ATC Semitec 104GT-2" = 5 
 //#define TEMP_SENSOR_0 13             // uncomment with a good number/type.
-
-// ---Expe tools Levelling-------
-//#define G26_MESH_VALIDATION          // Print Mesh Validation Pattern tool(By menu).
-//#define LEVEL_BED_CORNERS
 
 /*__________________________8__________________________*/
 /** ===================================================
 * == Option for Host (OCTOPRINT,REPETIER,PRONTERFACE,ESP3D, etc)
 * ======================================================
 */
-//#define HOST_ACTION_COMMANDS          // Action Command Prompt support Message on Octoprint
+//#define HOST_ACTION_COMMANDS     // Action Command Prompt support Message on Octoprint
+//#define BINARY_FILE_TRANSFER     // Bin transfert for ESP3D firmware v2.1 or others.
+                                   // Not compatible with the MEATPACK option. 
 
 //------ Support for MeatPack G-code compression (OCTOPRINT)--------//
 #define MEATPACK_ON_SERIAL_PORT_1       //(M) With connection USB
@@ -167,15 +179,6 @@
     #define MKS_WIFI_MODULE           // Work with TFT_LVGL_UI(Modern UI using LVGL-MKS)
     #define USES_MKS_WIFI_FUNCTION    // Bin transfert MKS for ESP3D firmware v3.0 or others
   #endif
-  //#define BINARY_FILE_TRANSFER     // Bin transfert for ESP3D firmware v2.1 or others.
-                                     // Not compatible with the MEATPACK option. 
-#endif
-
-//TFT Type For TFT_GENERIC
-#if ENABLED(TFT_GENERIC)
-  #define TFT_DRIVER AUTO
-  #define TFT_INTERFACE_FSMC  //Default socket on MKS_nano, mini, hispeed.
-  #define TFT_RES_320x240
 #endif
 
 //= For users who dont have a terminal =//
@@ -186,70 +189,29 @@
   #define LCD_INFO_MENU                 //  (Default) Informations printer.
   //#define PREHEAT_SHORTCUT_MENU_ITEM  // Add preheat/temperature menu (first page)
   //#define CANCEL_OBJECTS              // Add menu "Cancel Objet"
+  #ifndef STALLGUARD_2                   
+  // Only with TMC2209 sensorless (need wiring DIAG pins)
+    #define PROBE_OFFSET_WIZARD
+    #define CUSTOM_MENU_MAIN
+  #endif
+  #ifdef NEOPIXEL_LED
+    #define LED_CONTROL_MENU          // To control LedStrip.
+  #endif
 #endif
 
-// Options for Modules Hardware
-#ifdef NEOPIXEL_LED
-  #define LED_CONTROL_MENU              // To control LedStrip.
+//TFT Type For TFT_GENERIC
+#if ENABLED(TFT_GENERIC)
+  #define TFT_DRIVER AUTO
+  #define TFT_INTERFACE_FSMC  //Default socket on MKS_nano, mini, hispeed.
+  #define TFT_RES_320x240
 #endif
 
-//For other PROBE like IR, TouchMI, Nozzle
-//#define X_PROBE                       // Set to invert the logic of the PROBE.
-//#define Z_OFFSET -2.5                 // Set your own OffSet
-
-/** -------------------------------------------------
- * Special mod: Disable MKS_WIFI/TFT part/DELTA_MENU 
- *          TFT Type Mks_H43 
- */
-//#define DGUS_LCD_UI_MKS             // Mks_H43_v1.0 Note: The wiring is done on the UART2
-                                      // Wifi port(PA10/PA9) for Tx/Rx.
 /**
  * =================================================
  * ===Part for Hardware definitions=================
  * ===Don't change if you're not sure how to do it.= 
  * =================================================
  */
-// Variables to calculate steps and current
-//eSteps
-#ifndef EXTRUDER_STEPS
-  #ifdef SHERPA
-    #define EXTRUDER_STEPS 702  // Extruder Mini-Sherpa
-  #elif ENABLED(BMG)
-    #define EXTRUDER_STEPS 441  // Extruder BMG(Left/Right)
-  #else
-    #define EXTRUDER_STEPS 405  // Extruder TITAN(Default)
-  #endif
-#endif
-//Jerk
-#ifndef XYZJERK
-  #define XYZJERK  10
-#endif
-#ifndef EJERK
-  #define EJERK     5
-#endif
-//Z_OffSet
-#ifndef Z_OFFSET
-  #ifndef Q5
-    #define Z_OFFSET       -16.2
-  #else
-    #define Z_OFFSET       -18
-  #endif
-#endif
-
-// TMC
-#ifndef XYZ_CURRENT
-  #define XYZ_CURRENT       900
-#endif
-#ifndef XYZ_CURRENT_HOME
-  #define XYZ_CURRENT_HOME  600
-#endif  
-#ifndef E_CURRENT
-  #ifdef SHERPA
-    #define E_CURRENT       300
-  #else
-    #define E_CURRENT       850
-  #endif
-#endif
 
 // Set for QQS(4xA4988) or Q5(3x2208+A4988) 
 #ifdef STOCK
@@ -312,6 +274,15 @@
     #define E0_SERIAL_RX_PIN                  PC13  // IO0
     #define TMC_BAUD_RATE                    19200
 #endif
+
+/**---------------------------//
+ * Special mods TMC2209:      //
+ *                            //
+ * UART: Single wire          //
+ * SENSORLESS: Homing/Probing //
+ * ---------------------------//
+ */
+
 // Note:
 // HardwareSerial with one pins for four drivers
 // Compatible with TMC2209. Provides best performance.
@@ -325,4 +296,63 @@
     #ifndef DRIVER_EXT
       #define DRIVER_EXT TMC2209
     #endif
+#endif
+
+// Note:
+// Need wiring pins DIAG to EndSTOP(Signal).
+
+// Use the function Stallguard1 for homing without endstop
+// (Need to adjust the sensitivity).
+// SENSORLESS_HOMING             
+#ifdef STALLGUARD_1
+  #define SENSORLESS_HOMING
+#endif
+// Use the function StallGuard2 for probing with the nozzle.
+// SENSORLESS_PROBING
+#ifdef STALLGUARD_2
+  #define N_PROBE
+  #define Z_OFFSET 0
+#endif
+
+//===================PART CONSTANTS VARIALBES ===================//
+
+// Variables to calculate steps and current
+//eSteps
+#ifndef EXTRUDER_STEPS
+  #ifdef NEMA14
+    #define EXTRUDER_STEPS 722  // Extruder Mini-Sherpa
+  #elif ENABLED(BMG)
+    #define EXTRUDER_STEPS 420  // Extruder BMG(Left/Right)
+  #else
+    #define EXTRUDER_STEPS 410  // Extruder TITAN(Default)
+  #endif
+#endif
+//Jerk
+#ifndef XYZJERK
+  #define XYZJERK  10
+#endif
+#ifndef EJERK
+  #define EJERK     5
+#endif
+//Z_OffSet
+#ifndef Z_OFFSET
+  #ifndef Q5
+    #define Z_OFFSET       -16.2
+  #else
+    #define Z_OFFSET       -18
+  #endif
+#endif
+// TMC Current in UART mode
+#ifndef XYZ_CURRENT
+  #define XYZ_CURRENT       900
+#endif
+#ifndef XYZ_CURRENT_HOME
+  #define XYZ_CURRENT_HOME  600
+#endif  
+#ifndef E_CURRENT
+  #ifdef NEMA14
+    #define E_CURRENT       300
+  #else
+    #define E_CURRENT       850
+  #endif
 #endif

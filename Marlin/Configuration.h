@@ -124,7 +124,7 @@
  *
  * :[2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000]
  */
-#define BAUDRATE 250000
+#define BAUDRATE 115200
 #define BAUD_RATE_GCODE     // Enable G-code M575 to set the baud rate
 
 /**
@@ -144,7 +144,7 @@
     #define NUM_SERIAL 2
   #endif
 #else
-  #define BAUDRATE_2 250000
+  #define BAUDRATE_2 115200
 #endif
                            
 
@@ -796,7 +796,7 @@
   // This is a trade-off between visible corners (not enough segments)
   // and processor overload (too many expensive sqrt calls).
             
-  #define DELTA_SEGMENTS_PER_SECOND 100  //200
+  #define DELTA_SEGMENTS_PER_SECOND 80
 
   // After homing move down to a height where XY movement is unconstrained
   //#define DELTA_HOME_TO_SAFE_ZONE
@@ -921,7 +921,7 @@
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
 #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define Y_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#ifndef X_PROBE
+#if NONE(X_PROBE, N_PROBE)
   #define Z_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
 #else
   #define Z_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -935,7 +935,7 @@
 #define I_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define J_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define K_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#ifndef X_PROBE
+#if NONE(X_PROBE, N_PROBE)
   #define Z_MIN_PROBE_ENDSTOP_INVERTING true // Set to true to invert the logic of the probe.
 #else
   #define Z_MIN_PROBE_ENDSTOP_INVERTING false // Set to true to invert the logic of the probe.
@@ -1254,7 +1254,9 @@
  * CAUTION: This can damage machines with Z lead screws.
  *          Take extreme care when setting up this feature.
  */
-//#define SENSORLESS_PROBING
+#ifdef STALLGUARD_2
+  #define SENSORLESS_PROBING
+#endif
 
 /**
  * Allen key retractable z-probe as seen on many Kossel delta printers - https://reprap.org/wiki/Kossel#Automatic_bed_leveling_probe
@@ -1381,11 +1383,16 @@
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-#ifndef XP
+#ifdef X_PROBE
+  #define MULTIPLE_PROBING 2
+#elif ENABLED(N_PROBE)
+  #define MULTIPLE_PROBING 2
+  #define EXTRA_PROBING  1
+#elif ENABLED(XP)
+//
+#else
   #define MULTIPLE_PROBING 2
 #endif
-//#define EXTRA_PROBING  1
-
 /**
  * Z probes require clearance when deploying, stowing, and moving between
  * probe points to avoid hitting the bed and other hardware.
@@ -1415,7 +1422,7 @@
 #define Z_MIN_PROBE_REPEATABILITY_TEST
 
 // Before deploy/stow pause for user confirmation
-#ifndef X_PROBE
+#if NONE(X_PROBE, N_PROBE)
   #define PAUSE_BEFORE_DEPLOY_STOW
 #endif
 #if ENABLED(PAUSE_BEFORE_DEPLOY_STOW)
@@ -1528,7 +1535,9 @@
 // @section homing
 
 //#define NO_MOTION_BEFORE_HOMING // Inhibit movement until all axes have been homed. Also enable HOME_AFTER_DEACTIVATE for extra safety.
-//#define HOME_AFTER_DEACTIVATE   // Require rehoming after steppers are deactivated. Also enable NO_MOTION_BEFORE_HOMING for extra safety.
+#ifdef STALLGUARD_2
+  #define HOME_AFTER_DEACTIVATE   // Require rehoming after steppers are deactivated. Also enable NO_MOTION_BEFORE_HOMING for extra safety.
+#endif
 
 /**
  * Set Z_IDLE_HEIGHT if the Z-Axis moves on its own when steppers are disabled.
@@ -1762,7 +1771,7 @@
   // The height can be set with M420 Z<height>
   #define ENABLE_LEVELING_FADE_HEIGHT
   #if ENABLED(ENABLE_LEVELING_FADE_HEIGHT)
-    #define DEFAULT_LEVELING_FADE_HEIGHT 10.0 // (mm) Default fade height.
+    #define DEFAULT_LEVELING_FADE_HEIGHT 200.0 // (mm) Default fade height.
   #endif
 
   // For Cartesian machines, instead of dividing moves on mesh boundaries,
@@ -1934,7 +1943,7 @@
 #endif
 
 // Delta only homes to Z
-#ifdef Q5
+#if ANY(Q5, STALLGUARD_2)
   #define HOMING_FEEDRATE_MM_M { (50*60), (50*60), (50*60) }
 #else
   #define HOMING_FEEDRATE_MM_M { (70*60), (70*60), (70*60) }
@@ -1973,7 +1982,7 @@
  *    +-------------->X     +-------------->X     +-------------->Y
  *     XY_SKEW_FACTOR        XZ_SKEW_FACTOR        YZ_SKEW_FACTOR
  */
-//#define SKEW_CORRECTION
+#define SKEW_CORRECTION
 
 #if ENABLED(SKEW_CORRECTION)
   // Input all length measurements here:
@@ -2964,12 +2973,13 @@
   #define TOUCH_SCREEN_CALIBRATION //or (M995) 
 
   // QQS-Pro use MKS Robin TFT v2.0
-  //#define TOUCH_CALIBRATION_X   12033
-  //#define TOUCH_CALIBRATION_Y   -9047
-  //#define TOUCH_OFFSET_X          -30
-  //#define TOUCH_OFFSET_Y          254
+  #ifdef QQSP
+    #define TOUCH_CALIBRATION_X   12033
+    #define TOUCH_CALIBRATION_Y   -9047
+    #define TOUCH_OFFSET_X          -30
+    #define TOUCH_OFFSET_Y          254
   //#define TOUCH_ORIENTATION TOUCH_LANDSCAPE
-
+  #endif
   #if BOTH(TOUCH_SCREEN_CALIBRATION, EEPROM_SETTINGS)
     #define TOUCH_CALIBRATION_AUTO_SAVE // Auto save successful calibration values to EEPROM
   #endif
