@@ -167,8 +167,8 @@
   motion_state_t begin_slow_homing() {
     motion_state_t motion_state{0};
     motion_state.acceleration.set(planner.settings.max_acceleration_mm_per_s2[X_AXIS],
-                                  planner.settings.max_acceleration_mm_per_s2[Y_AXIS]
-                                  OPTARG(DELTA, planner.settings.max_acceleration_mm_per_s2[Z_AXIS])
+                                 planner.settings.max_acceleration_mm_per_s2[Y_AXIS]
+                                 OPTARG(DELTA, planner.settings.max_acceleration_mm_per_s2[Z_AXIS])
                                );
     planner.settings.max_acceleration_mm_per_s2[X_AXIS] = 100;
     planner.settings.max_acceleration_mm_per_s2[Y_AXIS] = 100;
@@ -291,7 +291,7 @@ void GcodeSuite::G28() {
       stepperY2.rms_current(Y2_CURRENT_HOME);
       if (DEBUGGING(LEVELING)) debug_current(PSTR("Y2"), tmc_save_current_Y2, Y2_CURRENT_HOME);
     #endif
-      #if HAS_CURRENT_HOME(Z) && ENABLED(DELTA)
+    #if HAS_CURRENT_HOME(Z) && ENABLED(DELTA)
       const int16_t tmc_save_current_Z = stepperZ.getMilliamps();
       stepperZ.rms_current(Z_CURRENT_HOME);
       if (DEBUGGING(LEVELING)) debug_current(PSTR("Z"), tmc_save_current_Z, Z_CURRENT_HOME);
