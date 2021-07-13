@@ -93,6 +93,10 @@ xyz_pos_t Probe::offset; // Initialized by settings.load()
   const xy_pos_t &Probe::offset_xy = Probe::offset;
 #endif
 
+#if ENABLED(SENSORLESS_PROBING)
+  Probe::sense_bool_t Probe::test_sensitivity;
+#endif
+
 #if ENABLED(Z_PROBE_SLED)
 
   #ifndef SLED_DOCKING_OFFSET
@@ -494,10 +498,10 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
   #if ENABLED(SENSORLESS_PROBING)
     sensorless_t stealth_states { false };
     #if ENABLED(DELTA)
-      stealth_states.x = tmc_enable_stallguard(stepperX);     // Delta watches all DIAG pins for a stall
-      stealth_states.y = tmc_enable_stallguard(stepperY);
+      if (probe.test_sensitivity.x) stealth_states.x = tmc_enable_stallguard(stepperX);  // Delta watches all DIAG pins for a stall
+      if (probe.test_sensitivity.y) stealth_states.y = tmc_enable_stallguard(stepperY);
     #endif
-    stealth_states.z = tmc_enable_stallguard(stepperZ);       // All machines will check Z-DIAG for stall
+    if (probe.test_sensitivity.z) stealth_states.z = tmc_enable_stallguard(stepperZ);    // All machines will check Z-DIAG for stall
     endstops.enable(true);
     set_homing_current(true);                                 // The "homing" current also applies to probing
   #endif
@@ -522,10 +526,10 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
   #if ENABLED(SENSORLESS_PROBING)
     endstops.not_homing();
     #if ENABLED(DELTA)
-      tmc_disable_stallguard(stepperX, stealth_states.x);
-      tmc_disable_stallguard(stepperY, stealth_states.y);
+      if (probe.test_sensitivity.x) tmc_disable_stallguard(stepperX, stealth_states.x);
+      if (probe.test_sensitivity.y) tmc_disable_stallguard(stepperY, stealth_states.y);
     #endif
-    tmc_disable_stallguard(stepperZ, stealth_states.z);
+    if (probe.test_sensitivity.z) tmc_disable_stallguard(stepperZ, stealth_states.z);
     set_homing_current(false);
   #endif
 
@@ -825,37 +829,42 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
    * Disable stealthChop if used. Enable diag1 pin on driver.
    */
   void Probe::enable_stallguard_diag1() {
-    #if ENABLED(DELTA)
-      stealth_states.x = tmc_enable_stallguard(stepperX);
-      stealth_states.y = tmc_enable_stallguard(stepperY);
+    #if ENABLED(SENSORLESS_PROBING)
+      #if ENABLED(DELTA)
+        stealth_states.x = tmc_enable_stallguard(stepperX);
+        stealth_states.y = tmc_enable_stallguard(stepperY);
+      #endif
       stealth_states.z = tmc_enable_stallguard(stepperZ);
+      endstops.enable(true);
     #endif
-
-    endstops.enable(true);
   }
-    /**
+
+  /**
    * Re-enable stealthChop if used. Disable diag1 pin on driver.
    */
   void Probe::disable_stallguard_diag1() {
-    endstops.not_homing();
-    #if ENABLED(DELTA)
-      tmc_disable_stallguard(stepperX, stealth_states.x);
-      tmc_disable_stallguard(stepperY, stealth_states.y);
+    #if ENABLED(SENSORLESS_PROBING)
+      endstops.not_homing();
+      #if ENABLED(DELTA)
+        tmc_disable_stallguard(stepperX, stealth_states.x);
+        tmc_disable_stallguard(stepperY, stealth_states.y);
+      #endif
       tmc_disable_stallguard(stepperZ, stealth_states.z);
     #endif
-
   }
 
   /**
    * Change the current in the TMC drivers to N##_CURRENT_HOME. And we save the current configuration of each TMC driver.
    */
   void Probe::set_homing_current(const bool onoff) {
-    #if ENABLED(DELTA)
-      static int16_t saved_current_X, saved_current_Y;
-    #endif
-    static int16_t saved_current_Z;
     #define HAS_CURRENT_HOME(N) (defined(N##_CURRENT_HOME) && N##_CURRENT_HOME != N##_CURRENT)
     #if HAS_CURRENT_HOME(X) || HAS_CURRENT_HOME(Y) || HAS_CURRENT_HOME(Z)
+      #if ENABLED(DELTA)
+        static int16_t saved_current_X, saved_current_Y;
+      #endif
+      #if HAS_CURRENT_HOME(Z)
+        static int16_t saved_current_Z;
+      #endif
       auto debug_current_on = [](PGM_P const s, const int16_t a, const int16_t b) {
         if (DEBUGGING(LEVELING)) { DEBUG_ECHOPGM_P(s); DEBUG_ECHOLNPAIR(" current: ", a, " -> ", b); }
       };

@@ -283,13 +283,13 @@ typedef struct {
 
 #if ENABLED(IMPROVE_HOMING_RELIABILITY)
   struct motion_state_t {
-	    TERN(DELTA, xyz_ulong_t, xy_ulong_t) acceleration;
-	    #if HAS_CLASSIC_JERK
-	      TERN(DELTA, xyz_float_t, xy_float_t) jerk_state;
-	    #endif
-	  };
-	#endif
-	
+    TERN(DELTA, xyz_ulong_t, xy_ulong_t) acceleration;
+    #if HAS_CLASSIC_JERK
+      TERN(DELTA, xyz_float_t, xy_float_t) jerk_state;
+    #endif
+  };
+#endif
+
 #if DISABLED(SKEW_CORRECTION)
   #define XY_SKEW_FACTOR 0
   #define XZ_SKEW_FACTOR 0
@@ -543,8 +543,8 @@ class Planner {
 
     #if ENABLED(IMPROVE_HOMING_RELIABILITY)
       void enable_stall_prevention(const bool onoff);
-	    #endif
-	
+    #endif
+
     #if DISABLED(NO_VOLUMETRICS)
 
       // Update multipliers based on new diameter measurements
