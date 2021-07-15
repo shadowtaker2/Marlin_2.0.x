@@ -3,7 +3,7 @@
 *================= With pins_FLSUN_HiSPEED.h BOARD (QQS-Pro)================
 *================= With pins_MKS_ROBIN_NANO.h BOARD (Q5)====================
 *===========================================================================
-*                         MARLIN_v2.0.8.2
+*                         MARLIN_v2.0.9.1
 * For a Delta printer start with one of the configuration files in the
 * config/examples/delta/FLSUN/ directory and customize for your machine.
 * 
@@ -11,6 +11,7 @@
 * 
 * TIPS/NOTES:
 * -For TMC mode UART, look the "pins_FLSUN_HISPEED.h" file (src/pins/stm32f1/) for more information to wire.
+* -To enable Stallguard function (Homing and/or probing) with TMC2209 with wiring Diag/EndStop.
 * -Comment/Uncomment line to add or modify some options. 
 *  Default is actif for QQS and it's uncommented ;-)
 */
@@ -163,7 +164,7 @@
 
 //------ Support for MeatPack G-code compression (OCTOPRINT)--------//
 #define MEATPACK_ON_SERIAL_PORT_1       //(M) With connection USB
-//#define MEATPACK_ON_SERIAL_PORT_2     // With other connection like Tx/Rx Wifi socket.
+//#define MEATPACK_ON_SERIAL_PORT_2       // With other connection like Tx/Rx Wifi socket.
 
 /** ========================================
 * == Options for Modules Hardware MKS_WIFI
