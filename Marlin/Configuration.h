@@ -2768,7 +2768,7 @@
 
 //#define DGUS_LCD_UI_MKS
 #if ENABLED(DGUS_LCD_UI_MKS)
-  //#define USE_MKS_GREEN_UI
+  #define USE_MKS_GREEN_UI
 #endif
 
 //
