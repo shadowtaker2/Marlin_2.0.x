@@ -64,7 +64,7 @@
 // Download configurations from the link above and customize for your machine.
 // Examples are located in config/examples/delta, .../SCARA, and .../TPARA.
 //
-#define CONFIG_EXAMPLES_DIR "delta/FLSUN/QQS-Pro"
+//#define CONFIG_EXAMPLES_DIR "delta/FLSUN/QQS-Pro"
 #include "FLSUNQ_Config.h"
 
 //===========================================================================
@@ -133,7 +133,7 @@
  */
  //#define SERIAL_PORT_2 -1
 
-#ifdef ESP_WIF
+#ifdef ESP_WIFI
   #ifdef ESP3D_30
     #define SERIAL_PORT_2 1
     #define NUM_SERIAL 2
@@ -143,7 +143,7 @@
     #define NUM_SERIAL 2
   #endif
 #else
-  //#define BAUDRATE_2 250000
+  #define BAUDRATE_2 115200
 #endif
                            
 
@@ -940,7 +940,7 @@
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
 #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define Y_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#ifndef X_PROBE
+#if NONE(X_PROBE, N_PROBE)
   #define Z_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
 #else
   #define Z_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -1273,7 +1273,9 @@
  * CAUTION: This can damage machines with Z lead screws.
  *          Take extreme care when setting up this feature.
  */
-//#define SENSORLESS_PROBING
+#ifdef STALLGUARD_2
+  #define SENSORLESS_PROBING
+#endif
 
 /**
  * Allen key retractable z-probe as seen on many Kossel delta printers - https://reprap.org/wiki/Kossel#Automatic_bed_leveling_probe
@@ -1400,7 +1402,14 @@
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-#ifndef XP
+#ifdef X_PROBE
+  #define MULTIPLE_PROBING 2
+#elif ENABLED(N_PROBE)
+  #define MULTIPLE_PROBING 2
+  #define EXTRA_PROBING  1
+#elif ENABLED(XP)
+//
+#else
   #define MULTIPLE_PROBING 2
 #endif
 //#define EXTRA_PROBING    1
@@ -1434,7 +1443,7 @@
 #define Z_MIN_PROBE_REPEATABILITY_TEST
 
 // Before deploy/stow pause for user confirmation
-#ifndef X_PROBE
+#if NONE(X_PROBE, N_PROBE)
   #define PAUSE_BEFORE_DEPLOY_STOW
 #endif
 #if ENABLED(PAUSE_BEFORE_DEPLOY_STOW)
@@ -1495,29 +1504,30 @@
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
+//#define INVERT_X_DIR false  //QQS_A4988 Q5_220X
+//#define INVERT_Y_DIR false  //QQS_A4988 Q5_220X
+//#define INVERT_Z_DIR false  //QQS_A4988 Q5_220X
+//#define INVERT_I_DIR false
+//#define INVERT_J_DIR false
+//#define INVERT_K_DIR false
+
 #ifdef STOCK
-  #define INVERT_X_DIR false  //Q5_220X
-  #define INVERT_Y_DIR false  //Q5_220X
-  #define INVERT_Z_DIR false  //Q5_220X
+  #define INVERT_X_DIR false     //QQS_A4988 Q5_220X
+  #define INVERT_Y_DIR false     //QQS_A4988 Q5_220X
+  #define INVERT_Z_DIR false     //QQS_A4988 Q5_220X
   //#define INVERT_I_DIR false
   //#define INVERT_J_DIR false
   //#define INVERT_K_DIR false
   #ifdef INV_EXT
-    #define INVERT_E0_DIR false  //Q5_220X
+    #define INVERT_E0_DIR false   //Q5_220X
   #else
-    #define INVERT_E0_DIR true  //Q5_A4988
+    #define INVERT_E0_DIR true    //QQS-Q5_A4988
   #endif
 #endif
 #if BOTH(QQSP, Q_TMC)
-  #ifdef XP
-    #define INVERT_X_DIR false
-    #define INVERT_Y_DIR false
-    #define INVERT_Z_DIR false
-  #else
-    #define INVERT_X_DIR true
-    #define INVERT_Y_DIR true
-    #define INVERT_Z_DIR true
-  #endif
+  #define INVERT_X_DIR true
+  #define INVERT_Y_DIR true
+  #define INVERT_Z_DIR true
   #ifdef INV_EXT
     #define INVERT_E0_DIR true
   #else
@@ -1549,8 +1559,9 @@
 // @section homing
 
 //#define NO_MOTION_BEFORE_HOMING // Inhibit movement until all axes have been homed. Also enable HOME_AFTER_DEACTIVATE for extra safety.
-//#define HOME_AFTER_DEACTIVATE   // Require rehoming after steppers are deactivated. Also enable NO_MOTION_BEFORE_HOMING for extra safety.
-
+#ifdef STALLGUARD_2
+  #define HOME_AFTER_DEACTIVATE   // Require rehoming after steppers are deactivated. Also enable NO_MOTION_BEFORE_HOMING for extra safety.
+#endif
 /**
  * Set Z_IDLE_HEIGHT if the Z-Axis moves on its own when steppers are disabled.
  *  - Use a low value (i.e., Z_MIN_POS) if the nozzle falls down to the bed.
@@ -1624,7 +1635,7 @@
 #endif
 
 #if EITHER(MIN_SOFTWARE_ENDSTOPS, MAX_SOFTWARE_ENDSTOPS)
-  #define SOFT_ENDSTOPS_MENU_ITEM  // Enable/Disable software endstops from the LCD
+  #define SOFT_ENDSTOPS_MENU_ITEM    // Enable/Disable software endstops from the LCD
 #endif
 
 /**
@@ -1783,7 +1794,7 @@
   // The height can be set with M420 Z<height>
   #define ENABLE_LEVELING_FADE_HEIGHT
   #if ENABLED(ENABLE_LEVELING_FADE_HEIGHT)
-    #define DEFAULT_LEVELING_FADE_HEIGHT 10.0 // (mm) Default fade height.
+    #define DEFAULT_LEVELING_FADE_HEIGHT 200.0 // (mm) Default fade height.
   #endif
 
   // For Cartesian machines, instead of dividing moves on mesh boundaries,
@@ -1956,7 +1967,7 @@
 #endif
 
 // Delta only homes to Z
-#ifdef Q5
+#if ANY(Q5, STALLGUARD_2)
   #define HOMING_FEEDRATE_MM_M { (50*60), (50*60), (50*60) }
 #else
   #define HOMING_FEEDRATE_MM_M { (70*60), (70*60), (70*60) }
@@ -1995,7 +2006,7 @@
  *    +-------------->X     +-------------->X     +-------------->Y
  *     XY_SKEW_FACTOR        XZ_SKEW_FACTOR        YZ_SKEW_FACTOR
  */
-//#define SKEW_CORRECTION
+#define SKEW_CORRECTION
 
 #if ENABLED(SKEW_CORRECTION)
   // Input all length measurements here:
@@ -2074,7 +2085,7 @@
 #define PREHEAT_1_TEMP_HOTEND 200
 #define PREHEAT_1_TEMP_BED     60
 #define PREHEAT_1_TEMP_CHAMBER 35
-#define PREHEAT_1_FAN_SPEED   150 // Value from 0 to 255
+#define PREHEAT_1_FAN_SPEED   200 // Value from 0 to 255
 
 #define PREHEAT_2_LABEL       "ABS"
 #define PREHEAT_2_TEMP_HOTEND 240
@@ -2786,7 +2797,7 @@
 
 //#define DGUS_LCD_UI_MKS
 #if ENABLED(DGUS_LCD_UI_MKS)
-  //#define USE_MKS_GREEN_UI
+  #define USE_MKS_GREEN_UI
 #endif
 
 //
@@ -2990,12 +3001,14 @@
 
   #define TOUCH_SCREEN_CALIBRATION //or (M995) 
 
-  //#define TOUCH_CALIBRATION_X 12316
-  //#define TOUCH_CALIBRATION_Y -8981
-  //#define TOUCH_OFFSET_X        -43
-  //#define TOUCH_OFFSET_Y        257
+  // QQS-Pro use MKS Robin TFT v2.0
+  #ifdef QQSP
+    #define TOUCH_CALIBRATION_X   12033
+    #define TOUCH_CALIBRATION_Y   -9047
+    #define TOUCH_OFFSET_X          -30
+    #define TOUCH_OFFSET_Y          254
   //#define TOUCH_ORIENTATION TOUCH_LANDSCAPE
-
+  #endif
   #if BOTH(TOUCH_SCREEN_CALIBRATION, EEPROM_SETTINGS)
     #define TOUCH_CALIBRATION_AUTO_SAVE // Auto save successful calibration values to EEPROM
   #endif
