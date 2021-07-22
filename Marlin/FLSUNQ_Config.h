@@ -253,9 +253,9 @@
 // Software Serial UART for TMC2208
 #ifdef Q_UART8
     #define Q_TMC
-    #undef LIN_ADVANCE
     #define DRIVER_AXES TMC2208
     #ifndef DRIVER_EXT
+      #undef LIN_ADVANCE
       #define DRIVER_EXT TMC2208
     #endif
 #endif
