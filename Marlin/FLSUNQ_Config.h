@@ -130,8 +130,8 @@
 
 // WARNING:These options need wiring pins DIAG to EndStop plug(Signal).
 // more at the bottom page.
-//#define STALLGUARD_1               // Special mod for TMC2209 = SENSORLESS_HOMING
-//#define STALLGUARD_2               // Special mod for TMC2209 = SENSORLESS_PROBING
+//#define STALLGUARD_1               // (G) Special mod for TMC2209 = SENSORLESS_HOMING
+//#define STALLGUARD_2               // (g) Special mod for TMC2209 = SENSORLESS_PROBING
 
 //For other PROBE fixed without deploy like IR, buzzer, Nozzle, ...
 //#define X_PROBE                   // Set to invert the logic of the PROBE.
@@ -229,9 +229,9 @@
 // Set for TMC2208_STANDALONE
 #ifdef ALL_TMC8
     #define Q_TMC
-    #undef LIN_ADVANCE
     #define DRIVER_AXES TMC2208_STANDALONE
     #ifndef DRIVER_EXT
+      #undef LIN_ADVANCE
       #define DRIVER_EXT TMC2208_STANDALONE
     #endif
 #endif
@@ -247,9 +247,9 @@
 // Software Serial UART for TMC2208
 #ifdef Q_UART8
     #define Q_TMC
-    #undef LIN_ADVANCE
     #define DRIVER_AXES TMC2208
     #ifndef DRIVER_EXT
+      #undef LIN_ADVANCE
       #define DRIVER_EXT TMC2208
     #endif
 #endif
