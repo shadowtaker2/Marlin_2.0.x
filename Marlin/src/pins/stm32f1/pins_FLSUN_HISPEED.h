@@ -155,15 +155,6 @@
     #define Y_SERIAL_RX_PIN      X_SERIAL_TX_PIN  // IO0
     #define Z_SERIAL_TX_PIN      X_SERIAL_TX_PIN  // IO0
     #define Z_SERIAL_RX_PIN      X_SERIAL_TX_PIN  // IO0
-    #ifdef ESP_WIFI
-      //Module ESP-WIFI
-      #define ESP_WIFI_MODULE_COM               2
-      #define ESP_WIFI_MODULE_BAUDRATE      BAUDRATE
-      //#define ESP_WIFI_MODULE_RESET_PIN         PA5
-      #define ESP_WIFI_MODULE_ENABLE_PIN        -1
-      #define ESP_WIFI_MODULE_TXD_PIN           PA9
-      #define ESP_WIFI_MODULE_RXD_PIN           PA10
-    #endif 
   #else /*  TMC220x   */
     // SoftwareSerial with one pin per driver
     // Compatible with TMC2208 and TMC2209 drivers
