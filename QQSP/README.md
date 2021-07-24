@@ -1,7 +1,8 @@
-### 2021-06-10 MARLIN 2.0.8.2 OFFICIAL RELEASE
+### 2021-07-24 MARLIN 2.0.9.1 OFFICIAL RELEASE
 
 - QQS-Pro STOCK With 4xA4988 = QQSP_STOCK-Robin_mini.bin
-- QQS-Pro STOCK With 3xTMC2208 + 1xA4988 = QQSP_STOCK_TMC-Robin_mini.bin
+- QQS-Pro STOCK With 4xTMC2208 = QQSP_STOCK_TMC8-Robin_mini.bin
+- QQS-Pro STOCK With 4xTMC2209 = QQSP_STOCK_TMC9-Robin_mini.bin
   
 Each firmware has a header that corresponds to the hardware (board) and functions used in the firmware.
 Below is an example with the firmware for a QQS-Pro printer with a HiSpeedv1 board with TMC2208 stepper drivers:
@@ -46,9 +47,11 @@ Below is an example with the firmware for a QQS-Pro printer with a HiSpeedv1 boa
   - (w) Module ESP8266/ESP12 with ESP3Dv3.0 Firmware.
   - (T) Extruder Titan
   - (B) Extruder BMG
-  - (b) Extruder BMG mini
+  - (N) Extruder Nema14 (Sherpa/SuperDrive/...)
   
   **/*-------Others options in firmware----*/**
+  - (G) SENSORLESS_HOMING (Only 2209)
+  - (g) SENSORLESS_PROBING (Only 2209)
   - (A) BED_LEVELING_BILINEAR
   - (U) BED_LEVELING_UBL
   - (P) PreHeat bed before leveling

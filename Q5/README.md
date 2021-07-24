@@ -1,4 +1,4 @@
-### 2021-06-10 MARLIN 2.0.8.2 OFFICIAL RELEASE
+### 2021-07-24 MARLIN 2.0.9.1 OFFICIAL RELEASE
  
  - Q5 STOCK With 3xTMC2208 + 1xA4988 = Q5_STOCK-Robin_nano.bin
 
@@ -35,7 +35,7 @@ Below is an example with the firmware for a Q5 printer with a Mks_Robin_nanov1.2
   - (F) UI STANDARD (Emulation LCD screen on TFT)
   - (C) UI MARLIN (TFT Color screen)
   - (I) UI MKS (TFT Color screen>=480x320 use Lvgl/NANOv2-3)
-  - (r) UI STANDARD (Marlin Mode on TFT FOR SKR/NANOv2-3)
+  - (r) UI STANDARD (Marlin Mode on TFT FOR SKR/NANOv2-3 include BTT's TFT)
 
   **/*------Modules--------*/**
   - (N) NeoPixel (management of led strips)
@@ -44,9 +44,11 @@ Below is an example with the firmware for a Q5 printer with a Mks_Robin_nanov1.2
   - (T) Extruder Titan
   - (B) Extruder BMG
   - (b) Extruder BMG mini
-  - (h) Extruder mini-Sherpa
+  - (N) Extruder NEMA14 mini-Sherpa
   
   **/*-------Others options in firmware----*/**
+  - (G) SENSORLESS_HOMING (Only 2209)
+  - (g) SENSORLESS_PROBING (Only 2209)
   - (A) BED_LEVELING_BILINEAR
   - (U) BED_LEVELING_UBL
   - (P) PreHeat bed before leveling

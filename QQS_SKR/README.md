@@ -1,3 +1,5 @@
+### 2021-07-24 MARLIN 2.0.9.1 OFFICIAL RELEASE
+
 Each firmware has a header that corresponds to the hardware (board) and functions used in the firmware.
 Below is an example with the firmware for a Q5 printer with a Mks_Robin_nanov1.2 board with TMC2208 and A4988 stepper drivers:
 
@@ -45,11 +47,12 @@ Below is an example with the firmware for a Q5 printer with a Mks_Robin_nanov1.2
   - (W) Module ESP8266/ESP12 (infos at the middle of the page)
   - (w) Module ESP8266/ESP12 with ESP3Dv3.0 Firmware.
   - (T) Extruder Titan
-  - (B) Extruder BMG
-  - (b) Extruder BMG mini
-  - (h) Extruder mini-Sherpa
+  - (B) Extruder BMG (Also reverse the extruder direction)
+  - (N) Extruder NEMA14 (mini-Sherpa/Orbiter)
   
   **/*-------Others options in firmware----*/**
+  - (G) SENSORLESS_HOMING (Only 2209)
+  - (g) SENSORLESS_PROBING (Only 2209)
   - (A) BED_LEVELING_BILINEAR
   - (U) BED_LEVELING_UBL
   - (P) PreHeat bed before leveling
