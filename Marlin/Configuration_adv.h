@@ -4253,6 +4253,14 @@
   #define MARLIN_DEV_MODE
 #endif
 
+#if ENABLED(MARLIN_DEV_MODE)
+  /**
+   * D576 - Buffer Monitoring
+   * To help diagnose print quality issues stemming from empty command buffers.
+   */
+  //#define BUFFER_MONITORING
+#endif
+
 /**
  * Postmortem Debugging captures misbehavior and outputs the CPU status and backtrace to serial.
  * When running in the debugger it will break for debugging. This is useful to help understand
