@@ -26,6 +26,7 @@
 //#define REPRAP_DISCOUNT_SMART_CONTROLLER
 //#define DGUS_LCD_UI_MKS
 #define MKS_ROBIN_TFT32
+//#define MKS_TS35_V2_0
 #define TFT_COLOR_UI
 #define TOUCH_SCREEN
 
