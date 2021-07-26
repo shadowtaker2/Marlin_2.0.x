@@ -142,7 +142,7 @@
     #define NUM_SERIAL 2
   #endif
 #else
-  #define BAUDRATE_2 115200
+  //#define BAUDRATE_2 115200
 #endif
                            
 
@@ -1365,7 +1365,11 @@
 #define Z_PROBE_FEEDRATE_FAST (40*60)  //2400
 
 // Feedrate (mm/min) for the "accurate" probe of each point
-#define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 6) //750
+#ifdef N_PROBE
+  #define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 2)
+#else
+  #define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 6) //750
+#endif
 
 /**
  * Probe Activation Switch
