@@ -472,7 +472,7 @@ const struct VPMapping VPMap[] PROGMEM = {
   { MKSLCD_SCREEN_PRINT, MKSList_Print },                     // Page 7
   { MKSLCD_SCREEN_PAUSE, MKSList_Print },                     // Page 26
   { MKSLCD_SCREEN_CHOOSE_FILE, MKSList_SD_File },             // Page 15
-  { MKSLCD_SCREEN_MOTOR_PLUSE, MKSList_Pluse },               // Page 51
+  { MKSLCD_SCREEN_MOTOR_PULSE, MKSList_Pluse },               // Page 51
   { MKSLCD_SCREEN_MOTOR_SPEED, MKSList_MaxSpeed },            // Page 55
   { MKSLCD_SCREEN_MOTOR_ACC_MAX, MKSList_MaxAcc },            // Page 53
   { MKSLCD_SCREEN_LEVEL_DATA, MKSList_Level_Point },          // Page 48
