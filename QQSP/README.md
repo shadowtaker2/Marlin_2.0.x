@@ -13,7 +13,7 @@ Below is an example with the firmware for a QQS-Pro printer with a HiSpeedv1 boa
    - (8)TMC2208 standalone - 
    - (C)UI Marlin TFT32 - 
    - (W)Wifi module - 
-   - (T)Extruder Titan - 
+   - (T)Extruder Titan/Stock - 
    - (P)PreHeat bed - 
    - (U)Leveling mode -
    - (L)LinearAdvance - 
@@ -45,7 +45,7 @@ Below is an example with the firmware for a QQS-Pro printer with a HiSpeedv1 boa
   - (N) NeoPixel (management of led strips)
   - (W) Module ESP8266/ESP12 (infos at the middle of the page)
   - (w) Module ESP8266/ESP12 with ESP3Dv3.0 Firmware.
-  - (T) Extruder Titan
+  - (T) Extruder Titan/Stock
   - (B) Extruder BMG
   - (N) Extruder Nema14 (Sherpa/SuperDrive/...)
   
