@@ -47,7 +47,7 @@ Below is an example with the firmware for a QQS-Pro printer with a HiSpeedv1 boa
   - (w) Module ESP8266/ESP12 with ESP3Dv3.0 Firmware.
   - (T) Extruder Titan/Stock
   - (B) Extruder BMG
-  - (N) Extruder Nema14 (Sherpa/SuperDrive/...)
+  - (n) Extruder Nema14 (Sherpa/SuperDrive/...)
   
   **/*-------Others options in firmware----*/**
   - (G) SENSORLESS_HOMING (Only 2209)
