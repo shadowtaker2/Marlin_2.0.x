@@ -101,7 +101,7 @@
 
 // BMG Extruder (B) Extruder step(417).
 //#define BMG                            //(B) Uncommment for BMG Left/Right.
-//#define NEMA14                         //(N) Uncommment for Mini-Sherpa/SuperDrive.
+//#define NEMA14                         //(n) Uncommment for Mini-Sherpa/SuperDrive.
 
 /*__________________________5_____________________________*/
       /** =============================
