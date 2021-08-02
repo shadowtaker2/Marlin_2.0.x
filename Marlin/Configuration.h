@@ -816,7 +816,7 @@
   // This is a trade-off between visible corners (not enough segments)
   // and processor overload (too many expensive sqrt calls).
             
-  #define DELTA_SEGMENTS_PER_SECOND 80
+  #define DELTA_SEGMENTS_PER_SECOND 100
 
   // After homing move down to a height where XY movement is unconstrained
   //#define DELTA_HOME_TO_SAFE_ZONE
@@ -2006,7 +2006,7 @@
  *    +-------------->X     +-------------->X     +-------------->Y
  *     XY_SKEW_FACTOR        XZ_SKEW_FACTOR        YZ_SKEW_FACTOR
  */
-#define SKEW_CORRECTION
+//#define SKEW_CORRECTION
 
 #if ENABLED(SKEW_CORRECTION)
   // Input all length measurements here:
@@ -2085,25 +2085,27 @@
 #define PREHEAT_1_TEMP_HOTEND 200
 #define PREHEAT_1_TEMP_BED     60
 #define PREHEAT_1_TEMP_CHAMBER 35
-#define PREHEAT_1_FAN_SPEED   200 // Value from 0 to 255
+#define PREHEAT_1_FAN_SPEED   150 // Value from 0 to 255
 
-#define PREHEAT_2_LABEL       "ABS"
-#define PREHEAT_2_TEMP_HOTEND 240
-#define PREHEAT_2_TEMP_BED     90
+#define PREHEAT_2_LABEL       "PETG"
+#define PREHEAT_2_TEMP_HOTEND 230
+#define PREHEAT_2_TEMP_BED     80
 #define PREHEAT_2_TEMP_CHAMBER 35
 #define PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
 
-#define PREHEAT_3_LABEL       "TPU"
-#define PREHEAT_3_TEMP_HOTEND 230
-#define PREHEAT_3_TEMP_BED     50
-#define PREHEAT_2_TEMP_CHAMBER 35
+#define PREHEAT_3_LABEL       "ABS"
+#define PREHEAT_3_TEMP_HOTEND 240
+#define PREHEAT_3_TEMP_BED     90
+#define PREHEAT_3_TEMP_CHAMBER 35
 #define PREHEAT_3_FAN_SPEED     0 // Value from 0 to 255
 
-#define PREHEAT_4_LABEL       "PETG"
+#define PREHEAT_4_LABEL       "TPU"
 #define PREHEAT_4_TEMP_HOTEND 230
-#define PREHEAT_4_TEMP_BED     80
-#define PREHEAT_2_TEMP_CHAMBER 35
+#define PREHEAT_4_TEMP_BED     50
+#define PREHEAT_4_TEMP_CHAMBER 35
 #define PREHEAT_4_FAN_SPEED     0 // Value from 0 to 255
+
+
 
 /**
  * Nozzle Park
