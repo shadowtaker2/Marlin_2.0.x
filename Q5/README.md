@@ -44,7 +44,7 @@ Below is an example with the firmware for a Q5 printer with a Mks_Robin_nanov1.2
   - (T) Extruder Titan
   - (B) Extruder BMG
   - (b) Extruder BMG mini
-  - (N) Extruder NEMA14 mini-Sherpa
+  - (n) Extruder NEMA14 mini-Sherpa
   
   **/*-------Others options in firmware----*/**
   - (G) SENSORLESS_HOMING (Only 2209)
