@@ -123,7 +123,7 @@
  *
  * :[2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000]
  */
-#define BAUDRATE 250000
+#define BAUDRATE 115200
 #define BAUD_RATE_GCODE     // Enable G-code M575 to set the baud rate
 
 /**
@@ -597,7 +597,7 @@
 #define HEATER_5_MAXTEMP 275
 #define HEATER_6_MAXTEMP 275
 #define HEATER_7_MAXTEMP 275
-#define BED_MAXTEMP      120
+#define BED_MAXTEMP      110
 #define CHAMBER_MAXTEMP  60
 
 /**
@@ -626,6 +626,9 @@
   //#define PID_AUTOTUNE_MENU     //Define on FLSUNQ_Config// Add PID auto-tuning to the "Advanced Settings" menu. (~250 bytes of PROGMEM)
   //#define PID_PARAMS_PER_HOTEND // Uses separate PID parameters for each extruder (useful for mismatched extruders)
                                   // Set/get with gcode: M301 E[extruder number, 0-2]
+  #ifdef H43
+    #define LCD_PID_AUTOTUNE     // Available for MKS H43 for QQS
+  #endif
 
   #if ENABLED(PID_PARAMS_PER_HOTEND)
     // Specify between 1 and HOTENDS values per array.
@@ -649,6 +652,11 @@
     //#define DEFAULT_Ki
     //#define DEFAULT_Kd
   #endif
+  #if ENABLED(LCD_PID_AUTOTUNE)
+    #define AUTOTUNE_CYCLE          5   //default value is 5
+    #define AUTOTUNE_INDEX          0   // -1 for heatbed, 0 for E0. leave default 0
+    #define AUTOTUNE_TARGET_TEMP  210   //set target temperature during autotune
+  #endif
 #endif // PIDTEMP
 
 //===========================================================================
@@ -668,8 +676,9 @@
  * heater. If your configuration is significantly different than this and you don't understand
  * the issues involved, don't use bed PID until someone else verifies that your hardware works.
  */
-#define PIDTEMPBED
-
+#ifndef H43
+  #define PIDTEMPBED
+#endif
 //#define BED_LIMIT_SWITCHING
 
 /**
@@ -1825,8 +1834,9 @@
 
   // Set the number of grid points per dimension.
   // Works best with 5 or more points in each dimension.
-  #define GRID_MAX_POINTS_X 5
-  #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
+  #define GRID_SET_MAX_POINTS 7 //MKS H43 require this to work 
+  #define GRID_MAX_POINTS_X GRID_SET_MAX_POINTS
+  #define GRID_MAX_POINTS_Y GRID_SET_MAX_POINTS
 
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
@@ -1939,6 +1949,9 @@
  */
 #define Z_PROBE_END_SCRIPT "G28"
 //#define Z_PROBE_END_SCRIPT "G0 Z30 F12000\n G0 X0 Y0 Z30"
+#ifdef H43
+  #define Z_PROBE_END_HEIGHT  100 // MKS H43 require this to work
+#endif
 
 // @section homing
 
@@ -2008,7 +2021,7 @@
  *    +-------------->X     +-------------->X     +-------------->Y
  *     XY_SKEW_FACTOR        XZ_SKEW_FACTOR        YZ_SKEW_FACTOR
  */
-#define SKEW_CORRECTION
+//#define SKEW_CORRECTION
 
 #if ENABLED(SKEW_CORRECTION)
   // Input all length measurements here:
