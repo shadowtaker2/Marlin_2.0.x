@@ -30,7 +30,7 @@
  */
 
 #if NOT_TARGET(__STM32F1__, STM32F1xx)
-  #error "Oops! Select an STM32F1 board in 'Tools > Board.'"
+  //#error "Oops! Select an STM32F1 board in 'Tools > Board.'"
 #elif HOTENDS > 1 || E_STEPPERS > 1
   #error "FLSUN HiSpeedV1 only supports one hotend / E-stepper. Comment out this line to continue."
 #endif
@@ -193,12 +193,6 @@
    *       ￣￣ AE￣￣
    */
   // Module ESP-WIFI
-  //#define ESP_WIFI_MODULE_COM                  2  // Must also set either SERIAL_PORT or SERIAL_PORT_2 to this
-  //#define ESP_WIFI_MODULE_BAUDRATE      BAUDRATE  // Must use same BAUDRATE as SERIAL_PORT & SERIAL_PORT_2
-  //#define ESP_WIFI_MODULE_RESET_PIN         PA5   // WIFI CTRL/RST
-  //#define ESP_WIFI_MODULE_ENABLE_PIN        -1
-  //#define ESP_WIFI_MODULE_TXD_PIN           PA9   // MKS or ESP WIFI RX PIN
-  //#define ESP_WIFI_MODULE_RXD_PIN           PA10  // MKS or ESP WIFI TX PIN
   #define WIFI_IO0_PIN                      PA8   // MKS ESP WIFI IO0 PIN
   #define WIFI_IO1_PIN       			          PC7   // MKS ESP WIFI IO1 PIN
   #define WIFI_RESET_PIN				            PA5   // MKS ESP WIFI RESET PIN
@@ -262,6 +256,19 @@
   #define KILL_PIN                          PA2   // PW_DET
   #define KILL_PIN_INVERTING                true
   //#define PS_ON_PIN                       PA3   // PW_CN /PW_OFF
+#endif
+#if ENABLED(MKS_PWC)
+  #if ENABLED(TFT_LVGL_UI)
+    #undef PSU_CONTROL
+    #define SUICIDE_PIN                     PB2   // Enable MKSPWC SUICIDE PIN
+    #define SUICIDE_PIN_INVERTING          false  // Enable MKSPWC PIN STATE
+    #define KILL_PIN                        PA2   // Enable MKSPWC DET PIN
+    #define KILL_PIN_STATE                  true  // Enable MKSPWC PIN STATE
+  #else
+    #define PS_ON_PIN                       PA3   //PW_OFF, you can change it to other pin
+    #define KILL_PIN                        PA2   //PW_DET, you can change it to other pin
+    #define KILL_PIN_STATE                  true  //true : HIGH level trigger
+  #endif
 #endif
 
 #define MT_DET_1_PIN                        PA4   // MT_DET
