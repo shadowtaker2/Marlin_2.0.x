@@ -28,7 +28,7 @@
 /*________________________2___________________________*/
           /*-----Type Drivers-(1 CHOICE)-----*/
 /* MODE STOCK for QQS & Q5 */
-#define STOCK                         // (S) (Default_QQS) For 4xA4988(green or red color).
+//#define STOCK                         // (S) (Default_QQS) For 4xA4988(green or red color).
                                       // (S) (Default_Q5) For 3xTMC2208+1xA4988.
 
 /* MODE STANDALONE XYZ+E for QQS & Q5 */
@@ -40,7 +40,7 @@
 //#define Q_UART9                      //(U9) 4xTMC2209 Note: remove on your printer the module WIFI and wire your TMC.
 
 /* SPECIAL MODE UART XYZ+E for QQS-Pro */
-//#define QQS_UARTH                     //(UH) Mode special 2209 wiring with one I/O pin (Remove module ESP12)
+#define QQS_UARTH                     //(UH) Mode special 2209 wiring with one I/O pin (Remove module ESP12)
 
 /**========================2bis=================================//
  * -- If you have an other stepper driver for EXTRUDER----------//
@@ -59,18 +59,18 @@
         * = Driver TFT Color (1 CHOICE)=
         * ==============================
         */
-#define MKS_ROBIN_TFT32        // (Default) Mks_Robin_TFT_V2.0
+//#define MKS_ROBIN_TFT32        // (Default) Mks_Robin_TFT_V2.0
 //#define MKS_TS35_V2_00       // Only for NanoV2 or V3
 //#define TFT_GENERIC          // For the user who haven't the same screen.
 
-//#define DGUS_LCD_UI_MKS      // Mks_H43_v1.0 
+#define DGUS_LCD_UI_MKS      // Mks_H43_v1.0 
 //Note for H43: The wiring is done on the UART2 (Wifi socket pins(PA10/PA9) for Tx/Rx).
 
                 /*--- Choice UI TFT ----*/
-#define TFT_COLOR_UI                     //(C) (Default) UI Color MARLIN
+//#define TFT_COLOR_UI                     //(C) (Default) UI Color MARLIN
 //#define TFT_CLASSIC_UI                 //(F) Standard LCD (UI Classic LCD)
 
-#define TOUCH_SCREEN                     //(C/F) (Default) UI MARLIN
+//#define TOUCH_SCREEN                     //(C/F) (Default) UI MARLIN
 
 /* ======================================//
 * === Note:Languages already integrated==// 
@@ -83,7 +83,7 @@
 /*__________________________4______________________________*/
                   /*----  Modules -----*/
 
-#define MKS_WIFI                         //(W) (Default_QQS) Module ESP8266/ESP12
+//#define MKS_WIFI                         //(W) (Default_QQS) Module ESP8266/ESP12
 //#define ESP3D_30                       //(w) Enable firmware ESP3D v3.0 (ESP8266/ESP12)
 
 /*For LedStrip which need an external power source on Vcc pin.*/
@@ -147,11 +147,11 @@
  * = like (Prontoface/Octoprint/HostRepertier/Astoprint)=
  * ====== Choice add menu on TFT: (OPT) =================
  */
-#define ADD_MENUS                      //  (Default) Add menu PID, DELTA, INFO,...
+//#define ADD_MENUS                      //  (Default) Add menu PID, DELTA, INFO,...
 
 // For user who change their nozzle thermistor 
 // by another one ex: "ATC Semitec 104GT-2" = 5 
-//#define TEMP_SENSOR_0 13             // uncomment with a good number/type.
+#define TEMP_SENSOR_0 13             // uncomment with a good number/type.
 
 /*__________________________8__________________________*/
 /** ===================================================
@@ -163,7 +163,7 @@
                                    // Not compatible with the MEATPACK option. 
 
 //------ Support for MeatPack G-code compression (OCTOPRINT)--------//
-#define MEATPACK_ON_SERIAL_PORT_1       //(M) With connection USB
+//#define MEATPACK_ON_SERIAL_PORT_1       //(M) With connection USB
 //#define MEATPACK_ON_SERIAL_PORT_2       // With other connection like Tx/Rx Wifi socket.
 
 /** ========================================
