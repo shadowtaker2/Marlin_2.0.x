@@ -168,6 +168,10 @@ vc-fileutils.settings
 .vscode/launch.json
 .vscode/*.db
 
+#Simulation
+imgui.ini
+eeprom.dat
+
 #cmake
 CMakeLists.txt
 src/CMakeLists.txt
