@@ -330,10 +330,10 @@
 #endif
 //Jerk
 #ifndef XYZJERK
-  #define XYZJERK  10
+  #define XYZJERK  20
 #endif
 #ifndef EJERK
-  #define EJERK     5
+  #define EJERK     15
 #endif
 //Z_OffSet
 #ifndef Z_OFFSET
