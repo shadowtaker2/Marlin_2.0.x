@@ -1519,7 +1519,7 @@
   #define INVERT_Y_DIR false      //QQS_A4988 Q5_220X
   #define INVERT_Z_DIR false      //QQS_A4988 Q5_220X
   #ifdef INV_EXT
-    #define INVERT_E0_DIR false   //Q5_220X
+    #define INVERT_E0_DIR false   //Q5_220X or BMG
   #else
     #define INVERT_E0_DIR true    //QQS-Q5_A4988
   #endif
