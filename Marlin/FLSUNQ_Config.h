@@ -69,7 +69,7 @@
                 /*--- Choice UI TFT ----*/
 #define TFT_COLOR_UI                     //(C) (Default) UI Color MARLIN
 //#define TFT_CLASSIC_UI                 //(F) Standard LCD (UI Classic LCD)
-//#define TFT_LVGL_UI                    //(I) (Default) UI Color MKS (Bug with captor sensor PR22595)
+//#define TFT_LVGL_UI                    //(I) UI Color MKS (Bug with captor sensor PR22595)
 
 #define TOUCH_SCREEN                     //(C/F) (Default) UI MARLIN
 
