@@ -69,6 +69,7 @@
                 /*--- Choice UI TFT ----*/
 #define TFT_COLOR_UI                     //(C) (Default) UI Color MARLIN
 //#define TFT_CLASSIC_UI                 //(F) Standard LCD (UI Classic LCD)
+//#define TFT_LVGL_UI                    //(I) (Default) UI Color MKS
 
 #define TOUCH_SCREEN                     //(C/F) (Default) UI MARLIN
 
