@@ -69,7 +69,7 @@
                 /*--- Choice UI TFT ----*/
 #define TFT_COLOR_UI                     //(C) (Default) UI Color MARLIN
 //#define TFT_CLASSIC_UI                 //(F) Standard LCD (UI Classic LCD)
-//#define TFT_LVGL_UI                    //(I) (Default) UI Color MKS
+//#define TFT_LVGL_UI                    //(I) (Default) UI Color MKS (Bug with captor sensor PR22595)
 
 #define TOUCH_SCREEN                     //(C/F) (Default) UI MARLIN
 
@@ -176,7 +176,7 @@
 */
 // 
 #ifdef MKS_WIFI
-  #define ESP_WIFI
+  #define WIFI_ESP
   #ifdef ESP3D_30
     #define MKS_WIFI_MODULE           // Work with TFT_LVGL_UI(Modern UI using LVGL-MKS)
     #define USES_MKS_WIFI_FUNCTION    // Bin transfert MKS for ESP3D firmware v3.0 or others
@@ -185,7 +185,9 @@
 
 //= For users who dont have a terminal =//
 #ifdef ADD_MENUS
-  #define DELTA_CALIBRATION_MENU        //  (Default) Auto for CLASSIC and COLOR.
+  #ifndef TFT_LVGL_UI
+    #define DELTA_CALIBRATION_MENU      //  (Default) Auto for CLASSIC and COLOR.
+  #endif
   #define PID_EDIT_MENU                 //  (Default) Tune PID Bed and Nozzle.
   #define PID_AUTOTUNE_MENU             //  (Default) Tune auto PID.
   #define LCD_INFO_MENU                 //  (Default) Informations printer.

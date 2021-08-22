@@ -132,7 +132,7 @@
  */
  //#define SERIAL_PORT_2 -1
 
-#ifdef ESP_WIFI
+#ifdef WIFI_ESP
   #ifdef ESP3D_30
     #define SERIAL_PORT_2 1
     #define NUM_SERIAL 2
@@ -1654,6 +1654,9 @@
  */
 #define FILAMENT_RUNOUT_SENSOR
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
+  #ifdef TFT_LVGL_UI
+    #define FIL_RUNOUT_PIN     MT_DET_1_PIN
+  #endif
   #define FIL_RUNOUT_ENABLED_DEFAULT false // Enable the sensor on startup. Override with M412 followed by M500.
   #define NUM_RUNOUT_SENSORS   1          // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
 
