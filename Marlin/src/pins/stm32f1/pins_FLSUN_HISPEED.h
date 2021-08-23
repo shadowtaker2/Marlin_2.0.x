@@ -176,11 +176,11 @@
     #define  Z_SLAVE_ADDRESS 0
     
     #define X_SERIAL_TX_PIN                   PA10  // RXD1
-    #define X_SERIAL_RX_PIN                   PA10  // RXD1
+    #define X_SERIAL_RX_PIN        X_SERIAL_TX_PIN
     #define Y_SERIAL_TX_PIN                   PA9   // TXD1
-    #define Y_SERIAL_RX_PIN                   PA9   // TXD1
+    #define Y_SERIAL_RX_PIN        Y_SERIAL_TX_PIN
     #define Z_SERIAL_TX_PIN                   PC7   // IO1
-    #define Z_SERIAL_RX_PIN                   PC7   // IO1
+    #define Z_SERIAL_RX_PIN        Z_SERIAL_TX_PIN
   #endif
 
 #else
