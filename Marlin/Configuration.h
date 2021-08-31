@@ -133,7 +133,7 @@
  */
  //#define SERIAL_PORT_2 -1
 
-#ifdef ESP_WIFI
+#ifdef WIFI_ESP
   #ifdef ESP3D_30
     #define SERIAL_PORT_2 1
     #define NUM_SERIAL 2
