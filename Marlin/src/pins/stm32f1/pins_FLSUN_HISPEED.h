@@ -106,7 +106,7 @@
 #endif
 
 #ifndef FIL_RUNOUT_PIN
-  #define FIL_RUNOUT_PIN            MT_DET_1_PIN
+  #define FIL_RUNOUT_PIN                    PA4   // MT_DET
 #endif
 
 //
@@ -162,7 +162,7 @@
     #define Y_SERIAL_RX_PIN      X_SERIAL_TX_PIN  // IO0
     #define Z_SERIAL_TX_PIN      X_SERIAL_TX_PIN  // IO0
     #define Z_SERIAL_RX_PIN      X_SERIAL_TX_PIN  // IO0
-    #ifdef ESP_WIF
+    #ifdef WIFI_ESP
       //Module ESP-WIFI
       #define ESP_WIFI_MODULE_COM               2
       #define ESP_WIFI_MODULE_BAUDRATE      BAUDRATE
@@ -255,11 +255,6 @@
 //
 // Misc. Functions
 //
-#if ENABLED(BACKUP_POWER_SUPPLY)
-  #define POWER_LOSS_PIN                    PA2   // PW_DET (UPS) MKSPWC
-#else
-  //#define POWER_LOSS_PIN                  PA1   // PW_SO
-#endif
 
 /**
  *    Connector J2
@@ -277,7 +272,7 @@
 // Power Supply Control
 //
 #if ENABLED(PSU_CONTROL)
-  #define KILL_PIN                          PA2   // PW_DET
+  #define KILL_PIN                          PA2   // PW_DET (UPS) MKSPWC
   #define KILL_PIN_STATE                   HIGH
   //#define PS_ON_PIN                       PA3   // PW_CN /PW_OFF
 #endif
@@ -297,7 +292,6 @@
 
 #if HAS_TFT_LVGL_UI
   #define MT_DET_1_PIN                      PA4   // MT_DET
-  #define MT_DET_2_PIN                      PE6
   #define MT_DET_PIN_STATE                  LOW
 #endif
 
