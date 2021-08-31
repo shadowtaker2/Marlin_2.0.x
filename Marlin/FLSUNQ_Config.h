@@ -154,6 +154,10 @@
 // by another one ex: "ATC Semitec 104GT-2" = 5 
 //#define TEMP_SENSOR_0 13             // uncomment with a good number/type.
 
+// For user who change their HotEnd like Volcano and
+// want to increase the temperature limit. 
+//#define HEATER_0_MAXTEMP 300           // uncomment with a real limit of your HotEnd.
+
 /*__________________________8__________________________*/
 /** ===================================================
 * == Option for Host (OCTOPRINT,REPETIER,PRONTERFACE,ESP3D, etc)
