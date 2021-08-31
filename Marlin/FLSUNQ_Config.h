@@ -71,7 +71,7 @@
 //#define TFT_CLASSIC_UI                 //(F) Standard LCD (UI Classic LCD)
 //#define TFT_LVGL_UI                    //(I) Standard LCD (UI Color MKS)
 
-//#define TOUCH_SCREEN                   //(C/F) (Default) UI MARLIN
+#define TOUCH_SCREEN                     //(C/F) (Default) UI MARLIN
 
 /* ======================================//
 * === Note:Languages already integrated==// 
@@ -176,7 +176,7 @@
 */
 // 
 #ifdef MKS_WIFI
-  #define ESP_WIFI
+  #define WIFI_ESP
   #ifdef ESP3D_30
     #define MKS_WIFI_MODULE           // Work with TFT_LVGL_UI(Modern UI using LVGL-MKS)
     #define USES_MKS_WIFI_FUNCTION    // Bin transfert MKS for ESP3D firmware v3.0 or others
@@ -337,10 +337,10 @@
 #endif
 //Jerk
 #ifndef XYZJERK
-  #define XYZJERK  10
+  #define XYZJERK  25
 #endif
 #ifndef EJERK
-  #define EJERK     5
+  #define EJERK    15
 #endif
 //Z_OffSet
 #ifndef Z_OFFSET
