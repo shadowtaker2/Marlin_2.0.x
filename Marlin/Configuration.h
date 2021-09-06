@@ -632,11 +632,11 @@
   #endif
 
   #if ENABLED(PID_PARAMS_PER_HOTEND)
-    // Specify between 1 and HOTENDS values per array.
-    // If fewer than EXTRUDER values are provided, the last element will be repeated.
-    #define DEFAULT_Kp_LIST {  28.16,  28.16 }
-    #define DEFAULT_Ki_LIST {   3.38,   3.38 }
-    #define DEFAULT_Kd_LIST {  58.69,  58.69 }
+    // Specify up to one value per hotend here, according to your setup.
+    // If there are fewer values, the last one applies to the remaining hotends.
+    #define DEFAULT_Kp_LIST {  22.20,  22.20 }
+    #define DEFAULT_Ki_LIST {   1.08,   1.08 }
+    #define DEFAULT_Kd_LIST { 114.00, 114.00 }
   #else
     #ifdef Q5
       #define DEFAULT_Kp 12.88
@@ -886,6 +886,9 @@
     #define DELTA_DIAGONAL_ROD_TRIM_TOWER { 0.0, 0.0, 0.0 }
   #endif
 #endif
+
+// Enable for a belt style printer with endless "Z" motion
+//#define BELTPRINTER
 
 //===========================================================================
 //============================== Endstop Settings ===========================
@@ -2431,6 +2434,7 @@
 // Add individual axis homing items (Home X, Home Y, and Home Z) to the LCD menu.
 //
 //#define INDIVIDUAL_AXIS_HOMING_MENU
+//#define INDIVIDUAL_AXIS_HOMING_SUBMENU
 
 //
 // SPEAKER/BUZZER
@@ -2993,6 +2997,7 @@
   //#define TFT_RES_320x240
   //#define TFT_RES_480x272
   //#define TFT_RES_480x320
+  //#define TFT_RES_1024x600
 #endif
 
 /**
