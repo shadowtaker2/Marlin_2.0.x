@@ -15,7 +15,7 @@
 * -Comment/Uncomment line to add or modify some options. 
 *  Default is actif for QQS and it's uncommented ;-)
 */
-//#include "Config_XP.h"  //For tests on my dev'printer!!
+#include "Config_XP.h"  //For tests on my dev'printer!!
 //#define DBUG
 /*_______________________1___________________________*/
 //==================== Hardware =====================//
@@ -28,7 +28,7 @@
 /*________________________2___________________________*/
           /*-----Type Drivers-(1 CHOICE)-----*/
 /* MODE STOCK for QQS & Q5 */
-#define STOCK                         // (S) (Default_QQS) For 4xA4988(green or red color).
+//#define STOCK                         // (S) (Default_QQS) For 4xA4988(green or red color).
                                       // (S) (Default_Q5) For 3xTMC2208+1xA4988.
 
 /* MODE STANDALONE XYZ+E for QQS & Q5 */
@@ -59,7 +59,7 @@
         * = Driver TFT Color (1 CHOICE)=
         * ==============================
         */
-#define MKS_ROBIN_TFT32        // (Default) Mks_Robin_TFT_V2.0
+//#define MKS_ROBIN_TFT32        // (Default) Mks_Robin_TFT_V2.0
 //#define MKS_TS35_V2_00       // Only for NanoV2 or V3
 //#define TFT_GENERIC          // For the user who haven't the same screen.
 
@@ -67,11 +67,11 @@
 //Note for H43: The wiring is done on the UART2 (Wifi socket pins(PA10/PA9) for Tx/Rx).
 
                 /*--- Choice UI TFT ----*/
-#define TFT_COLOR_UI                     //(C) (Default) UI Color MARLIN
+//#define TFT_COLOR_UI                     //(C) (Default) UI Color MARLIN
 //#define TFT_CLASSIC_UI                 //(F) Standard LCD (UI Classic LCD)
 //#define TFT_LVGL_UI                    //(I) Standard LCD (UI Color MKS)
 
-#define TOUCH_SCREEN                     //(C/F) (Default) UI MARLIN
+//#define TOUCH_SCREEN                     //(C/F) (Default) UI MARLIN
 
 /* ======================================//
 * === Note:Languages already integrated==// 
@@ -84,7 +84,7 @@
 /*__________________________4______________________________*/
                   /*----  Modules -----*/
 
-#define MKS_WIFI                         //(W) (Default_QQS) Module ESP8266/ESP12
+//#define MKS_WIFI                         //(W) (Default_QQS) Module ESP8266/ESP12
 //#define ESP3D_30                       //(w) Enable firmware ESP3D v3.0 (ESP8266/ESP12)
 
 /*For LedStrip which need an external power source on Vcc pin.*/
@@ -113,9 +113,9 @@
       */
 
 //#define DELTA_HOME_TO_SAFE_ZONE      // Option to move down after homing to a height where XYZ movement is unconstrained.
-#define PREHEAT_BEFORE_PROBING         //(P) (Default) Run a PreHeat bed at 60°C
+//#define PREHEAT_BEFORE_PROBING         //(P) (Default) Run a PreHeat bed at 60°C
 //#define PREHEAT_BEFORE_LEVELING    
-#define AUTO_BED_LEVELING_UBL          //(U) (Default) Wizard UBL includes. 
+//#define AUTO_BED_LEVELING_UBL          //(U) (Default) Wizard UBL includes. 
 
 // ---Expe tools Levelling-------
 //#define G26_MESH_VALIDATION          // Print Mesh Validation Pattern tool(By menu).
@@ -148,7 +148,7 @@
  * = like (Prontoface/Octoprint/HostRepertier/Astoprint)=
  * ====== Choice add menu on TFT: (OPT) =================
  */
-#define ADD_MENUS                      //  (Default) Add menu PID, DELTA, INFO,...
+//#define ADD_MENUS                      //  (Default) Add menu PID, DELTA, INFO,...
 
 // For user who change their nozzle thermistor 
 // by another one ex: "ATC Semitec 104GT-2" = 5 

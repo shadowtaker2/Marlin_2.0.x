@@ -61,6 +61,8 @@ typedef struct { float Kp, Ki, Kd, Kc; } PIDC_t;
 typedef struct { float Kp, Ki, Kd, Kf; } PIDF_t;
 typedef struct { float Kp, Ki, Kd, Kc, Kf; } PIDCF_t;
 
+extern uint16_t autotune_cycle, autotune_target_index, autotune_target_temp;
+
 typedef
   #if BOTH(PID_EXTRUSION_SCALING, PID_FAN_SCALING)
     PIDCF_t

@@ -198,6 +198,8 @@ typedef struct SettingsDataStruct {
   //
   uint8_t   esteppers;                                  // DISTINCT_AXES - LINEAR_AXES
 
+  bool INVERT_E0_DIR;                                     // DIRECTION E
+
   planner_settings_t planner_settings;
 
   xyze_float_t planner_max_jerk;                        // M205 XYZE  planner.max_jerk
@@ -242,6 +244,8 @@ typedef struct SettingsDataStruct {
   //
   // AUTO_BED_LEVELING_BILINEAR
   //
+  uint8_t grid_max, probe_end_height;
+
   uint8_t grid_max_x, grid_max_y;                       // GRID_MAX_POINTS_X, GRID_MAX_POINTS_Y
   xy_pos_t bilinear_grid_spacing, bilinear_start;       // G29 L F
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
@@ -489,6 +493,7 @@ typedef struct SettingsDataStruct {
     xy_int_t mks_corner_offsets[5];                     // Bed Tramming
     xyz_int_t mks_park_pos;                             // Custom Parking (without NOZZLE_PARK)
     celsius_t mks_min_extrusion_temp;                   // Min E Temp (shadow M302 value)
+    uint16_t autotune_cycle, autotune_target_index, autotune_target_temp;
   #endif
 
   #if HAS_MULTI_LANGUAGE
@@ -773,6 +778,14 @@ void MarlinSettings::postprocess() {
     }
 
     //
+    // Extruder direction
+    //
+    {
+      _FIELD_TEST(INVERT_E0_DIR);
+      EEPROM_WRITE(INVERT_E0_DIR);
+    }
+
+    //
     // Planar Bed Leveling matrix
     //
     {
@@ -801,6 +814,8 @@ void MarlinSettings::postprocess() {
                     grid_max_y = TERN(AUTO_BED_LEVELING_BILINEAR, GRID_MAX_POINTS_Y, 3);
       EEPROM_WRITE(grid_max_x);
       EEPROM_WRITE(grid_max_y);
+      EEPROM_WRITE(grid_max);
+      EEPROM_WRITE(probe_end_height);
       EEPROM_WRITE(bilinear_grid_spacing);
       EEPROM_WRITE(bilinear_start);
 
@@ -854,6 +869,18 @@ void MarlinSettings::postprocess() {
       _FIELD_TEST(bltouch_last_written_mode);
       const bool bltouch_last_written_mode = TERN(BLTOUCH, bltouch.last_written_mode, false);
       EEPROM_WRITE(bltouch_last_written_mode);
+    }
+
+    //
+    // AUTOTUNE SETTING
+    //
+    {
+      #if ENABLED(LCD_PID_AUTOTUNE)
+        _FIELD_TEST(autotune_cycle);
+        EEPROM_WRITE(autotune_cycle);
+        EEPROM_WRITE(autotune_target_index);
+        EEPROM_WRITE(autotune_target_temp);
+      #endif
     }
 
     //
@@ -1649,6 +1676,8 @@ void MarlinSettings::postprocess() {
         uint8_t grid_max_x, grid_max_y;
         EEPROM_READ_ALWAYS(grid_max_x);                // 1 byte
         EEPROM_READ_ALWAYS(grid_max_y);                // 1 byte
+        EEPROM_READ_ALWAYS(grid_max);
+        EEPROM_READ_ALWAYS(probe_end_height);
         #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
           if (grid_max_x == (GRID_MAX_POINTS_X) && grid_max_y == (GRID_MAX_POINTS_Y)) {
             if (!validating) set_bed_leveling_enabled(false);
@@ -2161,6 +2190,15 @@ void MarlinSettings::postprocess() {
         #endif
       }
 
+      char ebuf[6];
+      if(INVERT_E0_DIR == true){
+        snprintf(ebuf, sizeof(ebuf), "true");
+      }else{
+        snprintf(ebuf, sizeof(ebuf), "false");
+      }
+      CONFIG_ECHO_START();
+      SERIAL_ECHOLNPAIR("Extruder direction invert is ", ebuf);
+      
       //
       // CNC Coordinate System
       //
@@ -2723,6 +2761,9 @@ void MarlinSettings::reset() {
   //
   // Endstop Adjustments
   //
+  //  e_direction = INVERT_E0_DIR;
+    grid_max = GRID_SET_MAX_POINTS;
+    probe_end_height = Z_PROBE_END_HEIGHT;
 
   #if ENABLED(DELTA)
     const abc_float_t adj = DELTA_ENDSTOP_ADJ, dta = DELTA_TOWER_ANGLE_TRIM, ddr = DELTA_DIAGONAL_ROD_TRIM_TOWER;
@@ -2838,6 +2879,10 @@ void MarlinSettings::reset() {
         static_assert(WITHIN(COUNT(defKf), 1, HOTENDS), "DEFAULT_Kf_LIST must have between 1 and HOTENDS items.");
       #endif
       #define PID_DEFAULT(N,E) def##N[E]
+    #elif ENABLED(LCD_PID_AUTOTUNE)
+      autotune_cycle = AUTOTUNE_CYCLE;
+      autotune_target_index = AUTOTUNE_INDEX;
+      autotune_target_temp  = AUTOTUNE_TARGET_TEMP;
     #else
       #define PID_DEFAULT(N,E) DEFAULT_##N
     #endif
@@ -2983,6 +3028,7 @@ void MarlinSettings::reset() {
     LOOP_L_N(e, EXTRUDERS) {
       fc_settings[e].unload_length = FILAMENT_CHANGE_UNLOAD_LENGTH;
       fc_settings[e].load_length = FILAMENT_CHANGE_FAST_LOAD_LENGTH;
+      fc_settings[e].purge_length = ADVANCED_PAUSE_PURGE_LENGTH;
     }
   #endif
 
@@ -3126,7 +3172,8 @@ void MarlinSettings::reset() {
             }
           }
         }
-
+        SERIAL_ECHOPAIR(PSTR(" max grid: "), (int)grid_max, "\n");
+        SERIAL_ECHOPAIR(PSTR(" Probe End Height: "), (int)probe_end_height, "\n");
       #endif
 
     #endif // HAS_LEVELING

@@ -1000,10 +1000,15 @@ const char* CardReader::diveToFile(const bool update_cwd, SdFile* &inDirPtr, con
   return atom_ptr;
 }
 
+bool isDirOpen(){
+  return card.is_Dir_Open;
+}
+
 void CardReader::cd(const char * relpath) {
   SdFile newDir, *parent = &getWorkDir();
 
   if (newDir.open(parent, relpath, O_READ)) {
+    card.is_Dir_Open=1;
     workDir = newDir;
     flag.workDirIsRoot = false;
     if (workDirDepth < MAX_DIR_DEPTH)
@@ -1011,6 +1016,7 @@ void CardReader::cd(const char * relpath) {
     TERN_(SDCARD_SORT_ALPHA, presort());
   }
   else
+    card.is_Dir_Open=0;
     SERIAL_ECHO_MSG(STR_SD_CANT_ENTER_SUBDIR, relpath);
 }
 

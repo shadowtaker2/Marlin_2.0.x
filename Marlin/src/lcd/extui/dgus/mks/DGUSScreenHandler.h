@@ -39,6 +39,12 @@ public:
   // The bools specifying whether the strings are in RAM or FLASH.
   static void sendinfoscreen(const char *line1, const char *line2, const char *line3, const char *line4, bool l1inflash, bool l2inflash, bool l3inflash, bool liinflash);
 
+  static void ConfirmPreheatPopup(uint16_t VP); //QQH
+  static void line_to_z(const float &z); //QQH
+  static void DirUp(DGUS_VP_Variable &var, void *val_ptr); //QQH
+  static void CalibrateDelta(DGUS_VP_Variable &var, void *val_ptr); //QQH
+  static void DGUSLCD_SendPrintRemainingTimeToDisplay_MKS(DGUS_VP_Variable &var); //QQH
+
   static void HandleUserConfirmationPopUp(uint16_t ConfirmVP, const char *line1, const char *line2, const char *line3, const char *line4, bool l1inflash, bool l2inflash, bool l3inflash, bool liinflash);
 
   #if 0
@@ -217,10 +223,16 @@ public:
 
   static void DGUSLCD_SendPrintTimeToDisplay_MKS(DGUS_VP_Variable &var);
   static void DGUSLCD_SendBabyStepToDisplay_MKS(DGUS_VP_Variable &var);
-  static void DGUSLCD_SendFanToDisplay(DGUS_VP_Variable &var);
+
   static void DGUSLCD_SendGbkToDisplay(DGUS_VP_Variable &var);
   static void DGUSLCD_SendStringToDisplay_Language_MKS(DGUS_VP_Variable &var);
   static void DGUSLCD_SendTMCStepValue(DGUS_VP_Variable &var);
+  static void Printing(DGUS_VP_Variable &var); //QQH
+  #if ENABLED(DELTA) //QQH
+  static void SendDeltaToScreen(DGUS_VP_Variable &var); //QQH
+  static void FreeXY(DGUS_VP_Variable &var, void *val_ptr); //QQH
+  static void SetDeltaConfiguration(DGUS_VP_Variable &var, void *val_ptr); //QQH
+  #endif //QQH
 
   #if ENABLED(PRINTCOUNTER)
     static void DGUSLCD_SendPrintAccTimeToDisplay(DGUS_VP_Variable &var);
@@ -228,6 +240,7 @@ public:
   #endif
   #if HAS_FAN
     static void DGUSLCD_SendFanStatusToDisplay(DGUS_VP_Variable &var);
+  //static void DGUSLCD_SendFanToDisplay(DGUS_VP_Variable &var);
   #endif
   static void DGUSLCD_SendHeaterStatusToDisplay(DGUS_VP_Variable &var);
   #if ENABLED(DGUS_UI_WAITING)

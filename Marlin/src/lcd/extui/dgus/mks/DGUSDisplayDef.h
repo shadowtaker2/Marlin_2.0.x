@@ -52,6 +52,9 @@ void MKS_reset_settings(); // Restore persistent settings to defaults
 
 void MKS_pause_print_move();
 void MKS_resume_print_move();
+//QQH
+static void setCalibrationStatus(const uint16_t &status);
+const static uint16_t getCalibrationStatus();
 
 extern float z_offset_add;
 
@@ -127,54 +130,54 @@ extern NOZZLE_PARK_DEF nozzle_park_mks;
 enum DGUSLCD_Screens : uint8_t {
   #if ENABLED(USE_MKS_GREEN_UI)
 
-    DGUSLCD_SCREEN_BOOT                 =  33,
-    DGUSLCD_SCREEN_MAIN                 =  60,
+    DGUSLCD_SCREEN_BOOT                 =  56,
+    //DGUSLCD_SCREEN_MAIN                 =  60,
     DGUSLCD_SCREEN_STATUS               =  60,
     DGUSLCD_SCREEN_STATUS2              =  60,
     DGUSLCD_SCREEN_PREHEAT              =  18,
-    DGUSLCD_SCREEN_POWER_LOSS           = 100,
-    DGUSLCD_SCREEN_MANUALMOVE           = 192,
-    DGUSLCD_SCREEN_UTILITY              = 120,
+    DGUSLCD_SCREEN_POWER_LOSS           = 131,
+    //DGUSLCD_SCREEN_MANUALMOVE           = 192,
+    //DGUSLCD_SCREEN_UTILITY              = 120,
     DGUSLCD_SCREEN_FILAMENT_UNLOADING   = 158,
-    DGUSLCD_SCREEN_SDFILELIST           =  15,
-    DGUSLCD_SCREEN_SDPRINTMANIPULATION  =  15,
-    DGUSLCD_SCREEN_SDPRINTTUNE          =  17,
+    //DGUSLCD_SCREEN_SDFILELIST           =  15,
+    //DGUSLCD_SCREEN_SDPRINTMANIPULATION  =  15,
+    //DGUSLCD_SCREEN_SDPRINTTUNE          =  17,
 
-    MKSLCD_SCREEN_BOOT                  =  33,
+    MKSLCD_SCREEN_BOOT                  =  56,
     MKSLCD_SCREEN_HOME                  =  60,   // MKS main page
     MKSLCD_SCREEN_SETTING               =  62,   // MKS Setting page / no wifi whit
     MKSLCD_SCREEM_TOOL                  =  64,   // MKS Tool page
     MKSLCD_SCREEN_EXTRUDE_P1            =  75,
     MKSLCD_SCREEN_EXTRUDE_P2            =  77,
     MKSLCD_SCREEN_LEVEL                 =  73,
-    MKSLCD_AUTO_LEVEL                   =  81,
-    MKSLCD_SCREEN_MOVE                  =  66,
-    MKSLCD_SCREEN_PRINT                 =  68,
-    MKSLCD_SCREEN_PAUSE                 =  70,
-    MKSLCD_SCREEN_CHOOSE_FILE           =  87,
+    MKSLCD_AUTO_LEVEL                   =  86,
+    MKSLCD_SCREEN_MOVE                  =  69,
+    MKSLCD_SCREEN_PRINT                 =  77,
+    MKSLCD_SCREEN_PAUSE                 =  79,
+    MKSLCD_SCREEN_CHOOSE_FILE           =  63,
     MKSLCD_SCREEN_NO_CHOOSE_FILE        =  88,
-    MKSLCD_SCREEN_Config                = 101,
-    MKSLCD_SCREEN_Config_MOTOR          = 103,
-    MKSLCD_SCREEN_MOTOR_PLUSE           = 104,
-    MKSLCD_SCREEN_MOTOR_SPEED           = 102,
-    MKSLCD_SCREEN_MOTOR_ACC_MAX         = 105,
-    MKSLCD_SCREEN_PRINT_CONFIG          =  72,
+    MKSLCD_SCREEN_Config                =  65,
+    MKSLCD_SCREEN_Config_MOTOR          =  88,
+    MKSLCD_SCREEN_MOTOR_PLUSE           =  89,
+    MKSLCD_SCREEN_MOTOR_SPEED           =  90,
+    MKSLCD_SCREEN_MOTOR_ACC_MAX         =  91,
+    MKSLCD_SCREEN_PRINT_CONFIG          =  81,
     MKSLCD_SCREEN_LEVEL_DATA            = 106,
     MKSLCD_PrintPause_SET               = 107,
     MKSLCD_FILAMENT_DATA                =  50,
-    MKSLCD_ABOUT                        =  83,
-    MKSLCD_PID                          = 108,
+    MKSLCD_ABOUT                        =  98,
+    MKSLCD_PID                          =  93,
     MKSLCD_PAUSE_SETTING_MOVE           =  98,
     MKSLCD_PAUSE_SETTING_EX             =  96,
     MKSLCD_PAUSE_SETTING_EX2            =  97,
-    MKSLCD_SCREEN_PRINT_CONFIRM         =  94,
+    MKSLCD_SCREEN_PRINT_CONFIRM         = 120,
     MKSLCD_SCREEN_EX_CONFIG             = 112,
     MKSLCD_SCREEN_EEP_Config            =  89,
-    MKSLCD_SCREEN_PrintDone             =  92,
-    MKSLCD_SCREEN_TMC_Config            = 111,
-    MKSLCD_Screen_Offset_Config         = 109,
+    MKSLCD_SCREEN_PrintDone             = 124,
+    MKSLCD_SCREEN_TMC_Config            =  96,
+    MKSLCD_Screen_Offset_Config         =  87,
     MKSLCD_Screen_PMove                 =  98,
-    MKSLCD_Screen_Baby                  =  79,
+    MKSLCD_Screen_Baby                  =  82,
 
   #else
 
@@ -361,6 +364,7 @@ constexpr uint16_t SP_T_Bed_Set   = 0x5040;
   constexpr uint16_t VP_X_HOME                        = 0x2336;
   constexpr uint16_t VP_Y_HOME                        = 0x2338;
   constexpr uint16_t VP_Z_HOME                        = 0x233A;
+  constexpr uint16_t VP_XY_HOME                       = 0x233C;
 
   // Fan Control Buttons , switch between "off" and "on"
   constexpr uint16_t VP_FAN0_CONTROL                  = 0x2350;
@@ -708,5 +712,58 @@ constexpr uint16_t SP_T_Bed_Set   = 0x5040;
   constexpr uint16_t VP_LevelConfig_Dis               = 0x5110;
   constexpr uint16_t VP_Advance_Dis                   = 0x5130;
   constexpr uint16_t VP_TemperatureConfig_Dis         = 0x5390;
+
+  constexpr uint16_t  VP_DeltaHeight                  = 0x5500; //QQH
+  constexpr uint16_t  VP_DeltaRadius                  = 0x5510; //QQH
+  constexpr uint16_t  VP_DiagonalRod                  = 0x5520; //QQH
+  constexpr uint16_t  VP_InitTF                       = 0x5E40; //QQH
+  constexpr uint16_t  VP_GridMaxXY                    = 0x5E42; //QQH
+  constexpr uint16_t  VP_Probe_End_Pos                = 0x5E44; //QQH
+  constexpr uint16_t  VP_LCD_Message                  = 0x5E46; //QQH
+
+  constexpr uint16_t  VP_ScreenGotoMove               = 0x6000; //QQH
+  constexpr uint16_t  VP_ScreenGotoPreheat            = 0x6002; //QQH
+  constexpr uint16_t  VP_isPrinting                   = 0x6100; //QQH
+  constexpr uint16_t  VP_isOctoPrinting               = 0x6200; //QQH
+  constexpr uint16_t  VP_Remain_H                     = 0x6300; //QQH
+  constexpr uint16_t  VP_Remain_M                     = 0x6302; //QQH
+  constexpr uint16_t  VP_Remain_S                     = 0x6304; //QQH
+  constexpr uint16_t  VP_PrintSpeed                   = 0x6306; //QQH
+  constexpr uint16_t  VP_DirUp                        = 0x6400; //QQH
+  constexpr uint16_t  VP_DirName                      = 0x6420; //QQH
+  constexpr uint16_t  VP_Level_bed                    = 0x6600; //QQH
+  constexpr uint16_t  VP_Calibrate_Delta              = 0x6602; //QQH
+  constexpr uint16_t  VP_Calibrate_Dis                = 0x6604; //QQH
+  constexpr uint16_t  VP_Leveling_Dis                 = 0x6620; //QQH
+  constexpr uint16_t  VP_ChangeFilament               = 0x6700; //QQH
+  constexpr uint16_t  VP_TunePrintPause               = 0x6702; //QQH
+  constexpr uint16_t  VP_ChangeFilamentStatus         = 0x6704; //QQH
+  constexpr uint16_t  VP_ReturnPrintPause             = 0x6800; //QQH
+  constexpr uint16_t  VP_ContinueLoadFilament         = 0x6900; //QQH
+  constexpr uint16_t  VP_DisableSoftwareEndstop       = 0x6910; //QQH
+  constexpr uint16_t  VP_FreeXY                       = 0x6920; //QQH
+  constexpr uint16_t  VP_HomeBeforeMove               = 0x6922; //QQH
+  constexpr uint16_t  VP_XJerk                        = 0x6924; //QQH
+  constexpr uint16_t  VP_YJerk                        = 0x6926; //QQH
+  constexpr uint16_t  VP_ZJerk                        = 0x6928; //QQH
+  constexpr uint16_t  VP_PreheatPLA_E                 = 0x6930; //QQH
+  constexpr uint16_t  VP_PreheatPLA_Bed               = 0x6932; //QQH
+  constexpr uint16_t  VP_PreheatPETG_E                = 0x6934; //QQH
+  constexpr uint16_t  VP_PreheatPETG_Bed              = 0x6936; //QQH
+  constexpr uint16_t  VP_PreheatABS_E                 = 0x6938; //QQH
+  constexpr uint16_t  VP_PreheatABS_Bed               = 0x693A; //QQH
+  constexpr uint16_t  VP_PreheatMaterial              = 0x693C; //QQH
+  constexpr uint16_t  VP_PreheatConfirm               = 0x693E; //QQH
+  constexpr uint16_t  VP_CancelPreheat                = 0x6940; //QQH
+  constexpr uint16_t  VP_GetPreheat                   = 0x6942; //QQH
+  constexpr uint16_t  VP_FilamentLoadLength           = 0x6944; //QQH
+  constexpr uint16_t  VP_FilamentUnloadLength         = 0x6946; //QQH
+  constexpr uint16_t  VP_FilamentPurgeLength          = 0x6948; //QQH
+  constexpr uint16_t  VP_StartPIDAutoTune             = 0x694A; //QQH
+  constexpr uint16_t  VP_PIDAutoTuneCycle             = 0x694C; //QQH
+  constexpr uint16_t  VP_PIDAutoTuneIndex             = 0x694E; //QQH
+  constexpr uint16_t  VP_PIDAutoTuneTemp              = 0x6950; //QQH
+  constexpr uint16_t  VP_PIDAutoTuneResult            = 0x6952; //QQH
+  constexpr uint16_t  VP_ExtruderInvert               = 0x695A; //QQH
 
 #endif // MKS_FINSH

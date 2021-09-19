@@ -375,6 +375,13 @@ public:
     #if BOTH(PSU_CONTROL, PS_OFF_CONFIRM)
       static void poweroff();
     #endif
+    
+    #if ENABLED(DGUS_LCD_UI_MKS)
+      static void pause_print_move();
+      static void resume_print_move();
+      static void setCalibrationStatus(const uint16_t &status);
+      const static uint16_t getCalibrationStatus();
+    #endif
 
     #if EITHER(HAS_WIRED_LCD, DWIN_CREALITY_LCD_JYERSUI)
       static bool get_blink();

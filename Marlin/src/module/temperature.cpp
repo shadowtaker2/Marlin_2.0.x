@@ -51,6 +51,11 @@
   #include "../lcd/e3v2/enhanced/dwin.h"
 #endif
 
+#if ENABLED(DGUS_LCD_UI_MKS)
+  #include "../lcd/extui/lib/dgus/mks/DGUSScreenHandler.h"
+  #include "../lcd/extui/lib/dgus/mks/DGUSDisplayDef.h"
+#endif
+
 #if ENABLED(EXTENSIBLE_UI)
   #include "../lcd/extui/ui_api.h"
 #endif
@@ -186,7 +191,7 @@
 #endif
 
 Temperature thermalManager;
-
+uint16_t autotune_cycle, autotune_target_index, autotune_target_temp;
 const char str_t_thermal_runaway[] PROGMEM = STR_T_THERMAL_RUNAWAY,
            str_t_heating_failed[] PROGMEM = STR_T_HEATING_FAILED;
 
@@ -622,7 +627,7 @@ volatile bool Temperature::raw_temps_ready = false;
 
     disable_all_heaters();
     TERN_(AUTO_POWER_CONTROL, powerManager.power_on());
-
+    ui.set_status_P("PID Autotune started...");
     long bias = GHV(MAX_CHAMBER_POWER, MAX_BED_POWER, PID_MAX) >> 1, d = bias;
     SHV(bias);
 
@@ -639,6 +644,7 @@ volatile bool Temperature::raw_temps_ready = false;
     while (wait_for_heatup) {
 
       const millis_t ms = millis();
+      char buf[36];
 
       if (updateTemperaturesIfReady()) { // temp sample ready
 
@@ -677,6 +683,10 @@ volatile bool Temperature::raw_temps_ready = false;
             d = (bias > max_pow >> 1) ? max_pow - 1 - bias : bias;
 
             SERIAL_ECHOPGM(STR_BIAS, bias, STR_D_COLON, d, STR_T_MIN, minT, STR_T_MAX, maxT);
+            
+            snprintf_P(buf,sizeof(buf), "Kp:%.1f Ki:%.1f Kd:%.1f", tune_pid.Kp, tune_pid.Ki, tune_pid.Kd);
+            ui.set_status_P(buf);
+
             if (cycles > 2) {
               const float Ku = (4.0f * d) / (float(M_PI) * (maxT - minT) * 0.5f),
                           Tu = float(t_low + t_high) * 0.001f,
@@ -693,6 +703,8 @@ volatile bool Temperature::raw_temps_ready = false;
               else
                 SERIAL_ECHOLNPGM(STR_CLASSIC_PID);
               SERIAL_ECHOLNPGM(STR_KP, tune_pid.Kp, STR_KI, tune_pid.Ki, STR_KD, tune_pid.Kd);
+              snprintf_P(buf,sizeof(buf), "Kp:%.1f Ki:%.1f Kd:%.1f", tune_pid.Kp, tune_pid.Ki, tune_pid.Kd);
+              ui.set_status_P(buf);
             }
           }
           SHV((bias + d) >> 1);
@@ -748,11 +760,14 @@ volatile bool Temperature::raw_temps_ready = false;
         TERN_(DWIN_CREALITY_LCD_ENHANCED, DWIN_PidTuning(PID_TUNING_TIMEOUT));
         TERN_(EXTENSIBLE_UI, ExtUI::onPidTuning(ExtUI::result_t::PID_TUNING_TIMEOUT));
         SERIAL_ECHOLNPGM(STR_PID_TIMEOUT);
+        ui.set_status_P(STR_PID_TIMEOUT);
         break;
       }
 
       if (cycles > ncycles && cycles > 2) {
         SERIAL_ECHOLNPGM(STR_PID_AUTOTUNE_FINISHED);
+        
+        ui.set_status_P("PID Autotune completed...");
 
         #if EITHER(PIDTEMPBED, PIDTEMPCHAMBER)
           PGM_P const estring = GHV(PSTR("chamber"), PSTR("bed"), NUL_STR);
@@ -764,7 +779,10 @@ volatile bool Temperature::raw_temps_ready = false;
           say_default_(); SERIAL_ECHOLNPGM("Ki ", tune_pid.Ki);
           say_default_(); SERIAL_ECHOLNPGM("Kd ", tune_pid.Kd);
         #endif
-
+        snprintf_P(buf,sizeof(buf), "Done... Kp:%.1f Ki:%.1f Kd:%.1f", tune_pid.Kp, tune_pid.Ki, tune_pid.Kd);
+        #if ENABLED(DGUS_LCD_UI_MKS)
+          dgusdisplay.WriteVariable(VP_PIDAutoTuneResult, buf, sizeof(buf), true);
+        #endif
         auto _set_hotend_pid = [](const uint8_t e, const PID_t &in_pid) {
           #if ENABLED(PIDTEMP)
             PID_PARAM(Kp, e) = in_pid.Kp;
@@ -795,6 +813,10 @@ volatile bool Temperature::raw_temps_ready = false;
         // Use the result? (As with "M303 U1")
         if (set_result)
           GHV(_set_chamber_pid(tune_pid), _set_bed_pid(tune_pid), _set_hotend_pid(heater_id, tune_pid));
+        
+        #if ENABLED(DGUS_LCD_UI_MKS)
+          ScreenHandler.GotoScreen(MKSLCD_SCREEN_PIDTUNING_COMPLETE);
+        #endif
 
         TERN_(PRINTER_EVENT_LEDS, printerEventLEDs.onPidTuningDone(color));
 

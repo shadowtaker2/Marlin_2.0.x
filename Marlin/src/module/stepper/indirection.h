@@ -47,6 +47,8 @@
 void restore_stepper_drivers();  // Called by powerManager.power_on()
 void reset_stepper_drivers();    // Called by settings.load / settings.reset
 
+//extern bool INVERT_E0_DIR;
+
 // X Stepper
 #ifndef X_ENABLE_INIT
   #define X_ENABLE_INIT() SET_OUTPUT(X_ENABLE_PIN)
