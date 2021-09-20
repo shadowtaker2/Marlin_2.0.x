@@ -41,6 +41,10 @@ extern uint16_t filamentSpeed_mm_s;
 extern float    ZOffset_distance;
 extern float    mesh_adj_distance;
 extern float    Z_distance;
+//QQH
+extern uint16_t autotune_cycle;
+extern uint16_t autotune_target_index;
+extern uint16_t autotune_target_temp;
 
 //extern struct { uint16_t h, m, s; } dgus_time;
 
@@ -53,7 +57,7 @@ void MKS_reset_settings(); // Restore persistent settings to defaults
 void MKS_pause_print_move();
 void MKS_resume_print_move();
 //QQH
-static void setCalibrationStatus(const uint16_t &status);
+void setCalibrationStatus(const uint16_t &status);
 const static uint16_t getCalibrationStatus();
 
 extern float z_offset_add;
@@ -130,7 +134,7 @@ extern NOZZLE_PARK_DEF nozzle_park_mks;
 enum DGUSLCD_Screens : uint8_t {
   #if ENABLED(USE_MKS_GREEN_UI)
 
-    DGUSLCD_SCREEN_BOOT                 =  56,
+    //DGUSLCD_SCREEN_BOOT                 =  56,
     //DGUSLCD_SCREEN_MAIN                 =  60,
     DGUSLCD_SCREEN_STATUS               =  60,
     DGUSLCD_SCREEN_STATUS2              =  60,
@@ -146,7 +150,7 @@ enum DGUSLCD_Screens : uint8_t {
     MKSLCD_SCREEN_BOOT                  =  56,
     MKSLCD_SCREEN_HOME                  =  60,   // MKS main page
     MKSLCD_SCREEN_SETTING               =  62,   // MKS Setting page / no wifi whit
-    MKSLCD_SCREEM_TOOL                  =  64,   // MKS Tool page
+    MKSLCD_SCREEN_TOOL                  =  64,   // MKS Tool page
     MKSLCD_SCREEN_EXTRUDE_P1            =  75,
     MKSLCD_SCREEN_EXTRUDE_P2            =  77,
     MKSLCD_SCREEN_LEVEL                 =  73,
@@ -178,7 +182,37 @@ enum DGUSLCD_Screens : uint8_t {
     MKSLCD_Screen_Offset_Config         =  87,
     MKSLCD_Screen_PMove                 =  98,
     MKSLCD_Screen_Baby                  =  82,
+	
+  //MKSLCD_SCREEN_MOTOR_STEPS           =  89, //QQH
+  //MKSLCD_SCREEN_FEEDRATE              =  90,
+    MKSLCD_SCREEN_STOP_PURGE            = 133, //QQH
+    MKSLCD_SCREEN_RESUMING              = 134, //QQH
+    MKSLCD_SCREEN_ABORTING              = 135, //QQH
+    MKSLCD_SCREEN_PID_TUNING            = 137, //QQH
+    MKSLCD_SCREEN_PIDTUNING_COMPLETE    = 138, //QQH
+    MKSLCD_SCREEN_POWER_LOSS            = 131, //QQH
+    MKSLCD_SCREEN_RESUME_PRINT          = 123, //QQH
+    MKSLCD_SERIAL_PRINT                 =  99, //QQH	
+    MKSLCD_SCREEN_MOVE_NOXY             =  70, //QQH
+    MKSLCD_SCREEN_FILAMENT              =  75, //QQH
+    MKSLCD_SCREEN_PRESS_TO_LOAD_FILAMENT= 128, //QQH
+    MKSLCD_SCREEN_LOADING_FILAMENT      = 129, //QQH
+    MKSLCD_SCREEN_UNLOADING_FILAMENT    = 130, //QQH
+    MKSLCD_PAUSE_SETTING_EX_UNLOADING   = 113, //QQH
+    MKSLCD_SCREEN_CALIBRATION_STATUS    = 115, //QQH
+    MKSLCD_SCREEN_CALIBRATION_COMPLETE  = 116, //QQH
+    MKSLCD_SCREEN_CONFIRM_PREHEAT       = 117, //QQH
+    MKSLCD_SCREEN_CANCEL_PREHEAT        = 118, //QQH
+    MKSLCD_SCREEN_HomeBeforeMove        = 119, //QQH	
+    MKSLCD_SCREEN_JERK                  =  92, //QQH
+    MKSLCD_SCREEN_NOZZLE_PARK           =  94, //QQH
 
+    MKSLCD_SCREEN_PREHEAT               =  66, //QQH
+    MKSLCD_SCREEN_PREHEATCANCEL         =  67, //QQH
+    MKSLCD_SCREEN_AUTOLEVEL_CONFIRM     = 110, //QQH
+    MKSLCD_SCREEN_LEVELING_PROGRESS     = 111, //QQH
+    MKSLCD_Screen_Level_Bed             =  86, //QQH
+	
   #else
 
     DGUSLCD_SCREEN_BOOT                 = 120,
@@ -198,7 +232,7 @@ enum DGUSLCD_Screens : uint8_t {
     MKSLCD_SCREEN_BOOT                  =   0,
     MKSLCD_SCREEN_HOME                  =   1,   // MKS main page
     MKSLCD_SCREEN_SETTING               =   2,   // MKS Setting page / no wifi whit
-    MKSLCD_SCREEM_TOOL                  =   3,   // MKS Tool page
+    MKSLCD_SCREEN_TOOL                  =   3,   // MKS Tool page
     MKSLCD_SCREEN_EXTRUDE_P1            =   4,
     MKSLCD_SCREEN_EXTRUDE_P2            =  11,
     MKSLCD_SCREEN_LEVEL                 =   5,

@@ -22,7 +22,7 @@
 
 #include "../../../../inc/MarlinConfigPre.h"
 
-//#if ENABLED(DGUS_LCD_UI_MKS)
+#if ENABLED(DGUS_LCD_UI_MKS)
 
 #include "../../../../feature/pause.h"
 #include "../../../../module/stepper.h"
@@ -141,9 +141,9 @@ void DGUSScreenHandler::DGUSLCD_SendGbkToDisplay(DGUS_VP_Variable &var) {
 void DGUSScreenHandler::DGUSLCD_PercentageToUint8(DGUS_VP_Variable &var, void *val_ptr) {
   if (var.memadr) {
     uint16_t value = swap16(*(uint16_t*)val_ptr);
-    DEBUG_ECHOLNPAIR("FAN value get:", value);
+    DEBUG_ECHOLNPGM("FAN value get:", value);
     *(uint8_t*)var.memadr = map(constrain(value, 0, 100), 0, 100, 0, 255);
-    DEBUG_ECHOLNPAIR("FAN value change:", *(uint8_t*)var.memadr);
+    DEBUG_ECHOLNPGM("FAN value change:", *(uint8_t*)var.memadr);
   }
 }
 
@@ -1315,6 +1315,42 @@ void DGUSScreenHandler::HandleAccChange_MKS(DGUS_VP_Variable &var, void *val_ptr
 
     settings.save();
     skipVP = var.VP; // don't overwrite value the next update time as the display might autoincrement in parallel
+  }
+//QQH1
+ void DGUSScreenHandler::StartPIDAutoTune(DGUS_VP_Variable &var, void *val_ptr){
+  char cmd[30];
+  int16_t tune_temp;
+  switch (hid) {
+    #if ENABLED(PIDTEMPBED)
+      case H_BED: tune_temp = autotune_temp_bed; break;
+    #endif
+    #if ENABLED(PIDTEMPCHAMBER)
+      case H_CHAMBER: tune_temp = autotune_temp_chamber; break;
+    #endif
+    default: tune_temp = autotune_temp[hid]; break;
+  }
+  sprintf_P(cmd, PSTR("M303 U1 E%i S%i"), hid, tune_temp);
+  queue.inject(cmd);
+  SERIAL_ECHO(buf);
+  GotoScreen(MKSLCD_SCREEN_PID_TUNING);
+ }
+ 
+//QQH
+  void DGUSScreenHandler::HandlePIDAutotuneSettings(DGUS_VP_Variable &var, void *val_ptr){
+    uint16_t value = swap16(*(uint16_t*)val_ptr);
+    switch (var.VP)
+    {
+    case VP_PIDAutoTuneCycle:
+      autotune_cycle=value;
+      break;
+    case VP_PIDAutoTuneIndex:
+      autotune_target_index=value;
+      break;
+    case VP_PIDAutoTuneTemp:
+      autotune_target_temp=value;
+      break;
+    }
+    settings.save();
   }
 #endif // HAS_PID_HEATING
 

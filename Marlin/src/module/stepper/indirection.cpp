@@ -42,7 +42,7 @@ void reset_stepper_drivers() {
   TERN_(HAS_TRINAMIC_CONFIG, reset_trinamic_drivers());
 }
 
-bool INVERT_E0_DIR;
+bool e_direction;
 
 #if ENABLED(SOFTWARE_DRIVER_ENABLE)
   // Flags to optimize XYZ Enabled state

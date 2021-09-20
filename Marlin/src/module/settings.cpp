@@ -198,7 +198,7 @@ typedef struct SettingsDataStruct {
   //
   uint8_t   esteppers;                                  // DISTINCT_AXES - LINEAR_AXES
 
-  bool INVERT_E0_DIR;                                     // DIRECTION E
+  bool e_direction;                                     // DIRECTION E
 
   planner_settings_t planner_settings;
 
