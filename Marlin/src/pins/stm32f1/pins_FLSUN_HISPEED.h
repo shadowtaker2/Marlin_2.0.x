@@ -246,24 +246,14 @@
     #undef MKS_PWC
     #define SUICIDE_PIN                     PB2   // Enable MKSPWC SUICIDE PIN
     #define SUICIDE_PIN_STATE               LOW   // Enable MKSPWC PIN STATE
+  #elif ENABLED(BACKUP_POWER_SUPPLY)
+    #define POWER_LOSS_PIN                  PA2   // PW_DET (UPS) MKSPWC
+    #define PS_ON_PIN                       PB2   // PW_OFF
   #else
     #define PS_ON_PIN                       PA3   // PW_CN /PW_OFF, you can change it to other pin
   #endif 
   #define KILL_PIN                          PA2   // PW_DET, you can change it to other pin
   #define KILL_PIN_STATE                    HIGH  // true : HIGH level trigger
-#endif
-#if ENABLED(MKS_PWC)
-  #if ENABLED(TFT_LVGL_UI)
-    #undef PSU_CONTROL
-    #define SUICIDE_PIN                     PB2   // Enable MKSPWC SUICIDE PIN
-    #define SUICIDE_PIN_INVERTING          false  // Enable MKSPWC PIN STATE
-    #define KILL_PIN                        PA2   // Enable MKSPWC DET PIN
-    #define KILL_PIN_STATE                  true  // Enable MKSPWC PIN STATE
-  #else
-    #define PS_ON_PIN                       PB2   //PW_OFF, you can change it to other pin
-    #define KILL_PIN                        PA2   //PW_DET, you can change it to other pin
-    #define KILL_PIN_STATE                  true  //true : HIGH level trigger
-  #endif
 #endif
 
 //
@@ -274,10 +264,7 @@
   #define MT_DET_PIN_STATE                  LOW
   #define FIL_RUNOUT_PIN           MT_DET_1_PIN   // MT_DET
 #else
-  #define FIL_RUNOUT_PIN                    PA4   // MT_DET
-#elif ENABLED(BACKUP_POWER_SUPPLY)
-  #define POWER_LOSS_PIN                    PA2   // PW_DET (UPS) MKSPWC
-  //#define PS_ON_PIN                       PB2   // PW_OFF
+  #define FIL_RUNOUT_PIN                    PA4   // MT_DET  
 #endif
 
 //
