@@ -821,6 +821,7 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
 #if USE_SENSORLESS
 
   sensorless_t stealth_states { false };
+
   /**
    * Disable stealthChop if used. Enable diag1 pin on driver.
    */
