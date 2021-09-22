@@ -105,7 +105,6 @@ static bool eeprom_data_written = false;
 size_t PersistentStore::capacity() { return MARLIN_EEPROM_SIZE; }
 
 bool PersistentStore::access_start() {
-  EEPROM.begin(); // Avoid STM32 EEPROM.h warning (do nothing)
 
   EEPROM.begin(); // Avoid STM32 EEPROM.h warning (do nothing)
 
