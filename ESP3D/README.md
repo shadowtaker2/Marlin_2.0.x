@@ -7,6 +7,6 @@
 [**My Posts on Group FB**](https://www.facebook.com/hashtag/deltafoxies/?__gid__=120961628750040)
 
 
-![QQS](./images/FLSunMarlin.png)
+![QQS](https://github.com/Foxies-CSTL/Marlin_2.0.x/wiki/images/FLSunMarlin.png)
 
 __Not for production use. Use with caution!__
