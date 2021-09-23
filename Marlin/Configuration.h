@@ -132,6 +132,7 @@
  * :[-2, -1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
  //#define SERIAL_PORT_2 -1
+//#define BAUDRATE_2 250000   // Enable to override BAUDRATE
 
 #ifdef WIFI_ESP
   #ifdef ESP3D_30
@@ -680,6 +681,7 @@
 #ifndef H43
   #define PIDTEMPBED
 #endif
+
 //#define BED_LIMIT_SWITCHING
 
 /**
@@ -826,12 +828,10 @@
   // Make delta curves from many straight lines (linear interpolation).
   // This is a trade-off between visible corners (not enough segments)
   // and processor overload (too many expensive sqrt calls).
-            
   #define DELTA_SEGMENTS_PER_SECOND 100  //200
 
   // After homing move down to a height where XY movement is unconstrained
   //#define DELTA_HOME_TO_SAFE_ZONE
-
 
   // Delta calibration menu
   // uncomment to add three points calibration menu option.
@@ -853,7 +853,8 @@
     #define PROBE_MANUALLY_STEP 0.05      // (mm)
   #endif
   #ifdef Q5
-    #define DELTA_PRINTABLE_RADIUS 105.0  //100
+    #define DELTA_PRINTABLE_RADIUS 105.0
+    #define DELTA_MAX_RADIUS       105.0
     #define DELTA_DIAGONAL_ROD 215.0
     #define DELTA_HEIGHT 210.0  //200.0
     #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 }      // Trim adjustments for individual towers
@@ -862,39 +863,33 @@
     #define DELTA_DIAGONAL_ROD_TRIM_TOWER { 0.0, 0.0, 0.0 } //ABC
     //#define DELTA_RADIUS_TRIM_TOWER { 0.0, 0.0, 0.0 } 
   #else
-    // Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).
+
+  // Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).
     #define DELTA_PRINTABLE_RADIUS 130.0    // (mm)
 
-    // Center-to-center distance of the holes in the diagonal push rods.
+  // Maximum reachable area
+    #define DELTA_MAX_RADIUS       130.0    // (mm)
+
+  // Center-to-center distance of the holes in the diagonal push rods.
     #define DELTA_DIAGONAL_ROD 280.0        // (mm)
 
-    // Horizontal distance bridged by diagonal push rods when effector is centered.
-    #define DELTA_RADIUS 140.8               // (mm) Get this value from G33 auto calibrate
-
-    // Distance between bed and nozzle Z home position
+  // Distance between bed and nozzle Z home position
     #define DELTA_HEIGHT 380.00              //370 E3D-360 (mm) Get this value from G33 auto calibrate
 
     #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 } // Get these values from G33 auto calibrate
 
-    // Trim adjustments for individual towers
-    // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
-    // measured in degrees anticlockwise looking from above the printer
+  // Horizontal distance bridged by diagonal push rods when effector is centered.
+    #define DELTA_RADIUS 140.8               // (mm) Get this value from G33 auto calibrate
+
+  // Trim adjustments for individual towers
+  // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
+  // measured in degrees anticlockwise looking from above the printer
     #define DELTA_TOWER_ANGLE_TRIM { 0.0, 0.0, 0.0 } // Get these values from G33 auto calibrate
 
-    // Delta radius and diagonal rod adjustments (mm)
-    //#define DELTA_RADIUS_TRIM_TOWER { 0.0, 0.0, 0.0 }
+  // Delta radius and diagonal rod adjustments (mm)
+  //#define DELTA_RADIUS_TRIM_TOWER { 0.0, 0.0, 0.0 }
     #define DELTA_DIAGONAL_ROD_TRIM_TOWER { 0.0, 0.0, 0.0 }
   #endif
-#endif
-
-// Enable for a belt style printer with endless "Z" motion
-//#define BELTPRINTER
-
-// Enable for Polargraph Kinematics
-//#define POLARGRAPH
-#if ENABLED(POLARGRAPH)
-  #define POLARGRAPH_MAX_BELT_LEN 1035.0
-  #define POLAR_SEGMENTS_PER_SECOND 5
 #endif
 
 //===========================================================================
@@ -1584,6 +1579,7 @@
 #ifdef STALLGUARD_2
   #define HOME_AFTER_DEACTIVATE   // Require rehoming after steppers are deactivated. Also enable NO_MOTION_BEFORE_HOMING for extra safety.
 #endif
+
 /**
  * Set Z_IDLE_HEIGHT if the Z-Axis moves on its own when steppers are disabled.
  *  - Use a low value (i.e., Z_MIN_POS) if the nozzle falls down to the bed.
@@ -1883,7 +1879,7 @@
   /// 10=53points, 13=90points, 15=110points
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
-  #define UBL_HILBERT_CURVE         // Use Hilbert distribution for less travel when probing multiple points
+  #define UBL_HILBERT_CURVE       // Use Hilbert distribution for less travel when probing multiple points
 
   #define UBL_MESH_EDIT_MOVES_Z     // Sophisticated users prefer no movement of nozzle
   #define UBL_SAVE_ACTIVE_ON_M500   // Save the currently active mesh in the current slot on M500
