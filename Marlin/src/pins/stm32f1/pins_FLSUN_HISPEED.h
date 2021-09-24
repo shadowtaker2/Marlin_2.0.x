@@ -149,12 +149,6 @@
     #define Y_SERIAL_RX_PIN      X_SERIAL_TX_PIN  // IO0
     #define Z_SERIAL_TX_PIN      X_SERIAL_TX_PIN  // IO0
     #define Z_SERIAL_RX_PIN      X_SERIAL_TX_PIN  // IO0
-    #ifdef WIFI_ESP
-      //Module ESP-WIFI
-      #define ESP_WIFI_MODULE_COM               2
-      #define ESP_WIFI_MODULE_BAUDRATE      BAUDRATE
-      //#define ESP_WIFI_MODULE_RESET_PIN         PA5
-    #endif 
   #else /*  TMC220x   */
     // SoftwareSerial with one pin per driver
     // Compatible with TMC2208 and TMC2209 drivers
@@ -194,15 +188,6 @@
    *       ￣￣ AE￣￣
    */
   // Module ESP-WIFI
-  //#define ESP_WIFI_MODULE_COM                  2  // Must also set either SERIAL_PORT or SERIAL_PORT_2 to this
-  //#define ESP_WIFI_MODULE_BAUDRATE      BAUDRATE  // Must use same BAUDRATE as SERIAL_PORT & SERIAL_PORT_2
-  //#define ESP_WIFI_MODULE_RESET_PIN         PA5   // WIFI CTRL/RST
-  //#define ESP_WIFI_MODULE_ENABLE_PIN        -1
-  //#define ESP_WIFI_MODULE_GPIO0_PIN           PA8   //IO0
-  //#define ESP_WIFI_MODULE_GPIO4_PIN           PC7   //IO1
-  //#define ESP_WIFI_MODULE_TXD_PIN           PA9   // MKS or ESP WIFI RX PIN
-  //#define ESP_WIFI_MODULE_RXD_PIN           PA10  // MKS or ESP WIFI TX PIN
-  //#else
   #define WIFI_IO0_PIN                      PA8   // MKS ESP WIFI IO0 PIN
   #define WIFI_IO1_PIN       			          PC7   // MKS ESP WIFI IO1 PIN
   #define WIFI_RESET_PIN				            PA5   // MKS ESP WIFI RESET PIN
@@ -255,24 +240,25 @@
 //
 // Power Supply Control
 //
-/*
-#if ENABLED(PSU_CONTROL)
-  #define KILL_PIN                          PA2   // PW_DET (UPS) MKSPWC
-  #define KILL_PIN_STATE                   HIGH
-  //#define PS_ON_PIN                       
-#endif
-*/
 #if ENABLED(MKS_PWC)
   #if ENABLED(TFT_LVGL_UI)
     #undef PSU_CONTROL
     #undef MKS_PWC
     #define SUICIDE_PIN                     PB2   // Enable MKSPWC SUICIDE PIN
     #define SUICIDE_PIN_STATE               LOW   // Enable MKSPWC PIN STATE
-  #else
+  #else    
+    #define PS_ON_PIN                       PB2   // PW_OFF
+  #endif
+  #define KILL_PIN                          PA2
+  #define KILL_PIN_STATE                    HIGH
+#endif
+
+#if ENABLED(BACKUP_POWER_SUPPLY)
+    #define POWER_LOSS_PIN                  PA2   // PW_DET (UPS) MKSPWC
     #define PS_ON_PIN                       PA3   // PW_CN /PW_OFF, you can change it to other pin
-  #endif 
-  #define KILL_PIN                          PA2   //PW_DET, you can change it to other pin
-  #define KILL_PIN_STATE                    HIGH  //true : HIGH level trigger
+#else
+    #define POWER_LOSS_PIN                  -1    // PW_DET
+    #define PS_ON_PIN                       PB2   // PW_OFF
 #endif
 
 //
@@ -283,9 +269,7 @@
   #define MT_DET_PIN_STATE                  LOW
   #define FIL_RUNOUT_PIN           MT_DET_1_PIN   // MT_DET
 #else
-  //#define POWER_LOSS_PIN                  PA2   // PW_DET
-  //#define PS_ON_PIN                       PB2   // PW_OFF
-  #define FIL_RUNOUT_PIN                    PA4   // MT_DET
+  #define FIL_RUNOUT_PIN                    PA4   // MT_DET  
 #endif
 
 //
