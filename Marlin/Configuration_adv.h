@@ -585,7 +585,11 @@
  * Multiple extruders can be assigned to the same pin in which case
  * the fan will turn on when any selected extruder is above the threshold.
  */
-#define E0_AUTO_FAN_PIN -1
+#if NONE(SR_MKS, SR_BTT) 
+  #define E0_AUTO_FAN_PIN -1
+#else
+  #define E0_AUTO_FAN_PIN FAN1_PIN  //PB0 for SR_MKS(default) or wiring to PB1.
+#endif
 #define E1_AUTO_FAN_PIN -1
 #define E2_AUTO_FAN_PIN -1
 #define E3_AUTO_FAN_PIN -1
@@ -1455,7 +1459,9 @@
 
   // Allow international symbols in long filenames. To display correctly, the
   // LCD's font must contain the characters. Check your selected LCD language.
-  //#define UTF_FILENAME_SUPPORT
+  #if ANY(SR_MKS, SR_BTT)
+    #define UTF_FILENAME_SUPPORT
+  #endif
 
   // This allows hosts to request long names for files and folders with M33
   #define LONG_FILENAME_HOST_SUPPORT
@@ -1517,7 +1523,7 @@
     /**
      * Native USB Host supported by some boards (USB OTG)
      */
-    //#define USE_OTG_USB_HOST
+    #define USE_OTG_USB_HOST
 
     #if DISABLED(USE_OTG_USB_HOST)
       #define USB_CS_PIN    SDSS
@@ -1959,10 +1965,10 @@
  * the probe to be unable to reach any points.
  */
 #if PROBE_SELECTED && !IS_KINEMATIC
-  //#define PROBING_MARGIN_LEFT PROBING_MARGIN
-  //#define PROBING_MARGIN_RIGHT PROBING_MARGIN
-  //#define PROBING_MARGIN_FRONT PROBING_MARGIN
-  //#define PROBING_MARGIN_BACK PROBING_MARGIN
+  #define PROBING_MARGIN_LEFT PROBING_MARGIN
+  #define PROBING_MARGIN_RIGHT PROBING_MARGIN
+  #define PROBING_MARGIN_FRONT PROBING_MARGIN
+  #define PROBING_MARGIN_BACK PROBING_MARGIN
 #endif
 
 #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL)
@@ -2267,7 +2273,7 @@
  *   'M106 P<fan> T2'     : Use the set secondary speed
  *   'M106 P<fan> T1'     : Restore the previous fan speed
  */
-//#define EXTRA_FAN_SPEED
+//#define EXTRA_FAN_SPEED   //if ENABLE FAN_1
 
 /**
  * Firmware-based and LCD-controlled retract
@@ -2402,9 +2408,13 @@
   #define PAUSE_PARK_RETRACT_FEEDRATE         60  // (mm/s) Initial retract feedrate.
   #define PAUSE_PARK_RETRACT_LENGTH            3  // (mm) Initial retract.
   #ifdef Q5
-    #define FILAMENT_CHANGE_UNLOAD_FEEDRATE     28  // (mm/s) Unload filament feedrate. This can be pretty fast.
-    #define FILAMENT_CHANGE_UNLOAD_ACCEL        25  // (mm/s^2) Lower acceleration may allow a faster feedrate.
-    #define FILAMENT_CHANGE_UNLOAD_LENGTH      550  //FE250 (mm) The length of filament for a complete unload.
+    #define FILAMENT_CHANGE_UNLOAD_FEEDRATE     28
+    #define FILAMENT_CHANGE_UNLOAD_ACCEL        25
+    #define FILAMENT_CHANGE_UNLOAD_LENGTH      550
+  #elif ANY(SR_MKS, SR_BTT)
+    #define FILAMENT_CHANGE_UNLOAD_FEEDRATE     20
+    #define FILAMENT_CHANGE_UNLOAD_ACCEL        25
+    #define FILAMENT_CHANGE_UNLOAD_LENGTH      400
   #else                                                // This short retract is done immediately, before parking the nozzle.
     #define FILAMENT_CHANGE_UNLOAD_FEEDRATE     20//10  // (mm/s) Unload filament feedrate. This can be pretty fast.
     #define FILAMENT_CHANGE_UNLOAD_ACCEL        30  // (mm/s^2) Lower acceleration may allow a faster feedrate.
@@ -2418,9 +2428,13 @@
   #define FILAMENT_CHANGE_SLOW_LOAD_LENGTH     0  // (mm) Slow length, to allow time to insert material.
                                                   // 0 to disable start loading and skip to fast load only
   #ifdef Q5
-    #define FILAMENT_CHANGE_FAST_LOAD_FEEDRATE  20  //40  // (mm/s) Load filament feedrate. This can be pretty fast.
-    #define FILAMENT_CHANGE_FAST_LOAD_ACCEL     25  // (mm/s^2) Lower acceleration may allow a faster feedrate.
-    #define FILAMENT_CHANGE_FAST_LOAD_LENGTH   600  // (mm) Load length of filament, from extruder gear to nozzle.
+    #define FILAMENT_CHANGE_FAST_LOAD_FEEDRATE  20
+    #define FILAMENT_CHANGE_FAST_LOAD_ACCEL     25
+    #define FILAMENT_CHANGE_FAST_LOAD_LENGTH   600
+  #elif ANY(SR_MKS, SR_BTT)
+    #define FILAMENT_CHANGE_FAST_LOAD_FEEDRATE  10
+    #define FILAMENT_CHANGE_FAST_LOAD_ACCEL     25
+    #define FILAMENT_CHANGE_FAST_LOAD_LENGTH   350   
   #else                                             // 0 to disable start loading and skip to fast load only
     #define FILAMENT_CHANGE_FAST_LOAD_FEEDRATE  20// 6  //40  // (mm/s) Load filament feedrate. This can be pretty fast.
     #define FILAMENT_CHANGE_FAST_LOAD_ACCEL     30  // (mm/s^2) Lower acceleration may allow a faster feedrate.
@@ -2824,7 +2838,7 @@
    * Set *_SERIAL_TX_PIN and *_SERIAL_RX_PIN to match for all drivers
    * on the same serial port, either here or in your board's pins file.
    */
-  #ifdef Q5
+  #if ANY(Q5, SR_MKS, SR_BTT)
     #define  X_SLAVE_ADDRESS 0
     #define  Y_SLAVE_ADDRESS 0
     #define  Z_SLAVE_ADDRESS 0
@@ -3827,23 +3841,43 @@
   //#define MAIN_MENU_ITEM_5_GCODE "G28\nM503"
   //#define MAIN_MENU_ITEM_5_CONFIRM
 #endif
+#if ANY(SR_MKS, SR_BTT)
+  #define CUSTOM_MENU_CONFIG
+  #if ENABLED(CUSTOM_MENU_CONFIG)
+    #define CONFIG_MENU_ITEM_1_CONFIRM
+    #define CONFIG_MENU_ITEM_1_DESC "Bed"
+    #define CONFIG_MENU_ITEM_1_GCODE "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED)
+
+    #define CONFIG_MENU_ITEM_2_CONFIRM
+    #define CONFIG_MENU_ITEM_2_DESC PREHEAT_1_LABEL
+    #define CONFIG_MENU_ITEM_2_GCODE "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
+
+    #define CONFIG_MENU_ITEM_3_CONFIRM
+    #define CONFIG_MENU_ITEM_3_DESC PREHEAT_2_LABEL
+    #define CONFIG_MENU_ITEM_3_GCODE "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
+
+    #define CONFIG_MENU_ITEM_4_CONFIRM
+    #define CONFIG_MENU_ITEM_4_DESC "Cool"
+    #define CONFIG_MENU_ITEM_4_GCODE "M108\nM106 255"
+  #endif
+#endif
 
 // Custom Menu: Configuration Menu
 //#define CUSTOM_MENU_CONFIG
-#if ENABLED(CUSTOM_MENU_CONFIG)
-  #define CUSTOM_MENU_CONFIG_TITLE "Radio Commands"
-  #define CUSTOM_MENU_CONFIG_SCRIPT_DONE "M117 Wireless Script Done"
-  #define CUSTOM_MENU_CONFIG_SCRIPT_AUDIBLE_FEEDBACK
+//#if ENABLED(CUSTOM_MENU_CONFIG)
+  //#define CUSTOM_MENU_CONFIG_TITLE "Radio Commands"
+  //#define CUSTOM_MENU_CONFIG_SCRIPT_DONE "M117 Wireless Script Done"
+  //#define CUSTOM_MENU_CONFIG_SCRIPT_AUDIBLE_FEEDBACK
   //#define CUSTOM_MENU_CONFIG_SCRIPT_RETURN  // Return to status screen after a script
-  #define CUSTOM_MENU_CONFIG_ONLY_IDLE        // Only show custom menu when the machine is idle
+  //#define CUSTOM_MENU_CONFIG_ONLY_IDLE        // Only show custom menu when the machine is idle
 
-  #define CONFIG_MENU_ITEM_1_DESC "Wifi ON"
-  #define CONFIG_MENU_ITEM_1_GCODE "M118 [ESP110] WIFI-STA pwd=12345678"
-  #define CONFIG_MENU_ITEM_1_CONFIRM        // Show a confirmation dialog before this action
+  //#define CONFIG_MENU_ITEM_1_DESC "Wifi ON"
+  //#define CONFIG_MENU_ITEM_1_GCODE "M118 [ESP110] WIFI-STA pwd=12345678"
+  //#define CONFIG_MENU_ITEM_1_CONFIRM        // Show a confirmation dialog before this action
   
-  #define CONFIG_MENU_ITEM_3_DESC "Radio OFF"
-  #define CONFIG_MENU_ITEM_3_GCODE "M118 [ESP110] OFF pwd=12345678"
-  #define CONFIG_MENU_ITEM_3_CONFIRM
+  //#define CONFIG_MENU_ITEM_3_DESC "Radio OFF"
+  //#define CONFIG_MENU_ITEM_3_GCODE "M118 [ESP110] OFF pwd=12345678"
+  //#define CONFIG_MENU_ITEM_3_CONFIRM
 
   //#define CONFIG_MENU_ITEM_2_DESC "Bluetooth ON"
   //#define CONFIG_MENU_ITEM_2_GCODE "M118 [ESP110] BT pwd=12345678"
@@ -3860,7 +3894,7 @@
   //#define CONFIG_MENU_ITEM_5_DESC "Wifi ????"
   //#define CONFIG_MENU_ITEM_5_GCODE "M118 ????"
   //#define CONFIG_MENU_ITEM_5_CONFIRM
-#endif
+//#endif
 
 /**
  * User-defined buttons to run custom G-code.

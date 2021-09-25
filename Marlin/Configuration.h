@@ -109,9 +109,11 @@
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#define SERIAL_PORT 3
-//#define SERIAL_PORT -1 // MKS_TS35_V2_0 
-
+#if ANY(SR_MKS, SR_BTT)
+  #define SERIAL_PORT -1
+#else
+  #define SERIAL_PORT 3
+#endif
 /**
  * Serial Port Baud Rate
  * This is the default communication speed for all serial ports.
@@ -124,7 +126,7 @@
  * :[2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000]
  */
 #define BAUDRATE 115200
-#define BAUD_RATE_GCODE     // Enable G-code M575 to set the baud rate
+//#define BAUD_RATE_GCODE     // Enable G-code M575 to set the baud rate
 
 /**
  * Select a secondary serial port on the board to use for communication with the host.
@@ -133,18 +135,24 @@
  */
  //#define SERIAL_PORT_2 -1
 //#define BAUDRATE_2 250000   // Enable to override BAUDRATE
-
-#ifdef WIFI_ESP
-  #ifdef ESP3D_30
-    #define SERIAL_PORT_2 1
-    #define NUM_SERIAL 2
-    #define BAUDRATE_2 115200
-  #else
-    #define SERIAL_PORT_2 1
-    #define NUM_SERIAL 2
+#if ANY(SR_MKS, SR_BTT)
+  #ifdef SR_BTT
+    #define SERIAL_PORT_2 0 //BTT
+  #endif
+  #ifdef SR_MKS
+    #define SERIAL_PORT_2 3 //MKS
   #endif
 #else
-  #define BAUDRATE_2 115200
+  #ifdef WIFI_ESP
+    #ifdef ESP3D_30
+      #define SERIAL_PORT_2 1
+      #define NUM_SERIAL 2
+      #define BAUDRATE_2 115200
+    #else
+      #define SERIAL_PORT_2 1
+      #define NUM_SERIAL 2
+    #endif
+  #endif
 #endif
                            
 
@@ -164,9 +172,18 @@
   #ifdef QQSP
     #define MOTHERBOARD BOARD_FLSUN_HISPEED
     //#define MOTHERBOARD BOARD_MKS_ROBIN_NANO_V3
+    #define BAUD_RATE_GCODE
   #endif  
   #ifdef Q5
     #define MOTHERBOARD BOARD_MKS_ROBIN_NANO
+    #define BAUD_RATE_GCODE
+  #endif
+  #ifdef SR_MKS
+    #define MOTHERBOARD BOARD_MKS_ROBIN_NANO_V3
+    #define BAUD_RATE_GCODE
+  #endif
+  #ifdef SR_BTT
+    #define MOTHERBOARD BOARD_BTT_SKR_V1_3
   #endif
 #endif
 
@@ -176,6 +193,9 @@
 #endif
 #ifdef Q5
   #define CUSTOM_MACHINE_NAME "δDelta Q5"
+#endif
+#if ANY(SR_MKS, SR_BTT)
+  #define CUSTOM_MACHINE_NAME "ΔDelta SuperRacer"
 #endif
 
 // Printer's unique ID, used by some programs to differentiate between machines.
@@ -384,9 +404,11 @@
 // Offset of the extruders (uncomment if using more than one and relying on firmware to position when changing).
 // The offset has to be X=0, Y=0 for the extruder 0 hotend (default extruder).
 // For the other hotends it is their distance from the extruder 0 hotend.
-//#define HOTEND_OFFSET_X { 0.0, 20.00 } // (mm) relative X-offset for each nozzle
-//#define HOTEND_OFFSET_Y { 0.0, 5.00 }  // (mm) relative Y-offset for each nozzle
-//#define HOTEND_OFFSET_Z { 0.0, 0.00 }  // (mm) relative Z-offset for each nozzle
+#if ANY(SR_MKS, SR_BTT)
+  //#define HOTEND_OFFSET_X { 0.0, 2.00 } // (mm) relative X-offset for each nozzle
+  #define HOTEND_OFFSET_Y { 0.0, 2.00 }  // (mm) relative Y-offset for each nozzle
+  //#define HOTEND_OFFSET_Z { 0.0, 0.00 }  // (mm) relative Z-offset for each nozzle
+#endif
 
 // @section machine
 
@@ -521,7 +543,11 @@
  *
  */
 #ifndef TEMP_SENSOR_0
-  #define TEMP_SENSOR_0 1
+  #if ANY(SR_MKS, SR_BTT)
+    #define TEMP_SENSOR_0 11
+  #else
+    #define TEMP_SENSOR_0 1
+  #endif
 #endif
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
@@ -530,7 +556,11 @@
 #define TEMP_SENSOR_5 0
 #define TEMP_SENSOR_6 0
 #define TEMP_SENSOR_7 0
-#define TEMP_SENSOR_BED 1
+  #if ANY(SR_MKS, SR_BTT)
+    #define TEMP_SENSOR_BED 11
+  #else
+    #define TEMP_SENSOR_BED 1
+  #endif
 #define TEMP_SENSOR_PROBE 0
 #define TEMP_SENSOR_CHAMBER 0
 #define TEMP_SENSOR_COOLER 0
@@ -643,6 +673,10 @@
       #define DEFAULT_Kp 12.88
       #define DEFAULT_Ki 0.72
       #define DEFAULT_Kd 57.54
+    #elif ANY(SR_MKS, SR_BTT)
+      #define DEFAULT_Kp   13.7
+      #define DEFAULT_Ki   0.48
+      #define DEFAULT_Kd   70.22
     #else
     // FLSUN QQ-S, 200 C with 100% part cooling
       #define DEFAULT_Kp  28.16
@@ -701,6 +735,10 @@
     #define DEFAULT_bedKp 20.20
     #define DEFAULT_bedKi 3.94
     #define DEFAULT_bedKd 69.11
+  #elif ANY(SR_MKS, SR_BTT)
+    #define DEFAULT_bedKp 111.12
+    #define DEFAULT_bedKi 22.05
+    #define DEFAULT_bedKd 373.36
   #else
     #define DEFAULT_bedKp 82.98
     #define DEFAULT_bedKi 15.93
@@ -828,7 +866,11 @@
   // Make delta curves from many straight lines (linear interpolation).
   // This is a trade-off between visible corners (not enough segments)
   // and processor overload (too many expensive sqrt calls).
-  #define DELTA_SEGMENTS_PER_SECOND 100  //200
+  #if ANY(SR_MKS, SR_BTT)
+    #define DELTA_SEGMENTS_PER_SECOND 160
+  #else
+    #define DELTA_SEGMENTS_PER_SECOND 100  //200
+  #endif
 
   // After homing move down to a height where XY movement is unconstrained
   //#define DELTA_HOME_TO_SAFE_ZONE
@@ -855,13 +897,24 @@
   #ifdef Q5
     #define DELTA_PRINTABLE_RADIUS 105.0
     #define DELTA_MAX_RADIUS       105.0
-    #define DELTA_DIAGONAL_ROD 215.0
-    #define DELTA_HEIGHT 210.0  //200.0
+    #define DELTA_DIAGONAL_ROD     215.0
+    #define DELTA_HEIGHT           210.0  //200.0
     #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 }      // Trim adjustments for individual towers
-    #define DELTA_RADIUS 107.5
+    #define DELTA_RADIUS           107.5
     #define DELTA_TOWER_ANGLE_TRIM { 0.0, 0.0 , 0.0 }
     #define DELTA_DIAGONAL_ROD_TRIM_TOWER { 0.0, 0.0, 0.0 } //ABC
-    //#define DELTA_RADIUS_TRIM_TOWER { 0.0, 0.0, 0.0 } 
+    //#define DELTA_RADIUS_TRIM_TOWER { 0.0, 0.0, 0.0 }
+  #elif ANY(SR_MKS, SR_BTT)
+    #define DELTA_PRINTABLE_RADIUS 132.0
+    #define DELTA_MAX_RADIUS       132.0
+    #define DELTA_DIAGONAL_ROD     315.0
+    #define DELTA_HEIGHT           320.0
+    #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 }      // Trim adjustments for individual towers
+    #define DELTA_RADIUS           151.67
+    #define DELTA_TOWER_ANGLE_TRIM { 0.0, 0.0 , 0.0 }
+    #define DELTA_DIAGONAL_ROD_TRIM_TOWER { 0.0, 0.0, 0.0 } //ABC
+    //#define DELTA_RADIUS_TRIM_TOWER { 0.0, 0.0, 0.0 }
+    #define PROBING_MARGIN 5
   #else
 
   // Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).
@@ -1072,10 +1125,10 @@
   #define E_MICROSTEPS 16
 #endif
 #define XYZ_BELT_PITCH 2
-#if ANY(XP, Q5)
-  #define XYZ_PULLEY_TEETH 20
+#if ANY(XP, Q5, SR_MKS, SR_BTT)
+  #define XYZ_PULLEY_TEETH 20 //=> 80
 #else
-  #define XYZ_PULLEY_TEETH 16
+  #define XYZ_PULLEY_TEETH 16 //=> 100
 #endif
 
 // delta speeds must be the same on xyz
@@ -1100,7 +1153,11 @@
  * Override with M201
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 3000, 3000 }
+#if ANY(SR_MKS, SR_BTT)
+  #define DEFAULT_MAX_ACCELERATION      { 6000, 6000, 6000, 3000 }
+#else
+  #define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 3000, 3000 }
+#endif
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -1115,9 +1172,15 @@
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION          1500    // X, Y, Z and E acceleration for printing moves
-#define DEFAULT_RETRACT_ACCELERATION  1500    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   1500    // X, Y, Z acceleration for travel (non printing) moves
+#if ANY(SR_MKS, SR_BTT)
+  #define DEFAULT_ACCELERATION          2800    // X, Y, Z and E acceleration for printing moves
+  #define DEFAULT_RETRACT_ACCELERATION  2800    // E acceleration for retracts
+  #define DEFAULT_TRAVEL_ACCELERATION   2800    // X, Y, Z acceleration for travel (non printing) moves
+#else
+  #define DEFAULT_ACCELERATION          1500    // X, Y, Z and E acceleration for printing moves
+  #define DEFAULT_RETRACT_ACCELERATION  1500    // E acceleration for retracts
+  #define DEFAULT_TRAVEL_ACCELERATION   1500    // X, Y, Z acceleration for travel (non printing) moves
+#endif
 
 /**
  * Default Jerk limits (mm/s)
@@ -1371,7 +1434,9 @@
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
-#define PROBING_MARGIN 15
+#ifndef PROBING_MARGIN
+  #define PROBING_MARGIN 15
+#endif
 
 // X and Y axis travel speed (mm/min) between probes 
 #define XY_PROBE_FEEDRATE (66*60)    //3960
@@ -1460,7 +1525,7 @@
 #define Z_MIN_PROBE_REPEATABILITY_TEST
 
 // Before deploy/stow pause for user confirmation
-#if NONE(X_PROBE, N_PROBE)
+#if NONE(X_PROBE, N_PROBE, SR_MKS, SR_BTT)
   #define PAUSE_BEFORE_DEPLOY_STOW
 #endif
 #if ENABLED(PAUSE_BEFORE_DEPLOY_STOW)
@@ -1828,7 +1893,7 @@
   #if ENABLED(G26_MESH_VALIDATION)
     #define MESH_TEST_NOZZLE_SIZE    0.4  // (mm) Diameter of primary nozzle.
     #define MESH_TEST_LAYER_HEIGHT   0.2  // (mm) Default layer height for G26.
-    #define MESH_TEST_HOTEND_TEMP  205    // (°C) Default nozzle temperature for G26.
+    #define MESH_TEST_HOTEND_TEMP  215    // (°C) Default nozzle temperature for G26.
     #define MESH_TEST_BED_TEMP      60    // (°C) Default bed temperature for G26.
     #define G26_XY_FEEDRATE         20    // (mm/s) Feedrate for G26 XY moves.
     #define G26_XY_FEEDRATE_TRAVEL 100    // (mm/s) Feedrate for G26 XY travel moves.
@@ -1954,8 +2019,11 @@
  * Commands to execute at the end of G29 probing.
  * Useful to retract or move the Z probe out of the way.
  */
-#define Z_PROBE_END_SCRIPT "G28"
+
+#if ANY(QQSP, Q5)
+  #define Z_PROBE_END_SCRIPT "G28"
 //#define Z_PROBE_END_SCRIPT "G0 Z30 F12000\n G0 X0 Y0 Z30"
+#endif
 #ifdef H43
   #define Z_PROBE_END_HEIGHT  100 // MKS H43 require this to work
 #endif
@@ -2038,7 +2106,7 @@
 
   // Or, set the default skew factors directly here
   // to override the above measurements:
-  #define XY_SKEW_FACTOR 0.0
+  //#define XY_SKEW_FACTOR 0.0    //PR8843
 
   //#define SKEW_CORRECTION_FOR_Z
   #if ENABLED(SKEW_CORRECTION_FOR_Z)
@@ -2052,7 +2120,7 @@
   #endif
 
   // Enable this option for M852 to set skew at runtime
-  //#define SKEW_CORRECTION_GCODE
+  #define SKEW_CORRECTION_GCODE
 #endif
 
 //=============================================================================
@@ -3230,7 +3298,7 @@
  * Set this manually if there are extra servos needing manual control.
  * Set to 0 to turn off servo support.
  */
-//#define NUM_SERVOS 3 // Note: Servo index starts with 0 for M280-M282 commands
+#define NUM_SERVOS 1 // Note: Servo index starts with 0 for M280-M282 commands
 
 // (ms) Delay before the next move will start, to give the servo time to reach its target angle.
 // 300ms is a good value but you can try less delay.

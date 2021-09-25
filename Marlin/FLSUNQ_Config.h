@@ -15,21 +15,27 @@
 * -Comment/Uncomment line to add or modify some options. 
 *  Default is actif for QQS and it's uncommented ;-)
 */
-//#include "Config_XP.h"  //For tests on my dev'printer!!
-//#define DBUG
+//For run tests on my dev'printer!!
+//#define XP_DEV
+//===================================================
+#ifndef XP_DEV                       // (Default)
 /*_______________________1___________________________*/
 //==================== Hardware =====================//
 /*-------------Motherboard/Printer-(1 CHOICE)-------*/
-#define QQSP                       //  (Default_QQS) env = flsun_hispeedv1
-//#define Q5                         // env = mks_nano_robin35 (change in platformio.ini file or 
+#define QQSP                         // (Default_QQS) env = flsun_hispeedv1
+//#define Q5                         // env = mks_robin_nano35 
+//#define SR_MKS                     // env = mks_robin_nano_v3_usb_flash_drive_msc
+//#define SR_BTT                     // env = lpc1768
+                                     // change in platformio.ini file or 
                                      // click on the "Default" icon on the bottom edge of the window and 
-                                     // choose "mks_robin_nano35").
+                                     // choose "env:xxxxxxx").
 
 /*________________________2___________________________*/
           /*-----Type Drivers-(1 CHOICE)-----*/
-/* MODE STOCK for QQS & Q5 */
+/* MODE STOCK for QQS & Q5 & SR*/
 #define STOCK                         // (S) (Default_QQS) For 4xA4988(green or red color).
                                       // (S) (Default_Q5) For 3xTMC2208+1xA4988.
+                                      // (S) (Default_SR) For 4xTMC2209.
 
 /* MODE STANDALONE XYZ+E for QQS & Q5 */
 //#define ALL_TMC8                     //(8) For 4xTMC2208_STANDALONE
@@ -59,19 +65,24 @@
         * = Driver TFT Color (1 CHOICE)=
         * ==============================
         */
-#define MKS_ROBIN_TFT32        // (Default) Mks_Robin_TFT_V2.0
-//#define MKS_TS35_V2_00       // Only for NanoV2 or V3
-//#define TFT_GENERIC          // For the user who haven't the same screen.
+#if ANY(Q5, QQSP)
+  #define MKS_ROBIN_TFT32        // (Default) Mks_Robin_TFT_V2.0
+  //#define MKS_TS35_V2_00       // Only for NanoV2 or V3
+  //#define TFT_GENERIC          // For the user who haven't the same screen.
 
-//#define DGUS_LCD_UI_MKS      // Mks_H43_v1.0 
-//Note for H43: The wiring is done on the UART2 (Wifi socket pins(PA10/PA9) for Tx/Rx).
+  //#define DGUS_LCD_UI_MKS      // Mks_H43_v1.0 
+  //Note for H43: The wiring is done on the UART2 (Wifi socket pins(PA10/PA9) for Tx/Rx).
 
                 /*--- Choice UI TFT ----*/
-#define TFT_COLOR_UI                     //(C) (Default) UI Color MARLIN
-//#define TFT_CLASSIC_UI                 //(F) Standard LCD (UI Classic LCD)
-//#define TFT_LVGL_UI                    //(I) Standard LCD (UI Color MKS)
+  #define TFT_COLOR_UI           //(C) (Default) UI Color MARLIN
+  //#define TFT_CLASSIC_UI       //(F) Standard LCD (UI Classic LCD)
+  //#define TFT_LVGL_UI          //(I) Standard LCD (UI Color MKS)
 
-#define TOUCH_SCREEN                     //(C/F) (Default) UI MARLIN
+  #define TOUCH_SCREEN           //(C/F) (Default) UI MARLIN
+#else
+  #define DWIN                   //(G) TFT DGUS screen
+  #define HOST_ACTION_COMMANDS 
+#endif
 
 /* ======================================//
 * === Note:Languages already integrated==// 
@@ -115,7 +126,13 @@
 //#define DELTA_HOME_TO_SAFE_ZONE      // Option to move down after homing to a height where XYZ movement is unconstrained.
 #define PREHEAT_BEFORE_PROBING         //(P) (Default) Run a PreHeat bed at 60°C
 //#define PREHEAT_BEFORE_LEVELING    
-#define AUTO_BED_LEVELING_UBL          //(U) (Default) Wizard UBL includes. 
+#if NONE(SR_MKS, SR_BTT)
+  #define AUTO_BED_LEVELING_UBL          //(U) (Default) Wizard UBL includes. 
+#else
+  #define AUTO_BED_LEVELING_BILINEAR     //(A) (Default SR).
+  #define G26_MESH_VALIDATION
+  #define SKEW_CORRECTION
+#endif
 
 // ---Expe tools Levelling-------
 //#define G26_MESH_VALIDATION          // Print Mesh Validation Pattern tool(By menu).
@@ -148,7 +165,7 @@
  * = like (Prontoface/Octoprint/HostRepertier/Astoprint)=
  * ====== Choice add menu on TFT: (OPT) =================
  */
-#define ADD_MENUS                      //  (Default) Add menu PID, DELTA, INFO,...
+#define ADD_MENUS                      //  (Default) Add menu PID, DELTA, INFO,...with UI_COLOR.
 
 // For user who change their nozzle thermistor 
 // by another one ex: "ATC Semitec 104GT-2" = 5 
@@ -167,6 +184,13 @@
 #define MEATPACK_ON_SERIAL_PORT_1       //(M) With connection USB
 //#define MEATPACK_ON_SERIAL_PORT_2       // With other connection like Tx/Rx Wifi socket.
 
+//-----------------------------//
+//For tests on my dev'printer!!//
+//-----------------------------//
+#else
+ #include "Config_XP.h"  
+#endif
+
 /** ========================================
 * == Options for Modules Hardware MKS_WIFI
 * ==========================================
@@ -174,7 +198,6 @@
 * the ESP3D firmware or the MKS(Stock) firmware.
 * https://github.com/Foxies-CSTL/Marlin_2.0.x/wiki/5.Firmware-Wifi
 */
-// 
 #ifdef MKS_WIFI
   #define WIFI_ESP
   #ifdef ESP3D_30
@@ -184,7 +207,7 @@
 #endif
 
 //= For users who dont have a terminal =//
-#ifdef ADD_MENUS
+#if BOTH(ADD_MENUS, TFT_CLASSIC_UI)||BOTH(ADD_MENUS, TFT_COLOR_UI)
   #define DELTA_CALIBRATION_MENU        //  (Default) Auto for CLASSIC and COLOR.
   #define PID_EDIT_MENU                 //  (Default) Tune PID Bed and Nozzle.
   #define PID_AUTOTUNE_MENU             //  (Default) Tune auto PID.
@@ -222,7 +245,7 @@
  */
 
 // Set for QQS(4xA4988) or Q5(3x2208+A4988) 
-#ifdef STOCK
+#if BOTH(STOCK, Q5)||BOTH(STOCK, QQSP)
   #ifdef Q5
     #define DRIVER_AXES TMC2208_STANDALONE
   #else
@@ -230,6 +253,13 @@
   #endif  
   #ifndef DRIVER_EXT
     #define DRIVER_EXT A4988
+  #endif
+#else
+  #define Q_TMC
+  #define STEALTHCHOP_E
+  #define DRIVER_AXES TMC2209
+  #ifndef DRIVER_EXT
+    #define DRIVER_EXT TMC2209
   #endif
 #endif
 
@@ -329,7 +359,7 @@
 #ifndef EXTRUDER_STEPS
   #ifdef NEMA14
     #define EXTRUDER_STEPS 722  // Extruder Mini-Sherpa
-  #elif ENABLED(BMG)
+  #elif ANY(BMG, SR_MKS, SR_BTT)
     #define EXTRUDER_STEPS 420  // Extruder BMG(Left/Right)
   #else
     #define EXTRUDER_STEPS 410  // Extruder TITAN(Default)

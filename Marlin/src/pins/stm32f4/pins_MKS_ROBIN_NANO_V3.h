@@ -186,6 +186,7 @@
 #endif
 
 #ifndef FIL_RUNOUT_PIN
+  #define MT_DET_1_PIN                      PA4   // MT_DET
   #define FIL_RUNOUT_PIN            MT_DET_1_PIN
 #endif
 #ifndef FIL_RUNOUT2_PIN
