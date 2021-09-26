@@ -678,7 +678,7 @@
 //
 // For Z set the number of stepper drivers
 //
-#define NUM_Z_STEPPER_DRIVERS 2   // (1-4) Z options change based on how many
+#define NUM_Z_STEPPER_DRIVERS 1   // (1-4) Z options change based on how many
 
 #if NUM_Z_STEPPER_DRIVERS > 1
   // Enable if Z motor direction signals are the opposite of Z1
@@ -2591,7 +2591,7 @@
 // Réglages des Vref TMC à 0.74v>0.8vMax sinon danger!!
 // TMC drivers use rms current not max(peak) so Irms is 740mA/1.414 = 523mA
   #if AXIS_IS_TMC(X)
-    #define X_CURRENT       523        // (mA) RMS current. Multiply by 1.414 for peak current.
+    #define X_CURRENT       720// 523        // (mA) RMS current. Multiply by 1.414 for peak current.
     #define X_CURRENT_HOME  X_CURRENT  // (mA) RMS current for sensorless homing
     #define X_MICROSTEPS     16        // 0..256
     #define X_RSENSE          0.11
