@@ -19,12 +19,12 @@
 //========= Hardware ==========//
 /*------Drivers-(1 CHOICE)-----*/
 //#define STOCK                      //(S) For 4xA4988 with Robin_mini Board(Comment POWER_LOSS_RECOVERY)
-//#define RAMPS                          //(S) For 4xA4988(green or red color)
+//#define RAMPS                      //(S) For 4xA4988(green or red color)
 #define SKR
 
 /* MODE TMC */
 //#define AMB8_TMC                   //(8) For 4xTMC220x_STANDALONE For 2208(white color) or 2209(black color)
-#define AMB8_UARTx                     //(U8/U9) 4xTMC220x Note: For 2209 change TMC2208 by TMC2209 at the bottom file and remove on your printer the module WIFI.
+#define AMB8_UARTx                   //(U8/U9) 4xTMC220x Note: For 2209 change TMC2208 by TMC2209 at the bottom file and remove on your printer the module WIFI.
 //#define AMB8_UART9                 //(UH) Mode special 2209 wiring with one I/O pin (Remove module ESP12)
 
 /*------- Choice Other driver for EXTRUDER-------//
@@ -39,10 +39,10 @@
 */
 //#define INV_EXT                    //(T) Uncommment to reverse direction.
 //#define BMG                        //(B) Uncomment to change Extruder step.
-//#define FLYING                     //(Y) Uncomment to change Extruder flying.
 
 /*-------Driver TFT Color--(1 CHOICE)-----*/
-//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+#define TFT_REPRAP
 //#define TFT_GENERIC
 
 /*--- Choice UI TFT ----*/
@@ -62,7 +62,7 @@
 #define ADVANCED_PAUSE_FEATURE     //NC LVGL
 #define LIN_ADVANCE                //(L) Possible Bug with BabyStep.For TMC_UART prefer mode spreadCycle         
 #define ARC_SUPPORT                //(R)
-#define CLASSIC_JERK
+//#define CLASSIC_JERK
 //#define NOZZLE_CLEAN_FEATURE
 #define ADAPTIVE_STEP_SMOOTHING
 #ifdef RAMPS
@@ -87,11 +87,11 @@
 
 //  Type Calibration (CAL)
 #define AUTO_BED_LEVELING_BILINEAR //(A)
-//#define AUTO_BED_LEVELING_UBL      //(U) 
+//#define AUTO_BED_LEVELING_UBL    //(U) 
 //#define LEVEL_BED_CORNERS
 
 // Option for Octoprint (OCTO)
-//#define HOST_ACTION_COMMANDS       // Action Command Prompt support Message on Octoprint
+#define HOST_ACTION_COMMANDS       // Action Command Prompt support Message on Octoprint
 //#define UTF_FILENAME_SUPPORT
 //#define CANCEL_OBJECTS
 
@@ -137,7 +137,7 @@
     #define QQS_UART
     #define DRIVER_AXES TMC2208
     #ifndef DRIVER_EXT
-      #define DRIVER_EXT TMC2208
+      #define DRIVER_EXT TMC2209
     #endif
 #endif
 
