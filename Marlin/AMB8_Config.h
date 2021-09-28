@@ -72,8 +72,8 @@
   #define TEMP_CHAMBER_PIN TEMP_1_PIN //
 #else
   #define TEMP_SENSOR_0 11
-  #define TEMP_SENSOR_BED 1
-  //#define TEMP_SENSOR_CHAMBER 11
+  #define TEMP_SENSOR_BED 5
+  #define TEMP_SENSOR_CHAMBER 11
   //#define TEMP_CHAMBER_PIN TEMP_1_PIN //
 #endif
 
