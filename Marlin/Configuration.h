@@ -533,7 +533,6 @@
 #define TEMP_SENSOR_PROBE 0
 #ifndef TEMP_SENSOR_CHAMBER
   #define TEMP_SENSOR_CHAMBER 0
-  //#define TEMP_CHAMBER_PIN TEMP_1_PIN //
 #endif
 #define TEMP_SENSOR_COOLER 0
 #define TEMP_SENSOR_REDUNDANT 0
@@ -888,7 +887,7 @@
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
 #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#define Y_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#define Y_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define Z_MIN_ENDSTOP_INVERTING false  //TouchMi & probe// Set to true to invert the logic of the endstop.
 #define I_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define J_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -1401,7 +1400,7 @@
 #define Z_PROBE_OFFSET_RANGE_MAX 20
 
 // Enable the M48 repeatability test to test probe accuracy
-//#define Z_MIN_PROBE_REPEATABILITY_TEST
+#define Z_MIN_PROBE_REPEATABILITY_TEST
 
 // Before deploy/stow pause for user confirmation
 //#define PAUSE_BEFORE_DEPLOY_STOW
@@ -1478,7 +1477,7 @@
 #if ANY(STOCK, SKR)
   #define INVERT_X_DIR true
   #define INVERT_Y_DIR false
-  #define INVERT_Z_DIR false
+  #define INVERT_Z_DIR true
   #ifdef INV_EXT
     #define INVERT_E0_DIR false
   #else
@@ -1878,7 +1877,7 @@
 // @section homing
 
 // The center of the bed is at (X=0, Y=0)
-#define BED_CENTER_AT_0_0
+//#define BED_CENTER_AT_0_0
 
 // Manually set the home position. Leave these undefined for automatic settings.
 // For DELTA this is the top-center of the Cartesian print volume.
@@ -1911,7 +1910,7 @@
 //#define HOMING_FEEDRATE_XY (100*60)    //20191020 EVO2.1 (100*60)		//201907 3000 au lieu de 100*60 (=6000)
 //#define HOMING_FEEDRATE_Z  (10*60)    //20191020 EVO2.1 (4*60)
 // Homing speeds (mm/min)
-#define HOMING_FEEDRATE_MM_M { (100*60), (100*60), (4*60) }
+#define HOMING_FEEDRATE_MM_M { (100*60), (100*60), (10*60) }
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS
@@ -2332,7 +2331,7 @@
 //  If CLOCKWISE normally moves LEFT this makes it go RIGHT.
 //  If CLOCKWISE normally moves RIGHT this makes it go LEFT.
 //
-//#define REVERSE_SELECT_DIRECTION
+#define REVERSE_SELECT_DIRECTION
 
 //
 // Individual Axis Homing
