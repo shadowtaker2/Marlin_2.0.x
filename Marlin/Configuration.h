@@ -131,8 +131,8 @@
 //#define BLUETOOTH
 
 // Choose the name from boards.h that matches your setup
-#ifndef MOTHERBOARD
-    #define MOTHERBOARD_BIGTREE_SKR_V1_4_TURBO
+#ifndef MOTHERBOARD 
+      #define BOARD_BTT_SKR_V1_4_TURBO
 #endif
 
 // Name displayed in the LCD "Ready" message and Info menu
