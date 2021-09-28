@@ -693,8 +693,8 @@
 // Custom board (with custom PIO env)
 //
 
-#elif MB(CUSTOM)
-  #include "pins_custom.h"                      //                                        env:custom
+//#elif MB(CUSTOM)
+  //#include "pins_custom.h"                      //                                        env:custom
 
 //
 // Linux Native Debug board
