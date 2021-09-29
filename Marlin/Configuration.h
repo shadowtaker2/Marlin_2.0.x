@@ -130,8 +130,7 @@
 //#define BLUETOOTH
 
 // Choose the name from boards.h that matches your setup
-  #ifdef SKR14T
-    #define BOARD_BTT_SKR_V1_4_TURBO
+ #define BOARD_BTT_SKR_V1_4_TURBO
   #endif
 
 // Name displayed in the LCD "Ready" message and Info menu
