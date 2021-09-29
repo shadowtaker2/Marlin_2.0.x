@@ -1,4 +1,3 @@
-/**
  * Marlin 3D Printer Firmware
  * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
@@ -21,8 +20,8 @@
  */
 #pragma once
 
-/**
+
  * BigTreeTech SKR 1.4 Turbo pin assignments
  */
 
-#define BOARD_INFO_NAME "BTT SKR V1.4 TURBO"
+#define BOARD_INFO_NAME_BTT_SKR_V1_4_TURBO
