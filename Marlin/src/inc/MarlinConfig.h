@@ -32,6 +32,7 @@
 #endif
 
 #include "../pins/pins.h"
+#define BOARD_BTT_SKR_V1_4_TURBO      2508  // BigTreeTech SKR v1.4 TURBO (Power outputs: Hotend0, Hotend1, Fan, Bed)
 
 #ifndef __MARLIN_DEPS__
   #include HAL_PATH(../HAL, timers.h)
