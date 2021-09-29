@@ -203,22 +203,22 @@
 //
 // Destroy unused CS pins
 //
-#if !AXIS_HAS_SPI(X)
+#if AXIS_HAS_SPI(X)
   #undef X_CS_PIN
 #endif
-#if !AXIS_HAS_SPI(Y)
+#if AXIS_HAS_SPI(Y)
   #undef Y_CS_PIN
 #endif
-#if !AXIS_HAS_SPI(Z)
+#if AXIS_HAS_SPI(Z)
   #undef Z_CS_PIN
 #endif
-#if !AXIS_HAS_SPI(I)
+#if AXIS_HAS_SPI(I)
   #undef I_CS_PIN
 #endif
-#if !AXIS_HAS_SPI(J)
+#if AXIS_HAS_SPI(J)
   #undef J_CS_PIN
 #endif
-#if !AXIS_HAS_SPI(K)
+#if AXIS_HAS_SPI(K)
   #undef K_CS_PIN
 #endif
 #if E_STEPPERS && !AXIS_HAS_SPI(E0)

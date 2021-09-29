@@ -21,12 +21,6 @@
  */
 #pragma once
 
-//
-// Prefix header for all Marlin sources
-//
-
-#include "MarlinConfigPre.h"
-
 #include "../HAL/HAL.h"
 
 #include "../pins/pins.h"

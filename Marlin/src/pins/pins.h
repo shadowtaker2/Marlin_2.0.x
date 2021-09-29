@@ -780,7 +780,7 @@
     #error "BOARD_RAMPS_DAGOMA is now BOARD_DAGOMA_F5. Please update your configuration."
   #elif MB(RAMPS_LONGER3D_LK4PRO)
     #error "BOARD_RAMPS_LONGER3D_LK4PRO is now BOARD_LONGER3D_LKx_PRO. Please update your configuration."
-  #elif MB(BTT_SKR_V2_0)
+  //#elif MB(BTT_SKR_V2_0)
     #error "BTT_SKR_V2_0 is now BTT_SKR_V2_0_REV_A or BTT_SKR_V2_0_REV_B. See https://bit.ly/3t5d9JQ for more information. Please update your configuration."
   #elif defined(MOTHERBOARD)
     #error "Unknown MOTHERBOARD value set in Configuration.h."
