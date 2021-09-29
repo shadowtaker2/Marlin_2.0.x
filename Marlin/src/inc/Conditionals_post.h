@@ -43,14 +43,14 @@
 #endif
 
 // Determine which type of 'EEPROM' is in use
-#if ENABLED(EEPROM_SETTINGS)
+#if  (EEPROM_SETTINGS)
   // EEPROM type may be defined by compile flags, configs, HALs, or pins
   // Set additional flags to let HALs choose in their Conditionals_post.h
   #if ANY(FLASH_EEPROM_EMULATION, SRAM_EEPROM_EMULATION, SDCARD_EEPROM_EMULATION, QSPI_EEPROM)
     #define USE_EMULATED_EEPROM 1
   #elif ANY(I2C_EEPROM, SPI_EEPROM)
     #define USE_WIRED_EEPROM    1
-  #elif ENABLED(IIC_BL24CXX_EEPROM)
+  #elif  (IIC_BL24CXX_EEPROM)
     // nothing
   #else
     #define USE_FALLBACK_EEPROM 1
@@ -182,7 +182,7 @@
 /**
  * Dual X Carriage
  */
-#if ENABLED(DUAL_X_CARRIAGE)
+#if  (DUAL_X_CARRIAGE)
   #ifndef X1_MIN_POS
     #define X1_MIN_POS X_MIN_POS
   #endif
@@ -227,7 +227,7 @@
   #define X_HOME_POS MANUAL_X_HOME_POS
 #else
   #define X_END_POS TERN(X_HOME_TO_MIN, X_MIN_POS, X_MAX_POS)
-  #if ENABLED(BED_CENTER_AT_0_0)
+  #if  (BED_CENTER_AT_0_0)
     #define X_HOME_POS TERN(DELTA, 0, X_END_POS)
   #else
     #define X_HOME_POS TERN(DELTA, X_MIN_POS + (X_BED_SIZE) * 0.5, X_END_POS)
@@ -239,7 +239,7 @@
     #define Y_HOME_POS MANUAL_Y_HOME_POS
   #else
     #define Y_END_POS TERN(Y_HOME_TO_MIN, Y_MIN_POS, Y_MAX_POS)
-    #if ENABLED(BED_CENTER_AT_0_0)
+    #if  (BED_CENTER_AT_0_0)
       #define Y_HOME_POS TERN(DELTA, 0, Y_END_POS)
     #else
       #define Y_HOME_POS TERN(DELTA, Y_MIN_POS + (Y_BED_SIZE) * 0.5, Y_END_POS)
@@ -278,21 +278,21 @@
 /**
  * If DELTA_HEIGHT isn't defined use the old setting
  */
-#if ENABLED(DELTA) && !defined(DELTA_HEIGHT)
+#if  (DELTA) && !defined(DELTA_HEIGHT)
   #define DELTA_HEIGHT Z_HOME_POS
 #endif
 
 /**
  * Z Sled Probe requires Z_SAFE_HOMING
  */
-#if ENABLED(Z_PROBE_SLED)
+#if  (Z_PROBE_SLED)
   #define Z_SAFE_HOMING
 #endif
 
 /**
  * DELTA should ignore Z_SAFE_HOMING and SLOWDOWN
  */
-#if ENABLED(DELTA)
+#if  (DELTA)
   #undef Z_SAFE_HOMING
   #undef SLOWDOWN
 #endif
@@ -304,8 +304,8 @@
 /**
  * Safe Homing Options
  */
-#if ENABLED(Z_SAFE_HOMING)
-  #if ENABLED(AUTO_BED_LEVELING_UBL)
+#if  (Z_SAFE_HOMING)
+  #if  (AUTO_BED_LEVELING_UBL)
     // Home close to center so grid points have z heights very close to 0
     #define _SAFE_POINT(A) (((GRID_MAX_POINTS_##A) / 2) * (A##_BED_SIZE - 2 * (MESH_INSET)) / (GRID_MAX_POINTS_##A - 1) + MESH_INSET)
   #else
@@ -334,7 +334,7 @@
 /**
  * Provide a MAX_AUTORETRACT for older configs
  */
-#if ENABLED(FWRETRACT) && !defined(MAX_AUTORETRACT)
+#if  (FWRETRACT) && !defined(MAX_AUTORETRACT)
   #define MAX_AUTORETRACT 99
 #endif
 
@@ -348,43 +348,43 @@
 /**
  * LCD Contrast for Graphical Displays
  */
-#if ENABLED(CARTESIO_UI)
+#if  (CARTESIO_UI)
   #define _LCD_CONTRAST_MIN   60
   #define _LCD_CONTRAST_INIT  90
   #define _LCD_CONTRAST_MAX  140
-#elif ENABLED(miniVIKI)
+#elif  (miniVIKI)
   #define _LCD_CONTRAST_MIN   75
   #define _LCD_CONTRAST_INIT  95
   #define _LCD_CONTRAST_MAX  115
-#elif ENABLED(VIKI2)
+#elif  (VIKI2)
   #define _LCD_CONTRAST_INIT 140
-#elif ENABLED(ELB_FULL_GRAPHIC_CONTROLLER)
+#elif  (ELB_FULL_GRAPHIC_CONTROLLER)
   #define _LCD_CONTRAST_MIN   90
   #define _LCD_CONTRAST_INIT 110
   #define _LCD_CONTRAST_MAX  130
-#elif ENABLED(AZSMZ_12864)
+#elif   (AZSMZ_12864)
   #define _LCD_CONTRAST_MIN  120
   #define _LCD_CONTRAST_INIT 190
-#elif EITHER(MKS_LCD12864A, MKS_LCD12864B)
+#elif EITHER (MKS_LCD12864A, MKS_LCD12864B)
   #define _LCD_CONTRAST_MIN  120
   #define _LCD_CONTRAST_INIT 205
-#elif EITHER(MKS_MINI_12864, ENDER2_STOCKDISPLAY)
+#elif EITHER (MKS_MINI_12864, ENDER2_STOCKDISPLAY)
   #define _LCD_CONTRAST_MIN  120
   #define _LCD_CONTRAST_INIT 195
-#elif ENABLED(MKS_MINI_12864_V3)
+#elif   (MKS_MINI_12864_V3)
   #define _LCD_CONTRAST_MIN  255
   #define _LCD_CONTRAST_INIT 255
   #define _LCD_CONTRAST_MAX  255
-#elif ENABLED(FYSETC_MINI_12864)
+#elif   (FYSETC_MINI_12864)
   #define _LCD_CONTRAST_INIT 220
-#elif ENABLED(ULTI_CONTROLLER)
+#elif   (ULTI_CONTROLLER)
   #define _LCD_CONTRAST_INIT 127
   #define _LCD_CONTRAST_MAX  254
-#elif ENABLED(MAKRPANEL)
+#elif   (MAKRPANEL)
   #define _LCD_CONTRAST_INIT  17
-#elif ENABLED(MINIPANEL)
+#elif   (MINIPANEL)
   #define _LCD_CONTRAST_INIT 150
-#elif ENABLED(ZONESTAR_12864OLED)
+#elif   (ZONESTAR_12864OLED)
   #define _LCD_CONTRAST_MIN   64
   #define _LCD_CONTRAST_INIT 128
   #define _LCD_CONTRAST_MAX  255
@@ -427,7 +427,7 @@
  * Override the SD_DETECT_STATE set in Configuration_adv.h
  * and enable sharing of onboard SD host drives (all platforms but AGCM4)
  */
-#if ENABLED(SDSUPPORT)
+#if  (SDSUPPORT)
 
   #if HAS_SD_HOST_DRIVE && SD_CONNECTION_IS(ONBOARD)
     //
@@ -449,12 +449,12 @@
   #endif
 
   // Extender cable doesn't support SD_DETECT_PIN
-  #if ENABLED(NO_SD_DETECT)
+  #if  (NO_SD_DETECT)
     #undef SD_DETECT_PIN
   #endif
 
   #if DISABLED(USB_FLASH_DRIVE_SUPPORT) || BOTH(MULTI_VOLUME, VOLUME_SD_ONBOARD)
-    #if ENABLED(SDIO_SUPPORT)
+    #if  (SDIO_SUPPORT)
       #define NEED_SD2CARD_SDIO 1
     #else
       #define NEED_SD2CARD_SPI 1
@@ -480,7 +480,7 @@
   #endif
 #endif
 
-#if ENABLED(PSU_CONTROL)
+#if  (PSU_CONTROL)
   #ifndef PSU_POWERUP_DELAY
     #define PSU_POWERUP_DELAY 250
   #endif
@@ -748,7 +748,7 @@
 /**
  * X_DUAL_ENDSTOPS endstop reassignment
  */
-#if ENABLED(X_DUAL_ENDSTOPS)
+#if  (X_DUAL_ENDSTOPS)
   #if X_HOME_TO_MAX
     #ifndef X2_MAX_ENDSTOP_INVERTING
       #if X2_USE_ENDSTOP == _XMIN_
@@ -871,7 +871,7 @@
 /**
  * Y_DUAL_ENDSTOPS endstop reassignment
  */
-#if ENABLED(Y_DUAL_ENDSTOPS)
+#if  (Y_DUAL_ENDSTOPS)
   #if Y_HOME_TO_MAX
     #ifndef Y2_MAX_ENDSTOP_INVERTING
       #if Y2_USE_ENDSTOP == _XMIN_
@@ -994,7 +994,7 @@
 /**
  * Z_MULTI_ENDSTOPS endstop reassignment
  */
-#if ENABLED(Z_MULTI_ENDSTOPS)
+#if  (Z_MULTI_ENDSTOPS)
 
   #if Z_HOME_TO_MAX
     #ifndef Z2_MAX_ENDSTOP_INVERTING
@@ -1359,41 +1359,41 @@
 /**
  * Set ENDSTOPPULLUPS for active endstop switches
  */
-#if ENABLED(ENDSTOPPULLUPS)
-  #if ENABLED(USE_XMAX_PLUG)
+#if  (ENDSTOPPULLUPS)
+  #if  (USE_XMAX_PLUG)
     #define ENDSTOPPULLUP_XMAX
   #endif
-  #if ENABLED(USE_YMAX_PLUG)
+  #if  (USE_YMAX_PLUG)
     #define ENDSTOPPULLUP_YMAX
   #endif
-  #if ENABLED(USE_ZMAX_PLUG)
+  #if  (USE_ZMAX_PLUG)
     #define ENDSTOPPULLUP_ZMAX
   #endif
-  #if ENABLED(USE_IMAX_PLUG)
+  #if  (USE_IMAX_PLUG)
     #define ENDSTOPPULLUP_IMAX
   #endif
-  #if ENABLED(USE_JMAX_PLUG)
+  #if  (USE_JMAX_PLUG)
     #define ENDSTOPPULLUP_JMAX
   #endif
-  #if ENABLED(USE_KMAX_PLUG)
+  #if  (USE_KMAX_PLUG)
     #define ENDSTOPPULLUP_KMAX
   #endif
-  #if ENABLED(USE_XMIN_PLUG)
+  #if  (USE_XMIN_PLUG)
     #define ENDSTOPPULLUP_XMIN
   #endif
-  #if ENABLED(USE_YMIN_PLUG)
+  #if  (USE_YMIN_PLUG)
     #define ENDSTOPPULLUP_YMIN
   #endif
-  #if ENABLED(USE_ZMIN_PLUG)
+  #if  (USE_ZMIN_PLUG)
     #define ENDSTOPPULLUP_ZMIN
   #endif
-  #if ENABLED(USE_IMIN_PLUG)
+  #if  (USE_IMIN_PLUG)
     #define ENDSTOPPULLUP_IMIN
   #endif
-  #if ENABLED(USE_JMIN_PLUG)
+  #if  (USE_JMIN_PLUG)
     #define ENDSTOPPULLUP_JMIN
   #endif
-  #if ENABLED(USE_KMIN_PLUG)
+  #if  (USE_KMIN_PLUG)
     #define ENDSTOPPULLUP_KMIN
   #endif
 #endif
@@ -1401,23 +1401,23 @@
 /**
  * Set ENDSTOPPULLDOWNS for active endstop switches
  */
-#if ENABLED(ENDSTOPPULLDOWNS)
-  #if ENABLED(USE_XMAX_PLUG)
+#if  (ENDSTOPPULLDOWNS)
+  #if  (USE_XMAX_PLUG)
     #define ENDSTOPPULLDOWN_XMAX
   #endif
-  #if ENABLED(USE_YMAX_PLUG)
+  #if  (USE_YMAX_PLUG)
     #define ENDSTOPPULLDOWN_YMAX
   #endif
-  #if ENABLED(USE_ZMAX_PLUG)
+  #if  (USE_ZMAX_PLUG)
     #define ENDSTOPPULLDOWN_ZMAX
   #endif
-  #if ENABLED(USE_XMIN_PLUG)
+  #if  (USE_XMIN_PLUG)
     #define ENDSTOPPULLDOWN_XMIN
   #endif
-  #if ENABLED(USE_YMIN_PLUG)
+  #if  (USE_YMIN_PLUG)
     #define ENDSTOPPULLDOWN_YMIN
   #endif
-  #if ENABLED(USE_ZMIN_PLUG)
+  #if  (USE_ZMIN_PLUG)
     #define ENDSTOPPULLDOWN_ZMIN
   #endif
 #endif
@@ -1427,7 +1427,7 @@
  */
 
 // Steppers
-#if PIN_EXISTS(X_ENABLE) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(X))
+#if PIN_EXISTS(X_ENABLE) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(X))
   #define HAS_X_ENABLE 1
 #endif
 #if PIN_EXISTS(X_DIR)
@@ -1440,7 +1440,7 @@
   #define HAS_X_MS_PINS 1
 #endif
 
-#if PIN_EXISTS(X2_ENABLE) || AXIS_IS_L64XX(X2) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(X2))
+#if PIN_EXISTS(X2_ENABLE) || AXIS_IS_L64XX(X2) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(X2))
   #define HAS_X2_ENABLE 1
 #endif
 #if PIN_EXISTS(X2_DIR)
@@ -1456,12 +1456,12 @@
 /**
  * Set defaults for missing (newer) options
  */
-#if !defined(DISABLE_INACTIVE_X) && ENABLED(DISABLE_X)
+#if !defined(DISABLE_INACTIVE_X) &&  (DISABLE_X)
   #define DISABLE_INACTIVE_X 1
 #endif
 
 #if HAS_Y_AXIS
-  #if PIN_EXISTS(Y_ENABLE) || AXIS_IS_L64XX(Y) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(Y))
+  #if PIN_EXISTS(Y_ENABLE) || AXIS_IS_L64XX(Y) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(Y))
     #define HAS_Y_ENABLE 1
   #endif
   #if PIN_EXISTS(Y_DIR)
@@ -1474,7 +1474,7 @@
     #define HAS_Y_MS_PINS 1
   #endif
 
-  #if PIN_EXISTS(Y2_ENABLE) || AXIS_IS_L64XX(Y2) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(Y2))
+  #if PIN_EXISTS(Y2_ENABLE) || AXIS_IS_L64XX(Y2) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(Y2))
     #define HAS_Y2_ENABLE 1
   #endif
   #if PIN_EXISTS(Y2_DIR)
@@ -1486,7 +1486,7 @@
   #if PIN_EXISTS(Y2_MS1)
     #define HAS_Y2_MS_PINS 1
   #endif
-  #if !defined(DISABLE_INACTIVE_Y) && ENABLED(DISABLE_Y)
+  #if !defined(DISABLE_INACTIVE_Y) &&  (DISABLE_Y)
     #define DISABLE_INACTIVE_Y 1
   #endif
 #else
@@ -1494,7 +1494,7 @@
 #endif
 
 #if HAS_Z_AXIS
-  #if PIN_EXISTS(Z_ENABLE) || AXIS_IS_L64XX(Z) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(Z))
+  #if PIN_EXISTS(Z_ENABLE) || AXIS_IS_L64XX(Z) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(Z))
     #define HAS_Z_ENABLE 1
   #endif
   #if PIN_EXISTS(Z_DIR)
@@ -1506,7 +1506,7 @@
   #if PIN_EXISTS(Z_MS1)
     #define HAS_Z_MS_PINS 1
   #endif
-  #if !defined(DISABLE_INACTIVE_Z) && ENABLED(DISABLE_Z)
+  #if !defined(DISABLE_INACTIVE_Z) &&  (DISABLE_Z)
     #define DISABLE_INACTIVE_Z 1
   #endif
 #else
@@ -1514,7 +1514,7 @@
 #endif
 
 #if NUM_Z_STEPPER_DRIVERS >= 2
-  #if PIN_EXISTS(Z2_ENABLE) || AXIS_IS_L64XX(Z2) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(Z2))
+  #if PIN_EXISTS(Z2_ENABLE) || AXIS_IS_L64XX(Z2) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(Z2))
     #define HAS_Z2_ENABLE 1
   #endif
   #if PIN_EXISTS(Z2_DIR)
@@ -1529,7 +1529,7 @@
 #endif
 
 #if NUM_Z_STEPPER_DRIVERS >= 3
-  #if PIN_EXISTS(Z3_ENABLE) || AXIS_IS_L64XX(Z3) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(Z3))
+  #if PIN_EXISTS(Z3_ENABLE) || AXIS_IS_L64XX(Z3) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(Z3))
     #define HAS_Z3_ENABLE 1
   #endif
   #if PIN_EXISTS(Z3_DIR)
@@ -1544,7 +1544,7 @@
 #endif
 
 #if NUM_Z_STEPPER_DRIVERS >= 4
-  #if PIN_EXISTS(Z4_ENABLE) || AXIS_IS_L64XX(Z4) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(Z4))
+  #if PIN_EXISTS(Z4_ENABLE) || AXIS_IS_L64XX(Z4) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(Z4))
     #define HAS_Z4_ENABLE 1
   #endif
   #if PIN_EXISTS(Z4_DIR)
@@ -1559,7 +1559,7 @@
 #endif
 
 #if LINEAR_AXES >= 4
-  #if PIN_EXISTS(I_ENABLE) || AXIS_IS_L64XX(I) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(I))
+  #if PIN_EXISTS(I_ENABLE) || AXIS_IS_L64XX(I) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(I))
     #define HAS_I_ENABLE 1
   #endif
   #if PIN_EXISTS(I_DIR)
@@ -1571,7 +1571,7 @@
   #if PIN_EXISTS(I_MS1)
     #define HAS_I_MS_PINS 1
   #endif
-  #if !defined(DISABLE_INACTIVE_I) && ENABLED(DISABLE_I)
+  #if !defined(DISABLE_INACTIVE_I) &&  (DISABLE_I)
     #define DISABLE_INACTIVE_I 1
   #endif
 #else
@@ -1579,7 +1579,7 @@
 #endif
 
 #if LINEAR_AXES >= 5
-  #if PIN_EXISTS(J_ENABLE) || AXIS_IS_L64XX(J) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(J))
+  #if PIN_EXISTS(J_ENABLE) || AXIS_IS_L64XX(J) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(J))
     #define HAS_J_ENABLE 1
   #endif
   #if PIN_EXISTS(J_DIR)
@@ -1591,7 +1591,7 @@
   #if PIN_EXISTS(J_MS1)
     #define HAS_J_MS_PINS 1
   #endif
-  #if !defined(DISABLE_INACTIVE_J) && ENABLED(DISABLE_J)
+  #if !defined(DISABLE_INACTIVE_J) &&  (DISABLE_J)
     #define DISABLE_INACTIVE_J 1
   #endif
 #else
@@ -1599,7 +1599,7 @@
 #endif
 
 #if LINEAR_AXES >= 6
-  #if PIN_EXISTS(K_ENABLE) || AXIS_IS_L64XX(K) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(K))
+  #if PIN_EXISTS(K_ENABLE) || AXIS_IS_L64XX(K) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(K))
     #define HAS_K_ENABLE 1
   #endif
   #if PIN_EXISTS(K_DIR)
@@ -1611,7 +1611,7 @@
   #if PIN_EXISTS(K_MS1)
     #define HAS_K_MS_PINS 1
   #endif
-  #if !defined(DISABLE_INACTIVE_K) && ENABLED(DISABLE_K)
+  #if !defined(DISABLE_INACTIVE_K) &&  (DISABLE_K)
     #define DISABLE_INACTIVE_K 1
   #endif
 #else
@@ -1621,7 +1621,7 @@
 // Extruder steppers and solenoids
 #if HAS_EXTRUDERS
 
-  #if PIN_EXISTS(E0_ENABLE) || AXIS_IS_L64XX(E0) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E0))
+  #if PIN_EXISTS(E0_ENABLE) || AXIS_IS_L64XX(E0) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E0))
     #define HAS_E0_ENABLE 1
   #endif
   #if PIN_EXISTS(E0_DIR)
@@ -1638,7 +1638,7 @@
   #endif
 
   #if E_STEPPERS > 1
-    #if PIN_EXISTS(E1_ENABLE) || AXIS_IS_L64XX(E1) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E1))
+    #if PIN_EXISTS(E1_ENABLE) || AXIS_IS_L64XX(E1) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E1))
       #define HAS_E1_ENABLE 1
     #endif
     #if PIN_EXISTS(E1_DIR)
@@ -1656,7 +1656,7 @@
   #endif
 
   #if E_STEPPERS > 2
-    #if PIN_EXISTS(E2_ENABLE) || AXIS_IS_L64XX(E2) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E2))
+    #if PIN_EXISTS(E2_ENABLE) || AXIS_IS_L64XX(E2) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E2))
       #define HAS_E2_ENABLE 1
     #endif
     #if PIN_EXISTS(E2_DIR)
@@ -1674,7 +1674,7 @@
   #endif
 
   #if E_STEPPERS > 3
-    #if PIN_EXISTS(E3_ENABLE) || AXIS_IS_L64XX(E3) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E3))
+    #if PIN_EXISTS(E3_ENABLE) || AXIS_IS_L64XX(E3) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E3))
       #define HAS_E3_ENABLE 1
     #endif
     #if PIN_EXISTS(E3_DIR)
@@ -1692,7 +1692,7 @@
   #endif
 
   #if E_STEPPERS > 4
-    #if PIN_EXISTS(E4_ENABLE) || AXIS_IS_L64XX(E4) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E4))
+    #if PIN_EXISTS(E4_ENABLE) || AXIS_IS_L64XX(E4) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E4))
       #define HAS_E4_ENABLE 1
     #endif
     #if PIN_EXISTS(E4_DIR)
@@ -1710,7 +1710,7 @@
   #endif
 
   #if E_STEPPERS > 5
-    #if PIN_EXISTS(E5_ENABLE) || AXIS_IS_L64XX(E5) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E5))
+    #if PIN_EXISTS(E5_ENABLE) || AXIS_IS_L64XX(E5) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E5))
       #define HAS_E5_ENABLE 1
     #endif
     #if PIN_EXISTS(E5_DIR)
@@ -1728,7 +1728,7 @@
   #endif
 
   #if E_STEPPERS > 6
-    #if PIN_EXISTS(E6_ENABLE) || AXIS_IS_L64XX(E6) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E6))
+    #if PIN_EXISTS(E6_ENABLE) || AXIS_IS_L64XX(E6) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E6))
       #define HAS_E6_ENABLE 1
     #endif
     #if PIN_EXISTS(E6_DIR)
@@ -1746,7 +1746,7 @@
   #endif
 
   #if E_STEPPERS > 7
-    #if PIN_EXISTS(E7_ENABLE) || AXIS_IS_L64XX(E7) || (ENABLED(SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E7))
+    #if PIN_EXISTS(E7_ENABLE) || AXIS_IS_L64XX(E7) || ( (SOFTWARE_DRIVER_ENABLE) && AXIS_IS_TMC(E7))
       #define HAS_E7_ENABLE 1
     #endif
     #if PIN_EXISTS(E7_DIR)
@@ -1763,7 +1763,7 @@
     #endif
   #endif
 
-  #if !defined(DISABLE_INACTIVE_E) && ENABLED(DISABLE_E)
+  #if !defined(DISABLE_INACTIVE_E) &&  (DISABLE_E)
     #define DISABLE_INACTIVE_E 1
   #endif
 #else
@@ -1880,7 +1880,7 @@
     #define E7_HAS_STEALTHCHOP 1
   #endif
 
-  #if ENABLED(SPI_ENDSTOPS)
+  #if  (SPI_ENDSTOPS)
     #define X_SPI_SENSORLESS X_SENSORLESS
     #if HAS_Y_AXIS
       #define Y_SPI_SENSORLESS Y_SENSORLESS
@@ -2131,11 +2131,11 @@
 
 // Is an endstop plug used for extra Z endstops or the probe?
 #define IS_PROBE_PIN(A,M) (USES_Z_MIN_PROBE_PIN && Z_MIN_PROBE_PIN == A##_##M##_PIN)
-#define IS_X2_ENDSTOP(A,M) (ENABLED(X_DUAL_ENDSTOPS) && X2_USE_ENDSTOP == _##A##M##_)
-#define IS_Y2_ENDSTOP(A,M) (ENABLED(Y_DUAL_ENDSTOPS) && Y2_USE_ENDSTOP == _##A##M##_)
-#define IS_Z2_ENDSTOP(A,M) (ENABLED(Z_MULTI_ENDSTOPS) && Z2_USE_ENDSTOP == _##A##M##_)
-#define IS_Z3_ENDSTOP(A,M) (ENABLED(Z_MULTI_ENDSTOPS) && NUM_Z_STEPPER_DRIVERS >= 3 && Z3_USE_ENDSTOP == _##A##M##_)
-#define IS_Z4_ENDSTOP(A,M) (ENABLED(Z_MULTI_ENDSTOPS) && NUM_Z_STEPPER_DRIVERS >= 4 && Z4_USE_ENDSTOP == _##A##M##_)
+#define IS_X2_ENDSTOP(A,M) ( (X_DUAL_ENDSTOPS) && X2_USE_ENDSTOP == _##A##M##_)
+#define IS_Y2_ENDSTOP(A,M) ( (Y_DUAL_ENDSTOPS) && Y2_USE_ENDSTOP == _##A##M##_)
+#define IS_Z2_ENDSTOP(A,M) ( (Z_MULTI_ENDSTOPS) && Z2_USE_ENDSTOP == _##A##M##_)
+#define IS_Z3_ENDSTOP(A,M) ( (Z_MULTI_ENDSTOPS) && NUM_Z_STEPPER_DRIVERS >= 3 && Z3_USE_ENDSTOP == _##A##M##_)
+#define IS_Z4_ENDSTOP(A,M) ( (Z_MULTI_ENDSTOPS) && NUM_Z_STEPPER_DRIVERS >= 4 && Z4_USE_ENDSTOP == _##A##M##_)
 
 #define _HAS_STOP(A,M) (PIN_EXISTS(A##_##M) && !IS_PROBE_PIN(A,M) && !IS_X2_ENDSTOP(A,M) && !IS_Y2_ENDSTOP(A,M) && !IS_Z2_ENDSTOP(A,M) && !IS_Z3_ENDSTOP(A,M) && !IS_Z4_ENDSTOP(A,M))
 #if _HAS_STOP(X,MIN)
@@ -2287,7 +2287,7 @@
   #define HAS_TEMP_REDUNDANT 1
 #endif
 
-#if ENABLED(JOYSTICK)
+#if  (JOYSTICK)
   #if PIN_EXISTS(JOY_X)
     #define HAS_JOY_ADC_X 1
   #endif
@@ -2378,7 +2378,7 @@
 #if BOTH(HAS_HEATED_BED, THERMAL_PROTECTION_BED)
   #define HAS_THERMALLY_PROTECTED_BED 1
 #endif
-#if ENABLED(THERMAL_PROTECTION_HOTENDS) && WATCH_TEMP_PERIOD > 0
+#if  (THERMAL_PROTECTION_HOTENDS) && WATCH_TEMP_PERIOD > 0
   #define WATCH_HOTENDS 1
 #endif
 #if HAS_THERMALLY_PROTECTED_BED && WATCH_BED_TEMP_PERIOD > 0
@@ -2390,10 +2390,10 @@
 #if BOTH(HAS_COOLER, THERMAL_PROTECTION_COOLER) && WATCH_COOLER_TEMP_PERIOD > 0
   #define WATCH_COOLER 1
 #endif
-#if  (ENABLED(THERMAL_PROTECTION_HOTENDS) || !EXTRUDERS) \
-  && (ENABLED(THERMAL_PROTECTION_BED)     || !HAS_HEATED_BED) \
-  && (ENABLED(THERMAL_PROTECTION_CHAMBER) || !HAS_HEATED_CHAMBER) \
-  && (ENABLED(THERMAL_PROTECTION_COOLER) || !HAS_COOLER)
+#if  ( (THERMAL_PROTECTION_HOTENDS) || !EXTRUDERS) \
+  && ( (THERMAL_PROTECTION_BED)     || !HAS_HEATED_BED) \
+  && ( (THERMAL_PROTECTION_CHAMBER) || !HAS_HEATED_CHAMBER) \
+  && ( (THERMAL_PROTECTION_COOLER) || !HAS_COOLER)
   #define THERMALLY_SAFE 1
 #endif
 
@@ -2565,7 +2565,7 @@
 /**
  * FAST PWM FAN Settings
  */
-#if ENABLED(FAST_PWM_FAN) && !defined(FAST_PWM_FAN_FREQUENCY)
+#if  (FAST_PWM_FAN) && !defined(FAST_PWM_FAN_FREQUENCY)
   #define FAST_PWM_FAN_FREQUENCY ((F_CPU) / (2 * 255 * 1)) // Fan frequency default
 #endif
 
@@ -2580,7 +2580,7 @@
 #endif
 
 #if HAS_CONTROLLER_FAN
-  #if ENABLED(CONTROLLER_FAN_USE_BOARD_TEMP)
+  #if  (CONTROLLER_FAN_USE_BOARD_TEMP)
     #define HAS_CONTROLLER_FAN_BOARD_TEMP_TRIGGER 1
     #ifndef CONTROLLER_FAN_TRIGGER_TEMP
       #define CONTROLLER_FAN_TRIGGER_TEMP 30
@@ -2621,7 +2621,7 @@
 #endif
 
 // User Interface
-#if ENABLED(FREEZE_FEATURE)
+#if  (FREEZE_FEATURE)
   #if !PIN_EXISTS(FREEZE) && PIN_EXISTS(KILL)
     #define FREEZE_PIN KILL_PIN
   #endif
@@ -2674,7 +2674,7 @@
   #ifndef MICROSTEP1
     #define MICROSTEP1 LOW,LOW,LOW
   #endif
-  #if ENABLED(HEROIC_STEPPER_DRIVERS)
+  #if  (HEROIC_STEPPER_DRIVERS)
     #ifndef MICROSTEP128
       #define MICROSTEP128 LOW,HIGH,LOW
     #endif
@@ -2790,7 +2790,7 @@
     #endif // HOTENDS > 3
   #endif // HOTENDS > 2
 #endif // HAS_MULTI_HOTEND || HEATERS_PARALLEL
-#if ENABLED(HEATERS_PARALLEL)
+#if  (HEATERS_PARALLEL)
   #define WRITE_HEATER_0(v) { WRITE_HEATER_0P(v); WRITE_HEATER_1(v); }
 #else
   #define WRITE_HEATER_0(v) WRITE_HEATER_0P(v)
@@ -2872,7 +2872,7 @@
 /**
  * MIN/MAX case light PWM scaling
  */
-#if ENABLED(CASE_LIGHT_ENABLE)
+#if  (CASE_LIGHT_ENABLE)
   #ifndef CASE_LIGHT_MAX_PWM
     #define CASE_LIGHT_MAX_PWM 255
   #elif !WITHIN(CASE_LIGHT_MAX_PWM, 1, 255)
@@ -2909,7 +2909,7 @@
 /**
  * XYZ Bed Skew Correction
  */
-#if ENABLED(SKEW_CORRECTION)
+#if  (SKEW_CORRECTION)
   #define SKEW_FACTOR_MIN -1
   #define SKEW_FACTOR_MAX 1
 
@@ -2955,7 +2955,7 @@
 #endif
 #if !BOTH(HAS_BED_PROBE, HAS_EXTRUDERS)
   #undef PROBING_ESTEPPERS_OFF
-#elif ENABLED(PROBING_STEPPERS_OFF)
+#elif  (PROBING_STEPPERS_OFF)
   // PROBING_STEPPERS_OFF implies PROBING_ESTEPPERS_OFF, make sure it is defined
   #define PROBING_ESTEPPERS_OFF
 #endif
@@ -2969,7 +2969,7 @@
 /**
  * Advanced Pause - Filament Change
  */
-#if ENABLED(ADVANCED_PAUSE_FEATURE)
+#if  (ADVANCED_PAUSE_FEATURE)
   #if ANY(HAS_LCD_MENU, EXTENSIBLE_UI, DWIN_CREALITY_LCD_ENHANCED, DWIN_CREALITY_LCD_JYERSUI) || BOTH(EMERGENCY_PARSER, HOST_PROMPT_SUPPORT)
     #define M600_PURGE_MORE_RESUMABLE 1
   #endif
@@ -3024,7 +3024,7 @@
   #endif
 #endif
 
-#if ENABLED(DELTA)
+#if  (DELTA)
   /**
    * Delta radius/rod trimmers/angle trimmers
    */
@@ -3046,7 +3046,7 @@
   #define DEFAULT_LEVELING_FADE_HEIGHT 0.0
 #endif
 
-#if ENABLED(SEGMENT_LEVELED_MOVES) && !defined(LEVELED_SEGMENT_LENGTH)
+#if  (SEGMENT_LEVELED_MOVES) && !defined(LEVELED_SEGMENT_LENGTH)
   #define LEVELED_SEGMENT_LENGTH 5
 #endif
 
@@ -3108,7 +3108,7 @@
   #define HAS_BUZZER 1
 #endif
 
-#if ENABLED(LCD_USE_I2C_BUZZER)
+#if  (LCD_USE_I2C_BUZZER)
   #ifndef LCD_FEEDBACK_FREQUENCY_HZ
     #define LCD_FEEDBACK_FREQUENCY_HZ 1000
   #endif
@@ -3167,7 +3167,7 @@
   #ifndef Z_CLEARANCE_MULTI_PROBE
     #define Z_CLEARANCE_MULTI_PROBE Z_CLEARANCE_BETWEEN_PROBES
   #endif
-  #if ENABLED(BLTOUCH) && !defined(BLTOUCH_DELAY)
+  #if  (BLTOUCH) && !defined(BLTOUCH_DELAY)
     #define BLTOUCH_DELAY 500
   #endif
 #endif
@@ -3177,7 +3177,7 @@
   #if EITHER(MESH_BED_LEVELING, PROBE_MANUALLY)
     // Leave MANUAL_PROBE_START_Z undefined so the prior Z height will be used.
     // Note: If Z_CLEARANCE_BETWEEN_MANUAL_PROBES is 0 there will be no raise between points
-  #elif ENABLED(AUTO_BED_LEVELING_UBL) && defined(Z_CLEARANCE_BETWEEN_PROBES)
+  #elif  (AUTO_BED_LEVELING_UBL) && defined(Z_CLEARANCE_BETWEEN_PROBES)
     #define MANUAL_PROBE_START_Z Z_CLEARANCE_BETWEEN_PROBES
   #endif
 #endif
@@ -3216,7 +3216,7 @@
 #endif
 
 // Parking Extruder
-#if ENABLED(PARKING_EXTRUDER)
+#if  (PARKING_EXTRUDER)
   #ifndef PARKING_EXTRUDER_GRAB_DISTANCE
     #define PARKING_EXTRUDER_GRAB_DISTANCE 0
   #endif
@@ -3267,7 +3267,7 @@
 #endif
 
 // Fallback SPI Speed for SD
-#if ENABLED(SDSUPPORT) && !defined(SD_SPI_SPEED)
+#if  (SDSUPPORT) && !defined(SD_SPI_SPEED)
   #define SD_SPI_SPEED SPI_FULL_SPEED
 #endif
 
