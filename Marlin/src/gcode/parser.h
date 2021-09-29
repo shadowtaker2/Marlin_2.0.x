@@ -133,9 +133,9 @@ public:
       param[ind] = ptr ? ptr - command_ptr : 0;  // parameter offset or 0
       #if ENABLED(DEBUG_GCODE_PARSER)
         if (codenum == 800) {
-          SERIAL_ECHOPGM("Set bit ", ind, " of codebits (", hex_address((void*)(codebits >> 16)));
+          SERIAL_ECHOPAIR("Set bit ", ind, " of codebits (", hex_address((void*)(codebits >> 16)));
           print_hex_word((uint16_t)(codebits & 0xFFFF));
-          SERIAL_ECHOLNPGM(") | param = ", param[ind]);
+          SERIAL_ECHOLNPAIR(") | param = ", param[ind]);
         }
       #endif
     }
@@ -225,7 +225,9 @@ public:
   #endif // !FASTER_GCODE_PARSER
 
   // Seen any axis parameter
-  static inline bool seen_axis() { return seen(LOGICAL_AXES_STRING); }
+  static inline bool seen_axis() {
+    return seen(LOGICAL_AXIS_GANG("E", "X", "Y", "Z", AXIS4_STR, AXIS5_STR, AXIS6_STR));
+  }
 
   #if ENABLED(GCODE_QUOTED_STRINGS)
     static char* unescape_string(char* &src);
@@ -309,13 +311,7 @@ public:
     }
 
     static inline float axis_unit_factor(const AxisEnum axis) {
-      return (
-        #if HAS_EXTRUDERS
-          axis >= E_AXIS && volumetric_enabled ? volumetric_unit_factor : linear_unit_factor
-        #else
-          linear_unit_factor
-        #endif
-      );
+      return (axis >= E_AXIS && volumetric_enabled ? volumetric_unit_factor : linear_unit_factor);
     }
 
     static inline float linear_value_to_mm(const_float_t v)                  { return v * linear_unit_factor; }
@@ -348,15 +344,14 @@ public:
 
     static inline void set_input_temp_units(const TempUnit units) { input_temp_units = units; }
 
-    static inline char temp_units_code() {
-      return input_temp_units == TEMPUNIT_K ? 'K' : input_temp_units == TEMPUNIT_F ? 'F' : 'C';
-    }
-    static inline PGM_P temp_units_name() {
-      return input_temp_units == TEMPUNIT_K ? PSTR("Kelvin") : input_temp_units == TEMPUNIT_F ? PSTR("Fahrenheit") : PSTR("Celsius");
-    }
-
     #if HAS_LCD_MENU && DISABLED(DISABLE_M503)
 
+      static inline char temp_units_code() {
+        return input_temp_units == TEMPUNIT_K ? 'K' : input_temp_units == TEMPUNIT_F ? 'F' : 'C';
+      }
+      static inline PGM_P temp_units_name() {
+        return input_temp_units == TEMPUNIT_K ? PSTR("Kelvin") : input_temp_units == TEMPUNIT_F ? PSTR("Fahrenheit") : PSTR("Celsius");
+      }
       static inline float to_temp_units(celsius_t c) {
         switch (input_temp_units) {
           default:
@@ -415,8 +410,7 @@ public:
   static inline float     linearval(const char c, const float dval=0)    { return seenval(c) ? value_linear_units() : dval; }
   static inline float     axisunitsval(const char c, const AxisEnum a, const float dval=0)
                                                                          { return seenval(c) ? value_axis_units(a)  : dval; }
-  static inline celsius_t celsiusval(const char c, const celsius_t dval=0)    { return seenval(c) ? value_celsius() : dval; }
-  static inline feedRate_t feedrateval(const char c, const feedRate_t dval=0) { return seenval(c) ? value_feedrate() : dval; }
+  static inline celsius_t celsiusval(const char c, const float dval=0)   { return seenval(c) ? value_celsius()      : dval; }
 
   #if ENABLED(MARLIN_DEV_MODE)
 

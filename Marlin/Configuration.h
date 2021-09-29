@@ -141,6 +141,32 @@
   #define MOTHERBOARD BOARD_BTT_SKR_V1_4_TURBO
 #endif
 
+
+
+
+#define env = LPC1769
+#define BOARD_BTT_SKR_V1_4_TURBO                           
+#define ALL_TMC9                  
+#define QQS_UART                     
+TMC2209
+#define TFT_COLOR_UI               
+#define TOUCH_SCREEN      
+#define BMG                             
+#define AUTO_BED_LEVELING_UBL          
+#define LIN_ADVANCE
+#define ARC_SUPPORT
+#define POWER_LOSS_RECOVERY 
+#define CUSTOM_MENU_MAIN            
+#define PROBE_OFFSET_WIZARD        
+#define ADD_MENUS                     
+#ifdef ADD_MENUS
+#define PID_EDIT_MENU                 
+#define PID_AUTOTUNE_MENU            
+#define LCD_INFO_MENU                 
+#endif
+#elif ENABLED(BMG)
+#define EXTRUDER_STEPS 441  // Extruder BMG(Left/Right)
+
 // Name displayed in the LCD "Ready" message and Info menu
 #define CUSTOM_MACHINE_NAME "gippa"
 

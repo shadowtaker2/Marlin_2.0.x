@@ -35,15 +35,12 @@ void ConfirmUserRequestAlertBox::onRedraw(draw_mode_t mode) {
 bool ConfirmUserRequestAlertBox::onTouchEnd(uint8_t tag) {
   switch (tag) {
     case 1:
-      #ifdef FTDI_TUNE_MENU
-        if (ExtUI::isPrintingPaused()) {
-          // The TuneMenu will call ExtUI::setUserConfirmed()
-          GOTO_SCREEN(TuneMenu);
-          current_screen.forget();
-        }
-        else
-      #endif
-      {
+      if (ExtUI::isPrintingPaused()) {
+        // The TuneMenu will call ExtUI::setUserConfirmed()
+        GOTO_SCREEN(TuneMenu);
+        current_screen.forget();
+      }
+      else {
         ExtUI::setUserConfirmed();
         GOTO_PREVIOUS();
       }
@@ -53,12 +50,17 @@ bool ConfirmUserRequestAlertBox::onTouchEnd(uint8_t tag) {
   }
 }
 
+void ConfirmUserRequestAlertBox::onIdle() {
+  if (!ExtUI::awaitingUserConfirm()) {
+    hide();
+  }
+}
+
 void ConfirmUserRequestAlertBox::show(const char *msg) {
   drawMessage(msg);
   storeBackground();
   screen_data.AlertDialogBox.isError = false;
-  if (!AT_SCREEN(ConfirmUserRequestAlertBox))
-    GOTO_SCREEN(ConfirmUserRequestAlertBox);
+  GOTO_SCREEN(ConfirmUserRequestAlertBox);
 }
 
 void ConfirmUserRequestAlertBox::hide() {

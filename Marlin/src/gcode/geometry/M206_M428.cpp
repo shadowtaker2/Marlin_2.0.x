@@ -30,6 +30,19 @@
 #include "../../libs/buzzer.h"
 #include "../../MarlinCore.h"
 
+void M206_report() {
+  SERIAL_ECHOLNPAIR_P(
+    LIST_N(DOUBLE(LINEAR_AXES),
+      PSTR("M206 X"), home_offset.x,
+      SP_Y_STR, home_offset.y,
+      SP_Z_STR, home_offset.z,
+      SP_I_STR, home_offset.i,
+      SP_J_STR, home_offset.j,
+      SP_K_STR, home_offset.k,
+    )
+  );
+}
+
 /**
  * M206: Set Additional Homing Offset (X Y Z). SCARA aliases T=X, P=Y
  *
@@ -38,8 +51,6 @@
  * ***              In the 2.0 release, it will simply be disabled by default.
  */
 void GcodeSuite::M206() {
-  if (!parser.seen_any()) return M206_report();
-
   LOOP_LINEAR_AXES(i)
     if (parser.seen(AXIS_CHAR(i)))
       set_home_offset((AxisEnum)i, parser.value_linear_units());
@@ -49,25 +60,10 @@ void GcodeSuite::M206() {
     if (parser.seen('P')) set_home_offset(B_AXIS, parser.value_float()); // Psi
   #endif
 
-  report_current_position();
-}
-
-void GcodeSuite::M206_report(const bool forReplay/*=true*/) {
-  report_heading_etc(forReplay, PSTR(STR_HOME_OFFSET));
-  SERIAL_ECHOLNPGM_P(
-    #if IS_CARTESIAN
-      LIST_N(DOUBLE(LINEAR_AXES),
-        PSTR("  M206 X"), LINEAR_UNIT(home_offset.x),
-        SP_Y_STR, LINEAR_UNIT(home_offset.y),
-        SP_Z_STR, LINEAR_UNIT(home_offset.z),
-        SP_I_STR, LINEAR_UNIT(home_offset.i),
-        SP_J_STR, LINEAR_UNIT(home_offset.j),
-        SP_K_STR, LINEAR_UNIT(home_offset.k)
-      )
-    #else
-      PSTR("  M206 Z"), LINEAR_UNIT(home_offset.z)
-    #endif
-  );
+  if (!parser.seen(LINEAR_AXIS_GANG("X", "Y", "Z", "I", "J", "K")))
+    M206_report();
+  else
+    report_current_position();
 }
 
 /**

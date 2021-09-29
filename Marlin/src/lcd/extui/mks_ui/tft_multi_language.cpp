@@ -19,7 +19,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
 #include "../../../inc/MarlinConfigPre.h"
 
 #if HAS_TFT_LVGL_UI
@@ -58,8 +57,6 @@ MachinePara_menu_def         MachinePara_menu;
 pause_msg_def                pause_msg_menu;
 eeprom_def                   eeprom_menu;
 media_select_menu_def        media_select_menu;
-
-// TODO: Make all strings PSTR and update accessors for the benefit of AVR
 
 machine_common_def machine_menu;
 void machine_setting_disp() {
@@ -1096,8 +1093,8 @@ void disp_language_init() {
       eeprom_menu.read             = EEPROM_SETTINGS_READ_CN;
       eeprom_menu.revert           = EEPROM_SETTINGS_REVERT_CN;
       eeprom_menu.storeTips        = EEPROM_STORE_TIPS_CN;
-      eeprom_menu.readTips         = EEPROM_READ_TIPS_CN;
-      eeprom_menu.revertTips       = EEPROM_REVERT_TIPS_CN;
+      eeprom_menu.readTips         =  EEPROM_READ_TIPS_CN;
+      eeprom_menu.revertTips       =  EEPROM_REVERT_TIPS_CN;
       break;
 
       #if 1
@@ -1340,8 +1337,8 @@ void disp_language_init() {
             eeprom_menu.read             = EEPROM_SETTINGS_READ_T_CN;
             eeprom_menu.revert           = EEPROM_SETTINGS_REVERT_T_CN;
             eeprom_menu.storeTips        = EEPROM_STORE_TIPS_T_CN;
-            eeprom_menu.readTips         = EEPROM_READ_TIPS_T_CN;
-            eeprom_menu.revertTips       = EEPROM_REVERT_TIPS_T_CN;
+            eeprom_menu.readTips         =  EEPROM_READ_TIPS_T_CN;
+            eeprom_menu.revertTips       =  EEPROM_REVERT_TIPS_T_CN;
             break;
           case LANG_ENGLISH:
             common_menu.dialog_confirm_title  = TITLE_DIALOG_CONFIRM_EN;
@@ -1574,8 +1571,8 @@ void disp_language_init() {
             eeprom_menu.read             = EEPROM_SETTINGS_READ_EN;
             eeprom_menu.revert           = EEPROM_SETTINGS_REVERT_EN;
             eeprom_menu.storeTips        = EEPROM_STORE_TIPS_EN;
-            eeprom_menu.readTips         = EEPROM_READ_TIPS_EN;
-            eeprom_menu.revertTips       = EEPROM_REVERT_TIPS_EN;
+            eeprom_menu.readTips         =  EEPROM_READ_TIPS_EN;
+            eeprom_menu.revertTips       =  EEPROM_REVERT_TIPS_EN;
             break;
           case LANG_RUSSIAN:
             common_menu.dialog_confirm_title  = TITLE_DIALOG_CONFIRM_RU;
@@ -1899,8 +1896,8 @@ void disp_language_init() {
             eeprom_menu.read             = EEPROM_SETTINGS_READ_RU;
             eeprom_menu.revert           = EEPROM_SETTINGS_REVERT_RU;
             eeprom_menu.storeTips        = EEPROM_STORE_TIPS_RU;
-            eeprom_menu.readTips         = EEPROM_READ_TIPS_RU;
-            eeprom_menu.revertTips       = EEPROM_REVERT_TIPS_RU;
+            eeprom_menu.readTips         =  EEPROM_READ_TIPS_RU;
+            eeprom_menu.revertTips       =  EEPROM_REVERT_TIPS_RU;
             break;
           case LANG_SPANISH:
             common_menu.dialog_confirm_title  = TITLE_DIALOG_CONFIRM_SP;
@@ -2136,8 +2133,8 @@ void disp_language_init() {
             eeprom_menu.read             = EEPROM_SETTINGS_READ_SP;
             eeprom_menu.revert           = EEPROM_SETTINGS_REVERT_SP;
             eeprom_menu.storeTips        = EEPROM_STORE_TIPS_SP;
-            eeprom_menu.readTips         = EEPROM_READ_TIPS_SP;
-            eeprom_menu.revertTips       = EEPROM_REVERT_TIPS_SP;
+            eeprom_menu.readTips         =  EEPROM_READ_TIPS_SP;
+            eeprom_menu.revertTips       =  EEPROM_REVERT_TIPS_SP;
             break;
 
         #endif // if 1
@@ -2370,8 +2367,8 @@ void disp_language_init() {
           eeprom_menu.read             = EEPROM_SETTINGS_READ_FR;
           eeprom_menu.revert           = EEPROM_SETTINGS_REVERT_FR;
           eeprom_menu.storeTips        = EEPROM_STORE_TIPS_FR;
-          eeprom_menu.readTips         = EEPROM_READ_TIPS_FR;
-          eeprom_menu.revertTips       = EEPROM_REVERT_TIPS_FR;
+          eeprom_menu.readTips         =  EEPROM_READ_TIPS_FR;
+          eeprom_menu.revertTips       =  EEPROM_REVERT_TIPS_FR;
           break;
 
         case LANG_ITALY:
@@ -2603,8 +2600,8 @@ void disp_language_init() {
           eeprom_menu.read             = EEPROM_SETTINGS_READ_IT;
           eeprom_menu.revert           = EEPROM_SETTINGS_REVERT_IT;
           eeprom_menu.storeTips        = EEPROM_STORE_TIPS_IT;
-          eeprom_menu.readTips         = EEPROM_READ_TIPS_IT;
-          eeprom_menu.revertTips       = EEPROM_REVERT_TIPS_IT;
+          eeprom_menu.readTips         =  EEPROM_READ_TIPS_IT;
+          eeprom_menu.revertTips       =  EEPROM_REVERT_TIPS_IT;
           break;
 
       #endif // if 1
@@ -2839,8 +2836,8 @@ void disp_language_init() {
       eeprom_menu.read             = EEPROM_SETTINGS_READ_EN;
       eeprom_menu.revert           = EEPROM_SETTINGS_REVERT_EN;
       eeprom_menu.storeTips        = EEPROM_STORE_TIPS_EN;
-      eeprom_menu.readTips         = EEPROM_READ_TIPS_EN;
-      eeprom_menu.revertTips       = EEPROM_REVERT_TIPS_EN;
+      eeprom_menu.readTips         =  EEPROM_READ_TIPS_EN;
+      eeprom_menu.revertTips       =  EEPROM_REVERT_TIPS_EN;
       break;
   }
 }

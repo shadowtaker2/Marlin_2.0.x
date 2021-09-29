@@ -64,13 +64,13 @@ typedef struct {
     Repeat stored_repeat;
   #endif
 
-  #if HAS_HOME_OFFSET
+  #if ENABLED(HAS_HOME_OFFSET)
     xyz_pos_t home_offset;
   #endif
-  #if HAS_POSITION_SHIFT
+  #if ENABLED(HAS_POSITION_SHIFT)
     xyz_pos_t position_shift;
   #endif
-  #if HAS_MULTI_EXTRUDER
+  #if ENABLED(HAS_MULTI_EXTRUDER)
     uint8_t active_extruder;
   #endif
 
@@ -78,13 +78,13 @@ typedef struct {
     float filament_size[EXTRUDERS];
   #endif
 
-  #if HAS_HOTEND
+  #if ENABLED(HAS_HOTEND)
     celsius_t target_temperature[HOTENDS];
   #endif
-  #if HAS_HEATED_BED
+  #if ENABLED(HAS_HEATED_BED)
     celsius_t target_temperature_bed;
   #endif
-  #if HAS_FAN
+  #if ENABLED(HAS_FAN)
     uint8_t fan_speed[FAN_COUNT];
   #endif
 
@@ -145,7 +145,7 @@ class PrintJobRecovery {
     static uint32_t cmd_sdpos,        //!< SD position of the next command
                     sdpos[BUFSIZE];   //!< SD positions of queued commands
 
-    #if HAS_DWIN_E3V2_BASIC
+    #if ENABLED(DWIN_CREALITY_LCD)
       static bool dwin_flag;
     #endif
 

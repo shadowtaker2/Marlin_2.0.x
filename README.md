@@ -10,9 +10,15 @@
 Additional documentation can be found at the [Marlin Home Page](https://marlinfw.org/).
 Please test this firmware and let us know if it misbehaves in any way. Volunteers are standing by!
 
-## Marlin 2.0 Bugfix Branch
+# Last release of Marlin BugFix 2.0.9 for Delta FLSun printers.
 
-__Not for production use. Use with caution!__
+- 20210610 last bugfix 2.0.9
+- 20201122 Add options in QQS_Config (BMG&BMGmini (step), Flying Extruder)
+- 20201022 Updated Marlin BugFix 2.0.8.1 for FLSun QQS-Pro with A4988 and TMC220x (Easy to configure by "QQS_Config.h" file)**
+- Integration in the Marlin firmware of the HISPEED motherboard and configuration files for the QQS-Pro.
+- Fixed Deploy/Stow ZProbe
+- Fixed for users using E3Dv6 hotend
+- Others TIPS(QQS_Config.h, Quick calibration, Menu management of NeoPixel leds, etc).
 
 Marlin 2.0 takes this popular RepRap firmware to the next level by adding support for much faster 32-bit and ARM-based boards while improving support for 8-bit AVR boards. Read about Marlin's decision to use a "Hardware Abstraction Layer" below.
 

@@ -19,7 +19,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
 /**
  * lcd/extui/anycubic_chiron/chiron_defs.h
@@ -29,6 +28,7 @@
  *  (not affiliated with Anycubic, Ltd.)
  */
 
+#pragma once
 #include "../../../inc/MarlinConfigPre.h"
 //#define ACDEBUGLEVEL 4
 

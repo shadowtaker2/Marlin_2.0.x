@@ -27,62 +27,35 @@
 
 #define ROUND(val) uint16_t((val)+0.5)
 
-#if GCC_VERSION <= 50000
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Wno-format"
-#endif
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wno-format"
 
 /**
  * Formats a temperature string (e.g. "100°C")
  */
 void format_temp(char *str, const_celsius_float_t t1) {
-  #ifdef TOUCH_UI_LCD_TEMP_PRECISION
-    char num1[7];
-    dtostrf(t1, 4 + TOUCH_UI_LCD_TEMP_PRECISION, TOUCH_UI_LCD_TEMP_PRECISION, num1);
-    sprintf_P(str, PSTR("%s" S_FMT), num1, GET_TEXT(MSG_UNITS_C));
-  #else
-    sprintf_P(str, PSTR("%3d" S_FMT), ROUND(t1), GET_TEXT(MSG_UNITS_C));
-  #endif
+  sprintf_P(str, PSTR("%3d" S_FMT), ROUND(t1), GET_TEXT(MSG_UNITS_C));
 }
 
 /**
  * Formats a temperature string for an idle heater (e.g. "100 °C / idle")
  */
 void format_temp_and_idle(char *str, const_celsius_float_t t1) {
-  #ifdef TOUCH_UI_LCD_TEMP_PRECISION
-    char num1[7];
-    dtostrf(t1, 4 + TOUCH_UI_LCD_TEMP_PRECISION, TOUCH_UI_LCD_TEMP_PRECISION, num1);
-    sprintf_P(str, PSTR("%s" S_FMT " / " S_FMT), num1, GET_TEXT(MSG_UNITS_C), GET_TEXT(MSG_IDLE));
-  #else
-    sprintf_P(str, PSTR("%3d" S_FMT " / " S_FMT), ROUND(t1), GET_TEXT(MSG_UNITS_C), GET_TEXT(MSG_IDLE));
-  #endif
+  sprintf_P(str, PSTR("%3d" S_FMT " / " S_FMT), ROUND(t1), GET_TEXT(MSG_UNITS_C), GET_TEXT(MSG_IDLE));
 }
 
 /**
  * Formats a temperature string for an active heater (e.g. "100 / 200°C")
  */
 void format_temp_and_temp(char *str, const_celsius_float_t t1, const_celsius_float_t t2) {
-  #ifdef TOUCH_UI_LCD_TEMP_PRECISION
-    char num1[7], num2[7];
-    dtostrf(t1, 4 + TOUCH_UI_LCD_TEMP_PRECISION, TOUCH_UI_LCD_TEMP_PRECISION, num1);
-    dtostrf(t2, 4 + TOUCH_UI_LCD_TEMP_PRECISION, TOUCH_UI_LCD_TEMP_PRECISION, num2);
-    sprintf_P(str, PSTR("%s / %s" S_FMT), num1, num2, GET_TEXT(MSG_UNITS_C));
-  #else
-    sprintf_P(str, PSTR("%3d / %3d" S_FMT), ROUND(t1), ROUND(t2), GET_TEXT(MSG_UNITS_C));
-  #endif
+  sprintf_P(str, PSTR("%3d / %3d" S_FMT), ROUND(t1), ROUND(t2), GET_TEXT(MSG_UNITS_C));
 }
 
 /**
  * Formats a temperature string for a material (e.g. "100°C (PLA)")
  */
 void format_temp_and_material(char *str, const_celsius_float_t t1, const char *material) {
-  #ifdef TOUCH_UI_LCD_TEMP_PRECISION
-    char num1[7];
-    dtostrf(t1, 4 + TOUCH_UI_LCD_TEMP_PRECISION, TOUCH_UI_LCD_TEMP_PRECISION, num1);
-    sprintf_P(str, PSTR("%s" S_FMT " (" S_FMT ")"), num1, GET_TEXT(MSG_UNITS_C), material);
-  #else
-    sprintf_P(str, PSTR("%3d" S_FMT " (" S_FMT ")"), ROUND(t1), GET_TEXT(MSG_UNITS_C), material);
-  #endif
+  sprintf_P(str, PSTR("%3d" S_FMT " (" S_FMT ")"), ROUND(t1), GET_TEXT(MSG_UNITS_C), material);
 }
 
 /**
@@ -105,8 +78,6 @@ void format_position(char *str, float x, float y, float z) {
   sprintf_P(str, PSTR("%s; %s; %s " S_FMT), num1, num2, num3, GET_TEXT(MSG_UNITS_MM));
 }
 
-#if GCC_VERSION <= 50000
-  #pragma GCC diagnostic pop
-#endif
+#pragma GCC diagnostic pop
 
 #endif // TOUCH_UI_FTDI_EVE

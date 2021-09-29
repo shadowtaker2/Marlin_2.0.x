@@ -41,7 +41,7 @@
 #define BOARD_NO_NATIVE_USB
 
 // Avoid conflict with TIMER_SERVO when using the STM32 HAL
-#define TEMP_TIMER                             5
+#define TEMP_TIMER 5
 
 //
 // Release PB4 (Y_ENABLE_PIN) from JTAG NRST role
@@ -51,9 +51,6 @@
 //
 // EEPROM
 //
-#if ENABLED(SRAM_EEPROM_EMULATION)
-  #undef NO_EEPROM_SELECTED
-#endif
 #if EITHER(NO_EEPROM_SELECTED, FLASH_EEPROM_EMULATION)
   #define FLASH_EEPROM_EMULATION
   #define EEPROM_PAGE_SIZE     (0x800U)           // 2KB
@@ -68,7 +65,19 @@
 #define SD_SCK_PIN                          PB13  // SPI2
 #define SD_MISO_PIN                         PB14  // SPI2
 #define SD_MOSI_PIN                         PB15  // SPI2
-#define SPI_DEVICE                             2
+#define SPI_DEVICE 2
+
+// SPI Flash
+#define HAS_SPI_FLASH                          1
+#define SPI_FLASH_SIZE                 0x1000000  // 16MB
+
+#if HAS_SPI_FLASH
+  // SPI 2
+  #define W25QXX_CS_PIN                     PB12  // SPI2_NSS / Flash chip-select
+  #define W25QXX_MOSI_PIN                   PB15
+  #define W25QXX_MISO_PIN                   PB14
+  #define W25QXX_SCK_PIN                    PB13
+#endif
 
 //
 // Servos
@@ -82,18 +91,22 @@
 //
 #define X_DIAG_PIN                          PA15  //-X
 #define Y_DIAG_PIN                          PA12  //-Y
-#define Z_DIAG_PIN                          PC4   //-Z
+#define Z_DIAG_PIN                          PC4  //-Z
 
-#ifdef SENSORLESS_PROBING
-  #define X_STOP_PIN                  X_DIAG_PIN 
-  #define Y_STOP_PIN                  Y_DIAG_PIN
-  #define Z_STOP_PIN                  Z_DIAG_PIN
-  #define Z_MIN_PIN                   Z_DIAG_PIN 
-#else
-  #define X_STOP_PIN                  X_DIAG_PIN  // +X 
-  #define Y_STOP_PIN                  Y_DIAG_PIN  // +Y
-  #define Z_MAX_PIN                   Z_DIAG_PIN  // +Z
-  #define Z_MIN_PIN                         PA11  // -Z
+#define X_STOP_PIN                          PA15  // -X
+#define Y_STOP_PIN                          PA12  // -Y
+#define Z_MIN_PIN                           PA11  // -Z
+#define Z_MAX_PIN                           PC4   // +Z
+
+//
+// Z Probe 
+//
+#ifndef Z_MIN_PROBE_PIN
+  #define Z_MIN_PROBE_PIN                  PA11
+#endif
+
+#ifndef FIL_RUNOUT_PIN
+  #define FIL_RUNOUT_PIN            MT_DET_1_PIN
 #endif
 
 //
@@ -149,6 +162,12 @@
     #define Y_SERIAL_RX_PIN      X_SERIAL_TX_PIN  // IO0
     #define Z_SERIAL_TX_PIN      X_SERIAL_TX_PIN  // IO0
     #define Z_SERIAL_RX_PIN      X_SERIAL_TX_PIN  // IO0
+    #ifdef ESP_WIF
+      //Module ESP-WIFI
+      #define ESP_WIFI_MODULE_COM               2
+      #define ESP_WIFI_MODULE_BAUDRATE      BAUDRATE
+      //#define ESP_WIFI_MODULE_RESET_PIN         PA5
+    #endif 
   #else /*  TMC220x   */
     // SoftwareSerial with one pin per driver
     // Compatible with TMC2208 and TMC2209 drivers
@@ -157,11 +176,11 @@
     #define  Z_SLAVE_ADDRESS 0
     
     #define X_SERIAL_TX_PIN                   PA10  // RXD1
-    #define X_SERIAL_RX_PIN        X_SERIAL_TX_PIN
+    #define X_SERIAL_RX_PIN                   PA10  // RXD1
     #define Y_SERIAL_TX_PIN                   PA9   // TXD1
-    #define Y_SERIAL_RX_PIN        Y_SERIAL_TX_PIN
+    #define Y_SERIAL_RX_PIN                   PA9   // TXD1
     #define Z_SERIAL_TX_PIN                   PC7   // IO1
-    #define Z_SERIAL_RX_PIN        Z_SERIAL_TX_PIN
+    #define Z_SERIAL_RX_PIN                   PC7   // IO1
   #endif
 
 #else
@@ -188,6 +207,15 @@
    *       ￣￣ AE￣￣
    */
   // Module ESP-WIFI
+  //#define ESP_WIFI_MODULE_COM                  2  // Must also set either SERIAL_PORT or SERIAL_PORT_2 to this
+  //#define ESP_WIFI_MODULE_BAUDRATE      BAUDRATE  // Must use same BAUDRATE as SERIAL_PORT & SERIAL_PORT_2
+  //#define ESP_WIFI_MODULE_RESET_PIN         PA5   // WIFI CTRL/RST
+  //#define ESP_WIFI_MODULE_ENABLE_PIN        -1
+  //#define ESP_WIFI_MODULE_GPIO0_PIN           PA8   //IO0
+  //#define ESP_WIFI_MODULE_GPIO4_PIN           PC7   //IO1
+  //#define ESP_WIFI_MODULE_TXD_PIN           PA9   // MKS or ESP WIFI RX PIN
+  //#define ESP_WIFI_MODULE_RXD_PIN           PA10  // MKS or ESP WIFI TX PIN
+  //#else
   #define WIFI_IO0_PIN                      PA8   // MKS ESP WIFI IO0 PIN
   #define WIFI_IO1_PIN       			          PC7   // MKS ESP WIFI IO1 PIN
   #define WIFI_RESET_PIN				            PA5   // MKS ESP WIFI RESET PIN
@@ -224,6 +252,13 @@
 
 #define FAN_PIN                             PB1   // E_FAN
 
+//
+// Misc. Functions
+//
+//#define POWER_LOSS_PIN                    PA1   // PW_SO
+#if ENABLED(BACKUP_POWER_SUPPLY)
+  #define POWER_LOSS_PIN                    PA2   // PW_DET (UPS) MKSPWC
+#endif
 
 /**
  *    Connector J2
@@ -240,37 +275,15 @@
 //
 // Power Supply Control
 //
-#if ENABLED(MKS_PWC)
-  #if ENABLED(TFT_LVGL_UI)
-    #undef PSU_CONTROL
-    #undef MKS_PWC
-    #define SUICIDE_PIN                     PB2   // Enable MKSPWC SUICIDE PIN
-    #define SUICIDE_PIN_STATE               LOW   // Enable MKSPWC PIN STATE
-  #else    
-    #define PS_ON_PIN                       PB2   // PW_OFF
-  #endif
-  #define KILL_PIN                          PA2
-  #define KILL_PIN_STATE                    HIGH
+#if ENABLED(PSU_CONTROL)
+  #define KILL_PIN                          PA2   // PW_DET
+  #define KILL_PIN_INVERTING                true
+  //#define PS_ON_PIN                       PA3   // PW_CN /PW_OFF
 #endif
 
-#if ENABLED(BACKUP_POWER_SUPPLY)
-    #define POWER_LOSS_PIN                  PA2   // PW_DET (UPS) MKSPWC
-    #define PS_ON_PIN                       PA3   // PW_CN /PW_OFF, you can change it to other pin
-#else
-    #define POWER_LOSS_PIN                  -1    // PW_DET
-    #define PS_ON_PIN                       PB2   // PW_OFF
-#endif
-
-//
-// Misc. Functions
-//
-#if HAS_TFT_LVGL_UI
-  #define MT_DET_1_PIN                      PA4   // MT_DET
-  #define MT_DET_PIN_STATE                  LOW
-  #define FIL_RUNOUT_PIN           MT_DET_1_PIN   // MT_DET
-#else
-  #define FIL_RUNOUT_PIN                    PA4   // MT_DET  
-#endif
+#define MT_DET_1_PIN                        PA4   // MT_DET
+#define MT_DET_2_PIN                        PE6   // FALA_CRTL
+#define MT_DET_PIN_INVERTING               false
 
 //
 // LED / NEOPixel
@@ -317,9 +330,11 @@
   #error "FLSun HiSpeed default BEEPER_PIN is not a SPEAKER."
 #endif
 
-//
-// TFT with FSMC interface
-//
+#if HAS_FSMC_TFT || HAS_GRAPHICAL_TFT
+  #define TFT_CS_PIN                        PD7   // NE4
+  #define TFT_RS_PIN                        PD11  // A0
+#endif
+
 #if HAS_FSMC_TFT
   /**
    * Note: MKS Robin TFT screens use various TFT controllers
@@ -333,26 +348,14 @@
    * Setting an 'LCD_RESET_PIN' may cause a flicker when entering the LCD menu
    * because Marlin uses the reset as a failsafe to revive a glitchy LCD.
    */
-  #define TFT_RESET_PIN                     PC6   // FSMC_RST
+  //#define TFT_RESET_PIN                   PC6   // FSMC_RST
   #define TFT_BACKLIGHT_PIN                 PD13
-  
-  #define DOGLCD_MOSI                       -1    // Prevent auto-define by Conditionals_post.h
-  #define DOGLCD_SCK                        -1
+  #define FSMC_CS_PIN                 TFT_CS_PIN  // NE4
+  #define FSMC_RS_PIN                 TFT_RS_PIN  // A0
 
-  #define TOUCH_CS_PIN                      PC2   // SPI2_NSS
-  #define TOUCH_SCK_PIN                     PB13  // SPI2_SCK
-  #define TOUCH_MISO_PIN                    PB14  // SPI2_MISO
-  #define TOUCH_MOSI_PIN                    PB15  // SPI2_MOSI
-  
   #define LCD_USE_DMA_FSMC                        // Use DMA transfers to send data to the TFT
-  #define FSMC_CS_PIN                       PD7   // NE4
-  #define FSMC_RS_PIN                       PD11  // A0  
   #define FSMC_DMA_DEV                      DMA2
   #define FSMC_DMA_CHANNEL               DMA_CH5
-
-  #define TFT_CS_PIN                 FSMC_CS_PIN
-  #define TFT_RS_PIN                 FSMC_RS_PIN
-
   #ifdef TFT_CLASSIC_UI
     #define TFT_MARLINBG_COLOR            0x3186  // Grey
     #define TFT_MARLINUI_COLOR            0xC7B6  // Green
@@ -360,15 +363,15 @@
     #define TFT_BTOKMENU_COLOR            0x145F  // Cyan
   #endif
   #define TFT_BUFFER_SIZE                  14400
+#elif HAS_GRAPHICAL_TFT
+  #define TFT_RESET_PIN                     PC6
+  #define TFT_BACKLIGHT_PIN                 PD13
 #endif
 
-// SPI Flash
-#define HAS_SPI_FLASH                          1
-#if HAS_SPI_FLASH
-  // SPI 2
-  #define SPI_FLASH_SIZE               0x1000000  // 16MB
-  #define SPI_FLASH_CS_PIN                  PB12  // SPI2_NSS / Flash chip-select
-  #define SPI_FLASH_MOSI_PIN                PB15
-  #define SPI_FLASH_MISO_PIN                PB14
-  #define SPI_FLASH_SCK_PIN                 PB13
+#if NEED_TOUCH_PINS
+  #define TOUCH_CS_PIN                      PC2   // SPI2_NSS
+  #define TOUCH_SCK_PIN                     PB13  // SPI2_SCK
+  #define TOUCH_MISO_PIN                    PB14  // SPI2_MISO
+  #define TOUCH_MOSI_PIN                    PB15  // SPI2_MOSI
+  #define TOUCH_INT_PIN                     -1
 #endif

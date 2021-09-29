@@ -19,7 +19,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
 #include "../../../inc/MarlinConfig.h"
 
 #if HAS_TFT_LVGL_UI && USE_SENSORLESS
@@ -67,10 +66,10 @@ static void event_handler(lv_obj_t *obj, lv_event_t event) {
       break;
     #if Z2_SENSORLESS
       case ID_SENSITIVITY_Z2:
-        value = z2_sensitivity;
-        lv_clear_homing_sensitivity_settings();
-        lv_draw_number_key();
-        break;
+      value = z2_sensitivity;
+      lv_clear_homing_sensitivity_settings();
+      lv_draw_number_key();
+      break;
     #endif
   }
 }

@@ -34,6 +34,5 @@ class SaveSettingsDialogBox : public DialogBoxBaseClass, public UncachedScreen {
     static bool onTouchEnd(uint8_t tag);
 
     static void promptToSaveSettings();
-    static void promptToSaveAndStay();
     static void settingsChanged() {needs_save = true;}
 };

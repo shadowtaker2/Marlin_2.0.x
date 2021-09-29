@@ -47,7 +47,6 @@
 
 void MarlinUI::tft_idle() {
   #if ENABLED(TOUCH_SCREEN)
-    if (TERN0(HAS_TOUCH_SLEEP, lcd_sleep_task())) return;
     if (draw_menu_navigation) {
       add_control(48, 206, PAGE_UP, imgPageUp, encoderTopLine > 0);
       add_control(240, 206, PAGE_DOWN, imgPageDown, encoderTopLine + LCD_HEIGHT < screen_items);
@@ -74,7 +73,7 @@ void MarlinUI::tft_idle() {
     #else
       #define BOOT_LOGO_W TFT_WIDTH   // MarlinLogo320x240x16
       #define BOOT_LOGO_H TFT_HEIGHT
-      #define SITE_URL_Y (TFT_HEIGHT - 52)
+      #define SITE_URL_Y (TFT_HEIGHT - 22)
     #endif
     tft.add_image((TFT_WIDTH - BOOT_LOGO_W) / 2, (TFT_HEIGHT - BOOT_LOGO_H) / 2, imgBootScreen);
     #ifdef WEBSITE_URL
@@ -652,7 +651,7 @@ static void moveAxis(const AxisEnum axis, const int8_t direction) {
     #if ENABLED(BABYSTEP_ZPROBE_OFFSET)
       const int16_t babystep_increment = direction * BABYSTEP_SIZE_Z;
       const bool do_probe = DISABLED(BABYSTEP_HOTEND_Z_OFFSET) || active_extruder == 0;
-      const float bsDiff = planner.mm_per_step[Z_AXIS] * babystep_increment,
+      const float bsDiff = planner.steps_to_mm[Z_AXIS] * babystep_increment,
                   new_probe_offset = probe.offset.z + bsDiff,
                   new_offs = TERN(BABYSTEP_HOTEND_Z_OFFSET
                     , do_probe ? new_probe_offset : hotend_offset[active_extruder].z - bsDiff

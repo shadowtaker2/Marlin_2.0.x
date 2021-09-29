@@ -36,12 +36,10 @@ class StatusScreen : public BaseScreen, public CachedScreen<STATUS_SCREEN_CACHE,
   public:
     static void loadBitmaps();
     static void setStatusMessage(const char *);
-    static void setStatusMessage(FSTR_P);
+    static void setStatusMessage(progmem_str);
     static void onRedraw(draw_mode_t);
     static void onStartup();
     static void onEntry();
     static void onIdle();
     static bool onTouchEnd(uint8_t tag);
-    static void onMediaInserted();
-    static void onMediaRemoved();
 };
