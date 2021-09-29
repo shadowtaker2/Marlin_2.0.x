@@ -130,9 +130,8 @@
 //#define BLUETOOTH
 
 // Choose the name from boards.h that matches your setup
- #define MOTHERBOARD BOARD_BTT_SKR_V1_4_TURBO
-  #endif
-
+#define MOTHERBOARD BOARD_BTT_SKR_V1_4_TURBO
+ 
 // Name displayed in the LCD "Ready" message and Info menu
 #define CUSTOM_MACHINE_NAME "FLSUN QQS-Pro"
 
