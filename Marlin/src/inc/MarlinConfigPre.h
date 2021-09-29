@@ -25,11 +25,6 @@
 #define __MARLIN_FIRMWARE__
 #endif
 
-//
-// Prefix header to acquire configurations
-//
-#include
-
 #ifndef __MARLIN_DEPS__
   #include "../HAL/platforms.h"
 #endif
