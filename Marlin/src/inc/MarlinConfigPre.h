@@ -28,7 +28,7 @@
 //
 // Prefix header to acquire configurations
 //
-#include <stdint.h>
+#include
 
 #ifndef __MARLIN_DEPS__
   #include "../HAL/platforms.h"
