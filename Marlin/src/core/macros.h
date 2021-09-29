@@ -178,7 +178,7 @@
 #define _DO_15(W,C,A,V...) (_##W##_1(A) C _DO_14(W,C,V))
 #define __DO_N(W,C,N,V...) _DO_##N(W,C,V)
 #define _DO_N(W,C,N,V...)  __DO_N(W,C,N,V)
-#define DO(W,C,V...)       (_DO_N(W,C,NUM_ARGS(V),V))
+#define _DO(W,C,V...)       (_DO_N(W,C,NUM_ARGS(V),V))
 
 // Macros to support option testing
 #define _CAT(a,V...) a##V
